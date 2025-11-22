@@ -1,1 +1,86 @@
-bash -c "$(echo H4sICMTZcGcAA0FjZV9vZl9DbHVicwDtVU1v2kAQvftXTEmUxFUwEKIegloJIQ49JI2SqFKVRmhZD7DC7Fq7NhSF/PfO2sYxcUqdz0PVvWDGu2/Hb9682fnQGArZGDIzcZzej+7Z5/2fzXb7utVpf5rtOxf9y/5VFmrSf2cHTlHGMFIaoglClyOoEfSCeGigx7TvMI4DNRpwGxnMaO+BC7cO0OIBMp08IZ8oqCPUdm/tlXe1+2gNkjV4tVXCXsHWtfFFf1mriuCXoSLI024Pur6v0Rg0CYNdqeRyJqJlRfDXY6Vq5s9aj4JfTYQBTgoBFgRqYWCpYogUxAZhxjifMDlGbSMmZ4vlbCm5FZywNEiMFkpPQcgI9Yh0aA4BJeFyIcfAcq6Z9GG4DJkxNk4XRFrwSChpvPenpeXBd4EL6MVao4yKInk5+JEHvYTXDdiDC2JAzdwXgrc9uECDkS3ZNy3GQrLgOek/Cn7sQf+XiKqnWB38bZoodbPELjM708h8qIdQ61s9phKlnYLjCaWSPqW+yKgFdtMAiddZ595yYU7SGFB3QKeTh49cSJvl4Yu2a8WM0cP4sQtouWwWgx/djJSvcs4C4WcJeXClqUPGTEiv1gETIIbQ6kDJ1ddYaBh37uxcSGRsZwIvSDnrYGf9IRWGwZ/aYSu79t5S/8MBemOPTCCaNA9hETDZdC33+YYESYzg+hrqkhLIX9Tg5qZjQe+rIUIIhJyCmajF5tYVjDWxVLOvG3QXaoqtcnrXyUgVkenHZD7k/AVuIJZszkTAhgF6maICg/nFKU5fa6VP4EwVPi/Uai589LNTI1FgRkIL6gbqOiHpPLmIySVMcWkbVmMUa2mfLHO2oJ6XwZRKnZa3YCTrxOk0A52YCRk0OveyrFDmLcb0hpXmajaz/l+fF4fO3peGj/OGjIPgYdWricMuE/uqCErUbxza2ytxUCQzPeYTDKfJZUaUy9LbZKIkjSfJoyCRsr4KSWVQhS+hwW3FK6SJaHYT4CNpJVmcU7UNrjcWIeJk1iYeGDI+ZWM79CX96HcRbz6oVHFQrc0pd80Kst068v4R4YZPEm7C3n/Zvr5sy8HfgIdfH60NAAA= | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Menu for the Ace of Clubs Card
+ace_of_clubs_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      __________________________________________________________________________"
+    echo "     |                              Ace of Clubs                                |"
+    echo "     |                     Spoof MAC Addresses for Anonymity                    |"
+    echo "     |__________________________________________________________________________|"
+    echo "     |                                                                          |"
+    echo "     |  This card allows you to use macchanger to spoof MAC addresses on        |"
+    echo "     |  your network interfaces, enhancing anonymity and bypassing restrictions.|"
+    echo "     |                                                                          |"
+    echo "     |  1. View Current MAC Address                                             |"
+    echo "     |  2. Change MAC Address (Random)                                          |"
+    echo "     |  3. Reset to Original MAC Address                                        |"
+    echo "     |  4. Exit                                                                 |"
+    echo "     |__________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) view_mac ;;
+        2) change_mac ;;
+        3) reset_mac ;;
+        4) exit 0 ;;
+        *) echo "Invalid choice. Try again."; sleep 1; ace_of_clubs_menu ;;
+    esac
+}
+
+# View the current MAC address
+view_mac() {
+    clear
+    echo -e "${CYAN}View Current MAC Address${RESET}"
+    read -p "Enter the network interface (e.g., eth0, wlan0): " interface
+    if [[ -n "$interface" ]]; then
+        ip link show "$interface" | grep "link/ether" || echo "Interface not found or MAC address unavailable."
+    else
+        echo "Error: No interface provided."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    ace_of_clubs_menu
+}
+
+# Change MAC address to a random one
+change_mac() {
+    clear
+    echo -e "${CYAN}Change MAC Address (Random)${RESET}"
+    read -p "Enter the network interface (e.g., eth0, wlan0): " interface
+    if command -v macchanger &>/dev/null; then
+        if [[ -n "$interface" ]]; then
+            sudo macchanger -r "$interface" && echo -e "${CYAN}MAC address changed successfully.${RESET}"
+        else
+            echo "Error: No interface provided."
+        fi
+    else
+        echo -e "${CYAN}Error: macchanger is not installed.${RESET}"
+        echo "Please install macchanger using your package manager."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    ace_of_clubs_menu
+}
+
+# Reset to original MAC address
+reset_mac() {
+    clear
+    echo -e "${CYAN}Reset to Original MAC Address${RESET}"
+    read -p "Enter the network interface (e.g., eth0, wlan0): " interface
+    if command -v macchanger &>/dev/null; then
+        if [[ -n "$interface" ]]; then
+            sudo macchanger -p "$interface" && echo -e "${CYAN}MAC address reset successfully.${RESET}"
+        else
+            echo "Error: No interface provided."
+        fi
+    else
+        echo -e "${CYAN}Error: macchanger is not installed.${RESET}"
+        echo "Please install macchanger using your package manager."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    ace_of_clubs_menu
+}
+
+ace_of_clubs_menu

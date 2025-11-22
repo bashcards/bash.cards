@@ -1,1 +1,76 @@
-bash -c "$(echo H4sICAP1XmcAA0ZvdXJfb2ZfRGlhbW9uZHMArVZrT9swFP3eX3HJ2DoQSVvKQ6JiEmJFQmITGnzZ2Ibc5JZYJHZmO5Tw+O+7dkvpMy3d/CFybuzje47vcfxurdbhotZhOq5Ujr8ffT2s/qw3m1eNVnMvrVa+tS/al4NQnd4rmWbXRspEX6co8o8b8FgBar2YJwhG5diCSLqQbWGCTA3fMIwl+Aje+qNd6dkb/+K57vXybdb8JxhtJzJXILvwmbNUikiPfYSnuQBHgiXFA8K5kiFqDR/gotAGU/ogU5Zw1CUAb2AwP4Ml2zyARgBnXBswMgOFmmQI0Q+l0HnKxQ1kfV5EYx7AdgCnEQrDuwVIlcVMYEQdeJBph+MSAE0CEDrD0IwM7hSQa1RLUdgJ4IKqJ4yhS+taJN7l4QjYIoDdAL5IwQ3NFtgbmcgFacIS3/AUywD2AjiOMbx1CeRC8xsrAtmFKY6jtTQPYD+A9j03q27jPxRS32XOvWSz4TeiHYGfgXccSx7iAS0Uut6rY5lGWO8HSahh3LbGxtirGz5m8BkpOKNfLqjCg9dUJ6EyTUASMh5tZfZhy2frfYrp1vswy7fClPj4Wipz6NsAqR47jgK261NgrdZYaHtVPq4qLANbGGXuCIJgeWraMOMIPcGNwgz8NlR/X/34VV3Eo7kqj4FBx0+EgUdLUx/WUVsYsrMdLxiZyUiqGYdpS+slPJN5Tlm8DPDA7+vg9tTtLumwiPbOqrT7x8rL/k2fLG+hPpgEjj6h3WLRkyqySmi3jBViEJylA8vvh/vNKcPBUG8YvAPPdqYTmVBjd1U1BmeklWP+MVkqic4jCT1m6Kgm3zXAW920jfpConv/xbVTx3kpwy4XEdSsNLXNGt4j+KbIEBLY/lSL8K4m8iQhFv1bUL9CFNC4scvQaONdWCPUxGZH4163+w8V1tmJ1wITo5g5dUjNO5fG/qFZMsGmOAAHOnN6l0+FIymmPTqh+v606pP62l8dyVsqZIfEuV201ubitU7FHV3DosHfK4BLVQC7YVyUrD2yCmoWzr2WnitraCYK61trZIUmV8L2aFPA3ntnclQvNQw+1X+/Hp20z5PX5spfNdPZXXYLAAA= | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+psa_tools_menu() {
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "     ___________________________________________"
+        echo "    |             Four of Diamonds              |"
+        echo "    |    Analyze Process & System Anomalies     |"
+        echo "    |___________________________________________|"
+        echo "    |                                           |"
+        echo "    |  1. List top resource-consuming processes |"
+        echo "    |  2. Identify orphaned or zombie processes |"
+        echo "    |  3. Inspect processes by user             |"
+        echo "    |  4. Search for specific processes         |"
+        echo "    |  5. Monitor new processes in real-time    |"
+        echo "    |  6. Check for unsigned binaries           |"
+        echo "    |  7. Exit                                  |"
+        echo "    |___________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Choice: " choice
+        case $choice in
+            1)
+                clear
+                echo -e "${CYAN}Top resource-consuming processes:${RESET}"
+                ps -eo pid,ppid,user,%mem,%cpu,cmd --sort=-%cpu | head -n 20
+                ;;
+            2)
+                clear
+                echo -e "${CYAN}Checking for orphaned or zombie processes...${RESET}"
+                ps -eo pid,ppid,stat,cmd | grep -E '^[Z]'
+                ;;
+            3)
+                clear
+                echo -e "${CYAN}Inspecting processes by user...${RESET}"
+                read -p "Enter username to inspect: " username
+                ps -u "$username" -o pid,%cpu,%mem,cmd
+                ;;
+            4)
+                clear
+                echo -e "${CYAN}Searching for specific processes...${RESET}"
+                read -p "Enter process name or keyword to search: " keyword
+                ps aux | grep -i "$keyword" | grep -v "grep"
+                ;;
+            5)
+                clear
+                echo -e "${CYAN}Monitoring new processes in real-time...${RESET}"
+                sudo watch -n 1 "ps -eo pid,ppid,user,%mem,%cpu,cmd --sort=-%cpu | head -n 10"
+                ;;
+            6)
+                clear
+                echo -e "${CYAN}Checking for unsigned binaries...${RESET}"
+                find /proc/*/exe -type l 2>/dev/null | while read -r exe; do
+                    if ! file "$exe" | grep -q "ELF"; then
+                        echo "Potential unsigned binary: $exe"
+                    fi
+                done
+                ;;
+            7)
+                echo -e "${CYAN}Exiting...${RESET}"
+                break
+                ;;
+            *)
+                echo -e "${CYAN}Invalid choice. Try again.${RESET}"
+                ;;
+        esac
+        echo -e "${CYAN}Press any key to return to the menu...${RESET}"
+        read -n 1 -s -r
+    done
+}
+
+psa_tools_menu

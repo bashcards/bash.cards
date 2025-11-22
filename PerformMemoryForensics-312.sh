@@ -1,1 +1,98 @@
-bash -c "$(echo H4sICNMJXGcAA0ZpdmVfb2ZfU3BhZGVzAN1YbU/bMBD+3l9xdAjGpKSUQidRMQlNIPFhW0WnTRObKpNcGovEzmynkAH/fXaSvqZpSVc0gT85jvv4ubvnzte82WpcU9a4JtKv1T7+OP18svtzv9W6anZa7XC3dnnWO/uaL+3r51qEwuMi7IcYcpH09RyZpI58uwf3NdDj1qcBghIxdsDl6ZIZToBEjJ/Q8TlYCPXte3PmY332TT2d9jc2FsE/wNJxTocI3INeRFyUy/c+VMLvZh6ET6kH4Xzkwar4m3NPNf7VRxn+l0hRzuTxc+E3bThlJEj+IIiYMcoGEAnuoJSrIvo0/AMbzu6UII4ChuqWixtwOGPopGb9O37Lhkt0+BCFxg1DwlzwqVRGNZVGGf6hDT2dlY4PWpAQkoA6lMcSiFDU01Y91YQy/CMbLphUJAhA4O+YCnRBcR5Ucv4S/Lbxj4oF06iaPmUQIosrgpfiP19+ZYUvLa268o3fCSQuWBHUz5jSIU94rOPuc+rgsaaUzSb1lEiE7WwRKBuvm9Hcm3lMt8+U3wVs0jKcZYvJk0K+2LY9oTyPM8dc+QgRUb4Ji5lndwW4cRiBp28HY45e65uFAhb14AosT3MabanDr47BYYW9k4hd5nyHPCCKBlQlI+ogHcI0+yJrM6b2z51pWRrAsD35Ttn7Xrd51z6ESAY6AYt+DCQuIXfBhjq33AV+mJxX+LlHS9zMoAmWBEukHu8KYyNhCdxgYhwuxhmRuZ7FC43vdGaWDtaVTF4Aje8X1MCXp5qiERsVkIY3cK9QQa11FZRfcSYOc7fcy1PP/DUtMtuSTcnHCd1XKp/DdeWTdTAmDiVNzMtTkTbCo1pFURAP6MZKT476CrVztK528u40bXhmGtSlmtFx3hpnujWcjsPOB2i4OGywOAhWRv7b5HdUAuNK93EpH3THjbOmVhp/GbscSKSsASqII5cohJ2d2eUcEaxkimZVCcwSJYEJZTJF9n/Hv12Mf55bKZwJ7/QfhIWQ15rfzaqD3pUdNEqSrB+3oavlJ81XkATIQJ+74MAn+UN3Ibq1inGVF1ASJ31wOcPaY/lnmtpfKT8b6fARAAA= | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+perform_memory_forensics() {
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "     __________________________________________________________________________"
+        echo "    |                              Five of Spades                              |"
+        echo "    |                        Perform Memory Forensics                          |"
+        echo "    |__________________________________________________________________________|"
+        echo "    |                                                                          |"
+        echo "    |  Options:                                                                |"
+        echo "    |  1. Analyze running processes                                            |"
+        echo "    |  2. Extract network connections                                          |"
+        echo "    |  3. Recover command history                                              |"
+        echo "    |  4. Search for malicious artifacts                                       |"
+        echo "    |  5. Install required tools                                               |"
+        echo "    |  6. Return to main menu                                                  |"
+        echo "    |__________________________________________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Enter your choice: " choice
+        case $choice in
+            1)
+                clear
+                echo -e "${CYAN}Analyzing running processes...${RESET}"
+                read -p "Enter the path to the memory dump file: " mem_dump
+                if [ -f "$mem_dump" ]; then
+                    echo "Running volatility process scan..."
+                    volatility -f "$mem_dump" --profile=Win7SP1x64 pslist
+                else
+                    echo "Invalid memory dump file: $mem_dump"
+                fi
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            2)
+                clear
+                echo -e "${CYAN}Extracting network connections...${RESET}"
+                read -p "Enter the path to the memory dump file: " mem_dump
+                if [ -f "$mem_dump" ]; then
+                    echo "Running volatility network connection scan..."
+                    volatility -f "$mem_dump" --profile=Win7SP1x64 netscan
+                else
+                    echo "Invalid memory dump file: $mem_dump"
+                fi
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            3)
+                clear
+                echo -e "${CYAN}Recovering command history...${RESET}"
+                read -p "Enter the path to the memory dump file: " mem_dump
+                if [ -f "$mem_dump" ]; then
+                    echo "Running volatility command history recovery..."
+                    volatility -f "$mem_dump" --profile=Win7SP1x64 cmdscan
+                else
+                    echo "Invalid memory dump file: $mem_dump"
+                fi
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            4)
+                clear
+                echo -e "${CYAN}Searching for malicious artifacts...${RESET}"
+                read -p "Enter the path to the memory dump file: " mem_dump
+                if [ -f "$mem_dump" ]; then
+                    echo "Running volatility malfind plugin..."
+                    volatility -f "$mem_dump" --profile=Win7SP1x64 malfind
+                else
+                    echo "Invalid memory dump file: $mem_dump"
+                fi
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            5)
+                clear
+                echo -e "${CYAN}Installing required tools...${RESET}"
+                if ! command -v volatility &> /dev/null; then
+                    echo "Volatility is not installed. Installing..."
+                    sudo apt-get update && sudo apt-get install -y volatility
+                else
+                    echo "Volatility is already installed."
+                fi
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            6)
+                echo "Returning to main menu..."
+                break
+                ;;
+            *)
+                echo "Invalid choice. Please try again."
+                read -n 1 -s -r -p "Press any key to continue..."
+                ;;
+        esac
+    done
+}
+
+perform_memory_forensics

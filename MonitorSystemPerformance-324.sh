@@ -1,1 +1,83 @@
-bash -c "$(echo H4sICO8YXGcAA1R3b19vZl9DbHVicwC1V2FP2zAQ/Z5fccsQhUlN13XwoRWbEPQDEmxowKZpm5BJrtSqYwfbKYRt/312nDZJSTtgnaVKiRO/d3d+75y+fNG5orxzRdTY8w6+7n/Ya31/3et96w56u3HL+zQ8G54XU6/NvRcLTrWQlypTGuPLBOVIyJjwELe24acHZoQMicyvMBwLaCP4Gz8t9G+/nPXtFVyubyxi/4KmcX4rQIzggKVXqg8nLhk4y5OB0zKZ+qpfD8DXGPhD8MbInzcawM/HVIEWgkEixZRGqGBKJBWpApFoKrh9CsU+A+GR+RGW3SO4PV8JXtEDUA4SCWtrGmOwjsjXNxrAP7rc+/8FHLoBHJOUh2NoaZG0wBSpLM6ssEXNKb9+GvibAD5TvIWD0wtIFblGiFATytQ6Iu8FcEhVwkgGMcZCZs+laAJ/G8w9GFE1gaPOx5qE/gl8J4CDMYYT4KhvhZxAqimj98Tu8+ORl4DvBjC8o/pJOI8E/0+9xfXhvKGbRpzPGwVG0E7AH3KNEjKRSjCv0hD7JhZ35Vo6UQgbbsL42psF3932qrm4JJzQrYofpfUATiUqBa2blm08aKoa+DVYg1K7Hwzmt2+aAij0aiOwlrjI9Xro9NqvQ8eJ0kRD+xT2j4+hCzvLiHp/ITpx3ljFNZKI0B4vY3jbxHBStoTDmUEqx9QCAxUum7v7VansNBHlTrE0HwqzXJRmWWQZwTfDYdS0FYo4tidEe2pmzTZt+/BjAHqMvLaipKloI1/g1DEz6FNE4SJZlAYyhUuoZ4Tm9ONCGxWbWjGGUQBfRMoiq35gdIKWr3gIVL+HrazDtx9yO+9wU+ji5cuKXx6Uy9+ov+XDHvjZ8mrZodJIAEk0pElENMLmZjk1C7CdNRRheXmWlqgs09mEJondoILCtUvzzVTUr2EbRtRbcVtR3m6T8mwbtXxFY6i2/8qBaD9YFqgl6lTyZVyvmriO+JQwGhWtLYBPOYTDN8cbT4NggaRAREVCr9KonToJz2CCmV3sgrFXZj/rUKVS2sr77XkvYchVKtE8uEmpRBOOs5EBNLNkanoHuWLoWWuEcWQ/pEzlZ70qbyPO6QOIRE5hNPYCKmbcsMs230EnwmmHp4wtyKyovJRC9k0R6mFAyy6fG2UeTwBHc1vk34XaNDxyTSiv1Mw6FbpeoYNIcLQJn5iXQIWSGuniHYapFdWK/xKe+w/xB3E9woOdDAAA | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+monitor_system_performance() {
+    clear
+    echo -e "${CYAN}"
+    echo "     ___________________________________________________________________________"
+    echo "    |                     Two of Clubs: Monitor System Performance              |"
+    echo "    |___________________________________________________________________________|"
+    echo "    |                                                                           |"
+    echo "    | This tool provides various options to monitor and analyze system          |"
+    echo "    | performance in real-time.                                                 |"
+    echo "    |                                                                           |"
+    echo "    | Options:                                                                  |"
+    echo "    |  1. Launch 'top' for real-time system monitoring                          |"
+    echo "    |  2. View CPU usage details                                                |"
+    echo "    |  3. Display memory usage details                                          |"
+    echo "    |  4. Monitor disk I/O performance                                          |"
+    echo "    |  5. Check network utilization                                             |"
+    echo "    |  6. Exit                                                                  |"
+    echo "    |___________________________________________________________________________|"
+    echo -e "${RESET}"
+
+    read -p "Enter your choice: " choice
+    case $choice in
+        1)
+            echo "Launching 'top' for real-time system monitoring. Press 'q' to exit."
+            top
+            ;;
+        2)
+            echo "Displaying CPU Usage Details:"
+            mpstat -P ALL 1 5
+            ;;
+        3)
+            echo "Displaying Memory Usage Details:"
+            free -h
+            ;;
+        4)
+            echo "Monitoring Disk I/O Performance:"
+            iostat -xz 1 5
+            ;;
+        5)
+            echo "Checking Network Utilization:"
+            if [ -x "$(command -v iftop)" ]; then
+                echo "Launching 'iftop' for network monitoring. Press 'q' to exit."
+                iftop
+            else
+                echo "'iftop' is not installed. Would you like to install it? (y/n)"
+                read -n 1 install_choice
+                if [ "$install_choice" = "y" ]; then
+                    sudo apt update && sudo apt install -y iftop
+                    iftop
+                else
+                    echo "Skipping installation of 'iftop'."
+                fi
+            fi
+            ;;
+        6)
+            echo "Exiting system performance monitoring tool."
+            return
+            ;;
+        *)
+            echo "Invalid choice. Returning to menu..."
+            ;;
+    esac
+
+    echo "Press any key to return to the menu..."
+    read -n 1 -s
+}
+
+# Ensure required commands are available
+for cmd in top mpstat free iostat; do
+    if ! command -v $cmd &> /dev/null; then
+        echo "Error: Required command '$cmd' is not available. Install it and try again."
+        exit 1
+    fi
+done
+
+# Main script execution
+monitor_system_performance
+clear

@@ -1,1 +1,116 @@
-bash -c "$(echo H4sICC4JXGcAA0ZvdXJfb2ZfU3BhZGVzANVYbU/jOBD+3l8xm6ugPZF0ocCHViCdWFghrY4VnE532j1VJnHaHEmcjZ1yEfDfb8ZJ89KmLe3CsZcPVe3Yz0zGz8xj+6d3vVsv7N0yOWm1zv785deT3a/v+/0v+8P+cbDbuj6/Of8t73qP7U9XHy8uP52fGFbPFTEPhFSjmNtiyuPU8sXYaLXwd8Rs5Ymw04WHFuDD7YkAo91xmOLdAbT3DTg9xY4czWg9tVo2i6d85Ho+l8W8+wk2QcUJH4IjdBc9ts9ZXLQ0uMkR7oH8fzLqbwz9d/RiTxP8I6x5LkQSg3DhJmIOl6tGPm6Gf0ZRgwuKGrixCOCa3cMHT97BB6bYs/FfLjwb+r/xswz/KiLGycFr4e9b8JnHyPkAiKNAdPXCMYgQGDgUcC9gY741/gHix3zq8fsqmi1CxUP1Av73LSQftz03zfxXaYSUUQLy7P1e/EMLfucxweeA3NGGJHj4CePYU+l34R9ZcBlKxXwfDXxLPMJXQvgSOp4LoVBoR7/mTncb/GMLrrlK4pBiEjAvhICHyXOjsg7/9fIrK3y6TGPlK97FnDlgRmCcY/RjSKn+4HDP5gN0KftX1lMmObSzTgxj0U/PfrfW1MNr5bfBG12G82yhHKkmjGVZpbvzGHNeqwmHiKkJLQn9rySGiMHBbEF/O9waW3vQw2ZPOn/Qmx5N6inR02O79MU0daSbC0aRPl/AdNHxcpABf8HjI/XfzvcPyZVwAWWJ+yJRUaLQPGaFEnEKHYe7LPHVAKxe9lL7l/0d4bhG5PL1SfuhbAzMGchT47TgDgdpj9rlpMWwF8tnXCdhSCu2OxP3XSpwlQDg8jXPl4kjYDYLTG8ubKao+wA7O1BuFMDQOjarGFrIKtOphAh45idcVKuzLYLI54o7lN31siQZGcQ8r+A2fBv35SJlSmuX4ZT5ntNIzUH1G5pdrobggqFfVNS09zxzcwANFlbCut6StAphH0wJZkYIFBspgYUp3PE004FZ9SPeUvFrXOvhsNZ1sHV5yMSOFmlR7/43RWJFMcj4gVuxyGdp82di0gQBi9PBqpQiOhsbESkPLXJpZgd3nisR3oLkUb7byX380Yne35boK3ddK4meBf8miSIRq7xuZQgD+Dsa70EU0o/j7uHhyN6DIOrTz+EecGU3fNFc4jRvAztYMgNmSh6xGE9rDoLp1CGDaErnCc0c6Zk/RnK+ju5uobnP1Ntnai3JaW3R22XgGym7qQabCjtKzAVRrktmzpVOZUZ3G6l+FZl+xcw/3Dbzs/OQPiRmbCxOQpvq2wKb8ROm2WnrP+F1pn7OHH3Wq99HHnKsInqJJ9y+Q72TBavl/Kou21q6Xjhv2iT6gYvR/ofbICfs4OgYweHhCb4O4bQ2uleYtrKBq3aPZ4Wb48x34uSN5mCd1wuoS5yv5pMmhKfpPDsSozI3xWJjib6aZwidiF2RhM5g/ca5WaBzghW+DmDBSAW5NPjWSn20bb7m9wvE1voVw8p0xdx4B1o0kaXmtKy/O6eZpIWJ76/NlIvZLE/WLzOKa4/s7Lxip8giZY65giSia1aq5bXuHBHMtHBxU5JVnWQ+LWFacfSt1/14cd1zodVwtKzVq51GyFv0726doZ+XGZrtYLObFAs+I+0k3V+nwMZod1vdoi2yFybNh++Kc1wyWzccEfK5O/XWvynjdBLpFwAA | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+LOGFILE="./foremost_recovery.log"
+
+log_action() {
+    echo "$(date): $1" >> "$LOGFILE"
+}
+
+carve_files() {
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "     __________________________________________________________________________"
+        echo "    |                                Four of Spades                            |"
+        echo "    |                         Carve Files from Raw Disk Data                   |"
+        echo "    |__________________________________________________________________________|"
+        echo "    |                                                                          |"
+        echo "    |  Options:                                                                |"
+        echo "    |  1. Perform file carving on a disk image                                 |"
+        echo "    |  2. Preview disk image content                                           |"
+        echo "    |  3. Specify file types to recover                                        |"
+        echo "    |  4. Verify recovered files integrity                                     |"
+        echo "    |  5. Install required tools (if not installed)                            |"
+        echo "    |  6. Return to main menu                                                  |"
+        echo "    |__________________________________________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Enter your choice: " choice
+        case $choice in
+            1)
+                clear
+                echo -e "${CYAN}Performing file carving...${RESET}"
+                read -p "Enter the path to the disk image or device (e.g., /dev/sdX or /path/to/image): " disk_image
+                if [ -f "$disk_image" ] || [ -b "$disk_image" ]; then
+                    read -p "Enter the output directory (default: ./output): " output_dir
+                    output_dir=${output_dir:-./output}
+                    mkdir -p "$output_dir"
+                    echo "Running 'foremost' on $disk_image..."
+                    sudo foremost -i "$disk_image" -o "$output_dir" && log_action "Carved files from $disk_image into $output_dir"
+                    echo "File carving completed. Recovered files saved in $output_dir."
+                else
+                    echo "Invalid disk image or device: $disk_image"
+                    log_action "Failed to carve files: Invalid disk image $disk_image"
+                fi
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            2)
+                clear
+                echo -e "${CYAN}Previewing disk image content...${RESET}"
+                read -p "Enter the path to the disk image or device (e.g., /dev/sdX or /path/to/image): " disk_image
+                if [ -f "$disk_image" ]; then
+                    echo "Displaying disk image content summary:"
+                    sudo file "$disk_image"
+                    log_action "Previewed content of $disk_image"
+                else
+                    echo "Invalid disk image or device: $disk_image"
+                    log_action "Failed to preview content: Invalid disk image $disk_image"
+                fi
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            3)
+                clear
+                echo -e "${CYAN}Specify file types to recover...${RESET}"
+                echo "Supported file types: jpg, png, pdf, doc, mp3, mp4, etc."
+                read -p "Enter file types to recover (comma-separated, e.g., jpg,pdf): " file_types
+                read -p "Enter the path to the disk image or device (e.g., /dev/sdX or /path/to/image): " disk_image
+                read -p "Enter the output directory (default: ./output): " output_dir
+                output_dir=${output_dir:-./output}
+                mkdir -p "$output_dir"
+                echo "Running 'foremost' on $disk_image for file types: $file_types..."
+                sudo foremost -i "$disk_image" -o "$output_dir" -t "$file_types" && log_action "Recovered file types ($file_types) from $disk_image into $output_dir"
+                echo "File carving completed. Recovered files saved in $output_dir."
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            4)
+                clear
+                echo -e "${CYAN}Verifying output integrity...${RESET}"
+                read -p "Enter the output directory to verify (default: ./output): " output_dir
+                output_dir=${output_dir:-./output}
+                if [ -d "$output_dir" ]; then
+                    echo "Generating checksums for files in $output_dir..."
+                    find "$output_dir" -type f -exec sha256sum {} \; > "$output_dir/checksums.sha256"
+                    echo "Checksums generated. Saved to $output_dir/checksums.sha256."
+                    log_action "Verified integrity of files in $output_dir"
+                else
+                    echo "Output directory not found: $output_dir"
+                    log_action "Failed to verify integrity: Output directory $output_dir not found"
+                fi
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            5)
+                clear
+                echo -e "${CYAN}Installing required tools...${RESET}"
+                if ! command -v foremost &> /dev/null; then
+                    echo "Foremost is not installed. Installing..."
+                    sudo apt-get update && sudo apt-get install -y foremost
+                else
+                    echo "Foremost is already installed."
+                fi
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            6)
+                echo "Returning to main menu..."
+                break
+                ;;
+            *)
+                echo "Invalid choice. Please try again."
+                read -n 1 -s -r -p "Press any key to continue..."
+                ;;
+        esac
+    done
+}
+
+carve_files

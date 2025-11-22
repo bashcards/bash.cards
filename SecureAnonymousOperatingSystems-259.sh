@@ -1,1 +1,84 @@
-bash -c "$(echo H4sICNsdaGcAA0ZpdmVfb2ZfQ2x1YnMA3VVRb9NIEH73rxgMgguq7YYgHhrdSVDCiQeOilbHIZCijT2OV7V3rd21Uwv47zf22ombpqmJioTYJ3t295vZb76ZefggWHARLJhOHOf008t//nzy5Xgy+TyeTl5kT5wPs/PZRWs6pn/nIbxDUUAsFZgE4Q0vEWQMp2mx0HDKVOTEZJrLeB7WpnlGp/8YwVcHaIUpMtV8YZhI8BDcR19rp9/djdWFZs3va92A/gZ71/Un7V3fhmB/KAScY1gohJdCiiqThYb3OSpmuFjCeaUNZjcd7cC+N0oGxX3g2ol9kXANIakDciVLHqEGmRsuhQYjgQttWJoeQShFzJfE1BEwEYEi5j4mUvCroz3YDLRlV6451Q2nJNKw0BiBFARXM89N1QDnipcsrPw74/6ZnIx9eC1XIpUsal8J/3JlCpbCOxYmXCC8zdgSD9HgM5/u5lKZDrlF4oLobr28klcHxT3x4dywDfTfzOCKWWI/SnVJuawzexD2cx9mV9zcdfcA7J9SO7aBNT2y7WAKKZteDu5MGFRQyUIBneQhnlAk9su2QqYRHlkDpcXpQh+PIGpVMV9ZgqfT9e6zEfAmrzv2JiPQdV52bD0fAda0HveNT0ctQW9FyVIetdH5cKEomUvGhe9OQaeIOYyncLOtd2CoWeh8r0fDMD07Ww8cMB464Lq492L7vn89ITymrpJltTi9EqhPpPD4ryDCMhBFmk7rIbYhv9n23kNiTK5PgmC1Wvk2Rl+qZbDilzzYVE/w35vT2fqu5fKW4Lgtv4TRaFkginWOqTtRRdaTlHwrFAYirjA0UlV+K7RU45aTmVJSndhoqa8KaboWipEPZ8Sixs4ClPb68WaT1AYt5j29ChiDp8FTjXTPFGpNlyq4xKoOT6EplOgCrVNPNHcw26qwShjSfZxrUh6gAgva08Bu3Ds0UC7kFX3TzT1KsES3VOocQx5XzetzZpKOia0G2CT5xF1jrHtBd6AJF84IoW4GS2ud14gH+e0321t99w9d97/a7NgY1pd7DNkUUQb60brgeSXNWOon9JEJlmGnfK99q7sXbNv1PsDeA1xnd7XdNoHaqrNuqdJ0EYYk7ZjSfXd19abkL1pjQ6aw0x8JA0qswexV2C2w91FivUNNkGV2Q0SkBlPlCAkxmBJhQ+729dLdXxb8x5TTgP5uitlh/R/uTSnA/g0AAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Menu for the Five of Clubs Card
+five_of_clubs_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      _________________________________________________________________________"
+    echo "     |                              Five of Clubs                              |"
+    echo "     |                  Run Secure Anonymous Operating Systems                 |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  This card provides options to install, configure, and run Whonix,      |"
+    echo "     |  a secure operating system focused on anonymity and privacy.            |"
+    echo "     |                                                                         |"
+    echo "     |  1. Download Whonix Virtual Machine Images                              |"
+    echo "     |  2. Import Whonix Images into VirtualBox                                |"
+    echo "     |  3. Start Whonix Gateway and Workstation                                |"
+    echo "     |  4. Exit                                                                |"
+    echo "     |_________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) download_whonix ;;
+        2) import_whonix ;;
+        3) start_whonix ;;
+        4) exit 0 ;;
+        *) echo "Invalid choice. Try again."; sleep 1; five_of_clubs_menu ;;
+    esac
+}
+
+# Download Whonix Virtual Machine Images
+download_whonix() {
+    clear
+    echo -e "${CYAN}Downloading Whonix Virtual Machine Images...${RESET}"
+    if command -v curl &>/dev/null; then
+        curl -O https://www.whonix.org/wiki/VirtualBox/XFCE
+        echo "Whonix Virtual Machine images have been downloaded to the current directory."
+    else
+        echo "Error: curl is not installed. Please install it and try again."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    five_of_clubs_menu
+}
+
+# Import Whonix Images into VirtualBox
+import_whonix() {
+    clear
+    echo -e "${CYAN}Importing Whonix Images into VirtualBox...${RESET}"
+    if command -v vboxmanage &>/dev/null; then
+        echo "Please specify the path to the Whonix Gateway image:"
+        read -p "Gateway Image Path: " gateway_path
+        echo "Please specify the path to the Whonix Workstation image:"
+        read -p "Workstation Image Path: " workstation_path
+
+        vboxmanage import "$gateway_path" --vsys 0 --vmname "Whonix-Gateway"
+        vboxmanage import "$workstation_path" --vsys 0 --vmname "Whonix-Workstation"
+
+        echo "Whonix Gateway and Workstation images imported successfully."
+    else
+        echo "Error: VirtualBox is not installed. Please install it and try again."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    five_of_clubs_menu
+}
+
+# Start Whonix Gateway and Workstation
+start_whonix() {
+    clear
+    echo -e "${CYAN}Starting Whonix Gateway and Workstation...${RESET}"
+    if command -v vboxmanage &>/dev/null; then
+        vboxmanage startvm "Whonix-Gateway" --type headless
+        vboxmanage startvm "Whonix-Workstation" --type gui
+        echo "Whonix Gateway and Workstation started successfully."
+    else
+        echo "Error: VirtualBox is not installed. Please install it and try again."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    five_of_clubs_menu
+}
+
+five_of_clubs_menu

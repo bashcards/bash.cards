@@ -1,1 +1,63 @@
-bash -c "$(echo H4sICJvtXmcAA1NldmVuX29mX1NwYWRlcwC9Vt9v2jAQfs9fcWOVWDsllNLuYWiTOsq0SdtUFV6mTaqMfRCrxo5shzZr+r/vklB+tJAiHnovxGef77vP9514+6Y1kro1Yi4Ogt7v81+fmn+PO50/7W7nw7QZXPUH/eHcdUzrwCFPLV6PGL8Rxthrzqx4dwj3AZDdxlIheJtiF4QpXYVxhcwuVshjAyFC4+C+yPfQWN9plJ/XO9um8BxWbYAz1GDGMEiYQLe2B/m2+CE6D1/mZcIFeuReGg09lrCRVNLL8qrN8bvD35p/R9sW346obmZ5DGOCP0hdIrk0qYNLazg698jDtviTCM41U9k/hB/SedRST+DSWL8jfx3Kz5kus3+TQtALfKXmcK0LaYlJYyv6tsafRvDTaEkHyzjoxUxPKERquEKmwqGcYl38WQT9O+n35G//96sau5QNdfZizyITECbQ6MVGcvxIeXj5tRQJcwgHlZOqXPgLax+uLcvja5raAKHUVtUCxdMV7+CWXZA8dkEURUu4T69LHLD0juicWEwg7ENT81yj58znxcTIE7QqTzIfG527uLk4OSt/d4QH3EwTRQKLqDkJFDCdwQ1m4A1taS91irUwK3I1tCF0zza73TXXyb5UVmooqFQLPSSFHmqhUTWhT5Xe7Xon3auS0dm7r0ja+rGt4kre40LeBFeAWEq8FupY0uEWEZQlCGMCzUjTjeioASFdW7nFqvvkc0vgrKVTpajVKN3zCjchfVVOT/fldD7uSlaLiceXE88WE8/TxKtF+fTCqtaet+p9ryjVeZPUhEttvBxnt4ymZjiF0NLTrBD+Ut1nz+t+CqgYyFRebREjqvXmpVxHL+f6rmdMSTGfshEMbQZswqSuyb2SBR3j5UIYjcHD5v89wX/uNwyePQkAAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+secure_backdoor_card() {
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "     __________________________________________"
+        echo "    |             Seven of Spades              |"
+        echo "    |   Test Backdoor Detection Capabilities   |"
+        echo "    |__________________________________________|"
+        echo "    |                                          |"
+        echo "    |  1. Search for Suspicious Processes      |"
+        echo "    |  2. Analyze Listening Ports              |"
+        echo "    |  3. Scan for Hidden Files/Directories    |"
+        echo "    |  4. Monitor File Changes in Real-Time    |"
+        echo "    |  5. Exit                                 |"
+        echo "    |__________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Choice: " choice
+        case $choice in
+            1)
+                clear
+                echo -e "${CYAN}Searching for suspicious processes...${RESET}"
+                ps aux | grep -E 'nc|netcat|bash|perl|python|sh' | grep -v grep
+                echo -e "${CYAN}Search complete. Press any key to continue...${RESET}"
+                read -n 1 -s
+                ;;
+            2)
+                clear
+                echo -e "${CYAN}Analyzing listening ports...${RESET}"
+                ss -tuln
+                echo -e "${CYAN}Analysis complete. Press any key to continue...${RESET}"
+                read -n 1 -s
+                ;;
+            3)
+                clear
+                echo -e "${CYAN}Scanning for hidden files and directories...${RESET}"
+                find / -type f -name ".*" -or -type d -name ".*" 2>/dev/null | less
+                echo -e "${CYAN}Scan complete. Press any key to continue...${RESET}"
+                read -n 1 -s
+                ;;
+            4)
+                clear
+                echo -e "${CYAN}Monitoring file changes in real-time...${RESET}"
+                echo -e "${CYAN}Press Ctrl+C to stop.${RESET}"
+                inotifywait -m -r / 2>/dev/null
+                ;;
+            5)
+                echo -e "${CYAN}Exiting...${RESET}"
+                break
+                ;;
+            *)
+                echo -e "${CYAN}Invalid choice. Try again.${RESET}"
+                ;;
+        esac
+    done
+}
+
+secure_backdoor_card

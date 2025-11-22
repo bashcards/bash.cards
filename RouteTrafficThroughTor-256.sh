@@ -1,1 +1,65 @@
-bash -c "$(echo H4sICKwcaGcAA1R3b19vZl9DbHVicwC1VcFuGjEQve9XTEnUhCosIUg9BLVShDj00CgKXKo0Qo6ZZS0WG9leUhTy7xmvDSyQAI0SX9g15vnNmzePoy/1ByHrD8ykUdT+c3X94+TvebN512g1v49PottOt9MLW+f0Hh3Bb5Q5JEqDTRF6jwpUAu0sfzDQZnoQ2UfVV0mfu53+mM6eVuEpAlo8Q6aLJ+SpghpC5fjJXflcWe1WoFj9j1pb0HPYudYK2r3mh2HfqtwiXE0mmeDMCiWhp1mSCA69VKt8mEKPxNyP/WGSHMj7XetV7F4qDHAyB7AsU48GZioHqyA3SB9aJDP3pgudzAS5cOKwkmA7sG3Q0gYtC1OSnhLJiHpUGBVlyiTHAUy0mDI+AyaJilRyNhZ2Fr+J/ZmaNGJop8hHBdku6qngCF3LbL7PdvuxL+L3me4Q7GYMnX/C/g/HA7E/xd8+ZIoUCymjkQ2gNoFKR1rUzooa6CTJf0lM/JOPK0b2PPYbIGS0oN6o0inqXJ+s2ze+Y63W8uuLqndyfyqYO1L+rlkFdOKdlze/VYMMv+SUZWIQOMTUMXLqkAkZV1pgMsQJNFqwla8LLDSMR88uob2x3CQEehRoi7kw3mrRZgkHpHQBK+TwFcvGcbyuskiAq/HYDVptCmZmLI65zeDrz/oAp3WZZ1nLcVrJujoTSDvt5vMtFqUigGJFKgs6l9LxcmNPr0ISQpbhYIMTZgaX123CdpfXO4hE5XIQww1pQSYotPJO8SypNpmIYa6L0dq4JhEln0loQM1ATReWu9FoDCXPDEboMw9trqV7cv1x3SQlPcxWn31v/WCXw3EzAUmgaM2BB7TWoToF9wTGrh6HIH+7wRuD5wpeK2PxD1CqA04xHsZnwHOdnYExadXNKP1qCUoc7u6czJVj2q7A/f3Gra/22jJdlOt+U75vy8aLFYrzl6w8VDbUKs46Wit9Cddqrb7wx0auXAEEq+w0ZkALDILj37L4ikSwbjhYDFNuXM2FjSeMj9iQHMckfej48527vfkCHVslP3oKAAA= | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Menu for the Two of Clubs Card
+two_of_clubs_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      _________________________________________________________________________"
+    echo "     |                              Two of Clubs                               |"
+    echo "     |                    Route Application Traffic Through Tor                |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  This card allows you to use torify to route specific application       |"
+    echo "     |  traffic through the Tor network for enhanced privacy and anonymity.    |"
+    echo "     |                                                                         |"
+    echo "     |  1. Check Tor Service Status                                            |"
+    echo "     |  2. Route Application Traffic Through Tor                               |"
+    echo "     |  3. Exit                                                                |"
+    echo "     |_________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) check_tor_status ;;
+        2) route_via_tor ;;
+        3) exit 0 ;;
+        *) echo "Invalid choice. Try again."; sleep 1; two_of_clubs_menu ;;
+    esac
+}
+
+# Check the status of the Tor service
+check_tor_status() {
+    clear
+    echo -e "${CYAN}Checking Tor Service Status...${RESET}"
+    if command -v systemctl &>/dev/null; then
+        systemctl status tor || echo -e "${CYAN}Tor service is not running or not installed.${RESET}"
+    else
+        echo -e "${CYAN}Systemctl not found. Please check your system configuration.${RESET}"
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    two_of_clubs_menu
+}
+
+# Route application traffic through Tor
+route_via_tor() {
+    clear
+    echo -e "${CYAN}Routing Application Traffic Through Tor${RESET}"
+    if command -v torify &>/dev/null; then
+        read -p "Enter the application to route through Tor (e.g., curl, ssh): " app
+        if [[ -n "$app" ]]; then
+            echo -e "${CYAN}Starting $app through Tor...${RESET}"
+            torify "$app"
+        else
+            echo "Error: No application specified."
+        fi
+    else
+        echo -e "${CYAN}Error: torify is not installed.${RESET}"
+        echo "Please install tor using your package manager."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    two_of_clubs_menu
+}
+
+two_of_clubs_menu

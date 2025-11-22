@@ -1,1 +1,84 @@
-bash -c "$(echo H4sICIkfaGcAA1NldmVuX29mX0NsdWJzAM1WYU/bMBD9nl9xyxCsE0npuu0DVSdNkElIY0KDaZrYFJnk0lqkdrGdQgf8953tElqaQZlAmj+l7vnl7r1357x80T7hon3C9DAIdn58/NLf+LnV7R53et33o43ga3KYHM22tuh38BL2UVRQSAVmiHCIExQgC9gpqxMNO0zlgbZ7qSzSzO6lI4p/1YLLAGhlJTLlnjAbSogQwrVL+9rr8HY3BLfSp1pL0Fdw77pT1H3raiXsZMJyhE9SodA8gz0xQW34gBkuhYakKHjGUZhy+hD2k1GyWt7/thqxj4ZcQ0b2gLGSE56jBiNlqYGJHAzFCn5WuU3QmFUKiQxUTCPkzLDNe7GdqaCUA73p4NhE8txa1NPNF+iOH5f3c3LSiclqs1oTV+snXuL9hlsV+00M3/mYEBUi7HJ9CodjluGTYHdj6gxL+eFUGxzBZ2L+scB/w34bQ3LBzT/APYT9LL3jB5ibkrMJppDlEI0hTIRBBVNZKaBInuE2ZeKf/Ci0gq/5DfJocJN6p1V3QOo6IC2cK3q9OuRNC85J3LQgcdOcxE21E3cupNvybZFqp1Fqu2P+/7ctQMvz1vzm69aMMZpQrKQe8tnFcKSmwAaMizjsgS4Rx9Chh+VBf4OGmmXBtb0umhweNBW4wh2xgMXFwKPFcbwoAS8gk6ORHQXRBPRQYQ7rH9o5TtqiKsuevblu+fYVe7XslWaTgTEzQ6sdnDNhlofSdlgfr/W2ucABnbM6W5DUgtRxlNTxMUQFFVP/GcKvX3eysctnHFUQCXi3EL8Q5hN3r13MLo9vA7HU2HAqUUqqbccfCGloWFZi/ljBg6XTCyd9jjTT7WkutGFlSS+GAxJP480OkMPcgL/1TzAH77kT0IFIQ6QcjQcKtb0VpnCKU8u8QlMpYZ+sOtZkJLiHaTCgN13T6AuaWmYF0xGWs9oi2gOmyx/juJwrzIwkjs6HqMiB9lW+o885kXiCrt1zeIXxIN6EdqvJf7s3KNZ/NWQdp6tc2rR40Xd5/UYl6RunH67VsaHbjAv3Tt3v7AOJaCrdpyt74GRZX/c4auSd3HT0TpmON0t4XdG4Nujf7ZX/v95auvqCpUG7gqscivXVHFCTp2hmrCXf9napFKRhvTQvPGvu64pl9gOHajqrSBYNShJ9Y1QjrrX/8pkRqCoBzP/fJETBidX2hKk21QKRmVIvFZT7BWZEdiUyZtCSugWX1/CzdyeVWT3uvnHl12o/rzBN238A4DLJD90MAAA= | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Menu for the Seven of Clubs Card
+seven_of_clubs_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      _________________________________________________________________________"
+    echo "     |                              Seven of Clubs                             |"
+    echo "     |                   Evade Forensic Investigations Efficiently             |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  This card provides tools and techniques to securely erase data,        |"
+    echo "     |  clear logs, and avoid forensic investigations.                         |"
+    echo "     |                                                                         |"
+    echo "     |  1. Securely Erase Files                                                |"
+    echo "     |  2. Wipe Free Disk Space                                                |"
+    echo "     |  3. Clear System Logs                                                   |"
+    echo "     |  4. Exit                                                                |"
+    echo "     |_________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) securely_erase_files ;;
+        2) wipe_free_disk_space ;;
+        3) clear_system_logs ;;
+        4) exit 0 ;;
+        *) echo "Invalid choice. Try again."; sleep 1; seven_of_clubs_menu ;;
+    esac
+}
+
+# Securely Erase Files
+securely_erase_files() {
+    clear
+    echo -e "${CYAN}Securely Erasing Files...${RESET}"
+    if command -v shred &>/dev/null; then
+        echo "Enter the file path you want to securely erase:"
+        read -p "File Path: " file_path
+        if [[ -f "$file_path" ]]; then
+            shred -u -n 5 "$file_path"
+            echo "File securely erased."
+        else
+            echo "Error: File not found."
+        fi
+    else
+        echo "Error: shred is not installed. Please install it and try again."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    seven_of_clubs_menu
+}
+
+# Wipe Free Disk Space
+wipe_free_disk_space() {
+    clear
+    echo -e "${CYAN}Wiping Free Disk Space...${RESET}"
+    if command -v dd &>/dev/null; then
+        echo "Enter the directory where free space will be wiped (e.g., /):"
+        read -p "Directory: " directory
+        sudo dd if=/dev/zero of="$directory"/zero.fill bs=1M status=progress && sudo rm -f "$directory"/zero.fill
+        echo "Free disk space wiped."
+    else
+        echo "Error: dd is not installed. Please install it and try again."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    seven_of_clubs_menu
+}
+
+# Clear System Logs
+clear_system_logs() {
+    clear
+    echo -e "${CYAN}Clearing System Logs...${RESET}"
+    if [[ $EUID -ne 0 ]]; then
+        echo "This action requires root permissions. Please run as root."
+    else
+        find /var/log -type f -exec truncate -s 0 {} \;
+        echo "System logs cleared."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    seven_of_clubs_menu
+}
+
+seven_of_clubs_menu

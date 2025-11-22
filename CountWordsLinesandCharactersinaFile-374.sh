@@ -1,1 +1,126 @@
-bash -c "$(echo H4sICPvmdWcAA0phY2tfb2ZfU3BhZGVzANVW32/aMBB+919xo0iUqaRNaftQtIeKptOm7ofaSlXVVcgkTvEIDrPDGGv533e2CQkF0XRlQ/iFcLY/333f+c5bb3bbXOy2qeoQ0rw5+fyu8m2vXr91G/WjXoVceJfe1cS0h//fX3hebsm+WXKaGVw03Hjn51+uM1sdbWQLPjExgDCWkHQYfKR+F+IQLvs0YAqaVAbkO9pacdhSxtbq4frtKjwQwOFHjErzxfxODDUGpfKDdndcyqwlMKO1qjEH/QjLx5OolozHQtjNeCASuI5loHbgnAuGP1QE0OxQSf2ESQVcAIUzHrGl2CujpJjffzcWYl91uAIf0wNoFMVDBaN4AEkMPwbc70YjpINGo98MSQg1Ce0R+Jo0Lu5Nni3FFoNem0ktWGS5HVqm/Sm9O4D52h4lKCZPEFkklAvlFPD7X3LiOpPMQEogYOhTpGB7NgadJlkc1cLY+yl2LJBdg7kyv+sz2MbRlWEfzGBnka8C+zDFNimmOKYbXjubFq/FPnLA+4W59crxv+68LbymK0wqr2Q0gFofSp5AvvX1lEh/zH12jJ7YL1vCqWJQtgbkj6Suu1V7ZVs6mxuNqX0/tdskzM3U0xmbQrmZg3QmlwC56cN0WgvZMkLmZo+qwLQUe3nj2+qE1A/iJ414MInIgSuJxecey4FTaoCKGOuD24AFPSxFY4r6ZKw74dzlJVMCCjQ8u/sEd5/a3Uv10EXQpG2fJh2tiAld/yFmOQ/h9hZqIZSnE3B319D7MolyLpgHgPVB19hlRcc0+wz2eNZPPYY+Qk4XTNIsUmzRwfjMGHtSxvLYtrsgxqQQcaI1U4kzCx5ykiNDgAs1BTVpePkqmVLo6gi6bKRbiWTJQAr9pcnSkjmOY3EWyJmX0ERPcllaWD7TzNcgnD7X3oFC6tSiGYGwYNFhFyoPfckRoeyiWybu0riyceKZnCW5QlJYPPMgW4N4+tyXiDd8VjwT9yaKl1UZ8rTgF5Yxe0Wvo4Kmh79E0N6zgmY0bKKq8+8r8qRfFxbXxHSJO9ag7dn8M7GQvP6z8hqwTVJ2kfkPG6+UT3MQAAA= | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+GREEN='\033[1;32m'
+RED='\033[1;31m'
+YELLOW='\033[1;33m'
+
+# Menu for the Jack of Spades Card
+jack_of_spades_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      _________________________________________________________________________"
+    echo "     |                               Jack of Spades                            |"
+    echo "     |                   Count Words, Lines, and Characters in a File          |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  This card allows you to quickly analyze a file by counting the         |"
+    echo "     |  number of lines, words, characters, or bytes it contains.              |"
+    echo "     |                                                                         |"
+    echo "     |  1. Count all details (lines, words, and characters)                    |"
+    echo "     |  2. Count only lines                                                    |"
+    echo "     |  3. Count only words                                                    |"
+    echo "     |  4. Count only characters                                               |"
+    echo "     |  5. Count file size in bytes                                            |"
+    echo "     |  6. Exit                                                                |"
+    echo "     |_________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) count_all ;;
+        2) count_lines ;;
+        3) count_words ;;
+        4) count_characters ;;
+        5) count_file_size ;;
+        6) exit 0 ;;
+        *) echo "Invalid choice. Try again."; sleep 1; jack_of_spades_menu ;;
+    esac
+}
+
+# Count all details
+count_all() {
+    clear
+    echo -e "${CYAN}Count All Details${RESET}"
+    read -p "Enter the file path: " file_path
+
+    if [[ -f $file_path ]]; then
+        echo -e "${GREEN}Counting lines, words, and characters for $file_path:${RESET}"
+        wc "$file_path"
+    else
+        echo -e "${RED}Error: File does not exist.${RESET}"
+    fi
+
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    jack_of_spades_menu
+}
+
+# Count lines
+count_lines() {
+    clear
+    echo -e "${CYAN}Count Lines${RESET}"
+    read -p "Enter the file path: " file_path
+
+    if [[ -f $file_path ]]; then
+        echo -e "${GREEN}Line count for $file_path:${RESET}"
+        wc -l "$file_path" | awk '{print $1 " lines"}'
+    else
+        echo -e "${RED}Error: File does not exist.${RESET}"
+    fi
+
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    jack_of_spades_menu
+}
+
+# Count words
+count_words() {
+    clear
+    echo -e "${CYAN}Count Words${RESET}"
+    read -p "Enter the file path: " file_path
+
+    if [[ -f $file_path ]]; then
+        echo -e "${GREEN}Word count for $file_path:${RESET}"
+        wc -w "$file_path" | awk '{print $1 " words"}'
+    else
+        echo -e "${RED}Error: File does not exist.${RESET}"
+    fi
+
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    jack_of_spades_menu
+}
+
+# Count characters
+count_characters() {
+    clear
+    echo -e "${CYAN}Count Characters${RESET}"
+    read -p "Enter the file path: " file_path
+
+    if [[ -f $file_path ]]; then
+        echo -e "${GREEN}Character count for $file_path:${RESET}"
+        wc -m "$file_path" | awk '{print $1 " characters"}'
+    else
+        echo -e "${RED}Error: File does not exist.${RESET}"
+    fi
+
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    jack_of_spades_menu
+}
+
+# Count file size in bytes
+count_file_size() {
+    clear
+    echo -e "${CYAN}Count File Size${RESET}"
+    read -p "Enter the file path: " file_path
+
+    if [[ -f $file_path ]]; then
+        echo -e "${GREEN}File size in bytes for $file_path:${RESET}"
+        wc -c "$file_path" | awk '{print $1 " bytes"}'
+    else
+        echo -e "${RED}Error: File does not exist.${RESET}"
+    fi
+
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    jack_of_spades_menu
+}
+
+jack_of_spades_menu

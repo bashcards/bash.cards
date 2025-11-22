@@ -1,1 +1,83 @@
-bash -c "$(echo H4sICLIDW2cAA0ZpdmVfb2ZfSGVhcnRzAN1X30/bMBB+719xC0iMSQ2Uwh5W7WGCoiFNVVf6MjGETHJpraZ2ZjugCvjf8cVZmtKklB8aE35pfT7f53yfz2dvfNi55GLnkulxo3H461vv69bv3Xb7rNVpf55uNQbd0+4wN+3afmMDjlMRGC4FRFLBn5QHExBorqWaQMjZSEhteKAbue2iZPu4DTcNsO16zGMEo1LsQCgzE7UgRqaKHgZjCU0Eb/OG1nXnLY542d+L12tV8W9hVTvmVwgygu922UavdKVY6wP0UVlyp/AzY7eXs3s0Z/IJAK/I0BO+4HmtBuBwLKVGYAJkQjvvy2sDtHyLgZZqmaCARJKadoObMYKeaYNT/4UAez70uRgBA51gwCMewEkfWBgq1BZKwdjqKtgUHwWqAWj7xaZhNrFYgEqmxuaYfCpmDcC+D0PUBo56p2ADyDgtzgBmc3jKuFiTpBqAAx8GaFIlaM0UDqYo0rWJfxTgHeTBitYVBhXMZKrATuABrs6Rf06RO8ezamIP8mJMIQuhmYB3mC/ay5c/rwnMZv6mMwIXhZ1aa3uhO/+aLJkp30r5nGoy2KqkDTO+73tLc3Uayr8O0DRpLCznI4UJ/Dg5HXZ7cHubx+/JcuRIpiKsiOd8+1m6MTGDCc5ob6til9P5km3yqtU4agS0oKmhqZbGO50F094yFwW5bnMQWvUBQGtJLDtEP/1eGKZGaJYC8gjOzmhN3mbJzYPz8w5FF0sTSixYf+K/PLHys6mRDzQD2H8IVAiQHaYRs7eISuJjjSvWYtVzAQGJmMoQEX9bOdsvlHNeAkjUrLeGqmW/9WR1NYfUWCw6C6FqhS7NeQheSD2c+7xnwffXEtwV2gx7uRiT0s5hlcbOYy11BxT6isQlICr1+exaQYWOpZykSQmnEPLhzeH5YuYs/L9iHiyLeWlDTB6b96muoJ2IKxbzMC+O9q5nX0q2LmqMMTD2AuZG3e34LSsRahZknVAKJ6J7093Rw3GQuit1VH5AkiFgKqx6LzbuAS4xn/adDgAA | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Function for quick network diagnostics
+network_diagnostics() {
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "     ___________________________________________________________________________"
+        echo "    |                             Five of Hearts                                |"
+        echo "    |                     Perform Quick Network Diagnostics                     |"
+        echo "    |___________________________________________________________________________|"
+        echo "    |                                                                           |"
+        echo "    | Choose an option:                                                         |"
+        echo "    | 1. Check open ports on the system.                                        |"
+        echo "    | 2. Ping a specific IP address or hostname.                                |"
+        echo "    | 3. Perform a traceroute to a specific IP address or hostname.             |"
+        echo "    | 4. Test DNS resolution for a domain.                                      |"
+        echo "    | 5. Return to main menu.                                                   |"
+        echo "    |___________________________________________________________________________|"
+        echo "    |                                                                           |"
+        echo "    |                            Enter your choice:                             |"
+        echo "    |___________________________________________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Choice: " choice
+        case $choice in
+            1)
+                echo "Checking open ports using netstat..."
+                sudo netstat -tuln | grep LISTEN || echo "No open ports found."
+                echo "Press any key to return to the menu..."
+                read -n 1 -s -r
+                ;;
+            2)
+                read -p "Enter the IP address or hostname to ping: " ping_target
+                if [[ -n "$ping_target" ]]; then
+                    echo "Pinging $ping_target..."
+                    ping -c 4 "$ping_target" || echo "Ping failed."
+                else
+                    echo "No target entered."
+                fi
+                echo "Press any key to return to the menu..."
+                read -n 1 -s -r
+                ;;
+            3)
+                read -p "Enter the IP address or hostname to traceroute: " trace_target
+                if [[ -n "$trace_target" ]]; then
+                    echo "Performing traceroute to $trace_target..."
+                    traceroute "$trace_target" || echo "Traceroute failed."
+                else
+                    echo "No target entered."
+                fi
+                echo "Press any key to return to the menu..."
+                read -n 1 -s -r
+                ;;
+            4)
+                read -p "Enter the domain to test DNS resolution: " domain
+                if [[ -n "$domain" ]]; then
+                    echo "Resolving DNS for $domain..."
+                    nslookup "$domain" || echo "DNS resolution failed."
+                else
+                    echo "No domain entered."
+                fi
+                echo "Press any key to return to the menu..."
+                read -n 1 -s -r
+                ;;
+            5)
+                break
+                ;;
+            *)
+                echo "Invalid choice. Please select a valid option."
+                echo "Press any key to return to the menu..."
+                read -n 1 -s -r
+                ;;
+        esac
+    done
+    clear
+}
+
+# Run the function for the card
+network_diagnostics

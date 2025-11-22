@@ -1,1 +1,76 @@
-bash -c "$(echo H4sICKbqXmcAA0FjZV9vZl9TcGFkZXMArVZdb9owFH3nV9wxJNpOgVLaPhS1EkKdtD1MVcsepnZCJrkhHsHObKcUtf3vu04oEBICpXNeEsc+955zP+zPn5pDLppDpoNKpfer++Oy/nDcbt+3Ou3zSb1ye3133Z9PHdN3RfNJHDKDA+Y9otJMzQaGuYa7+uAQnitAYxrwEMGoGDvgyWTKDjdEphZf6AYSHIRq7dlafa1m/1ST18Huo2j/C6yNrosgfbiLmIc6++ulDOBuThq6b6Shn5LeBvAOBqUe7DI2AbQa0EdtwFXooTCcheDFk4iLERhaKPjfOFVjE8BJY6mAQDOVagwKXSkE41ozQaqWe9BuwPV8v8cMA3zyeWgUM1yKnSiczilEpD7XBq3JCZpAejuG8WyFQqT4I2XoCAG1y8KsF5sAzonCEzf7RuEDeZAWSVKIVCWLfwqZB04E1V4guYsXZMhN3pYFxzRCLZ0ELhbzdrQOM5/J8kx9FriQ1KkNg82c0mRqNBpLjwsRqz+13dJE4zZ1wDw5BV+qVVQqNO5zN4nORR6F+3APjp9B+N0BE6DIrU3FMJm1L8CmY3C+XkD9oHYCny6hWqUGRrkhDNRar3VaESQSCzjLcwg1FppJyfWWNHzbC4U0RC8WXiNPxOe5qU4nM3Wyb6zmGW+FLi7bHeJ0g4oCM7EY3dsboIIpigZTEThsRbLW8WbvHkQvQHdsIWWEAiKpjC4A1RocE4eiHHZNrPa+Yl0vtMq1qB1kWjCyWTxV3LAhxd3jpLeRilN/5QKaZhIV8PS58JJ/RHcW0S5wFghlSbjG/PSjJV3QXHdhTo0o2c6oASSnDHXTP3IIB/Orgu2uUoSzwwLqKcQRvD3Jdz1p9d8J4jYWgqDrcHWVCNRccbERylEV5vPW8sBazktAkyTltmWpI/0MAdcyw6KaXVP+7D8UaNGhtHfe6diTQNc6ZjNvY8bFWtm7Hx0iqCbgyC/T96TbeZ50rqTowCTfSmkMSeTxNltH2219E48s5N78DKTrAt3R2IhxUWJ7xQpq5q4drdRtwKEWpJJT9kYh9SMmZjDGGRhJi0yshH2jMwcmZImKRsRENjXkSYGV17ILc+UfYolpmHwLAAA= | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+simulate_adversary_tactics() {
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "     ___________________________________________"
+        echo "    |                Ace of Spades              |"
+        echo "    |       Simulate Adversary Tactics          |"
+        echo "    |___________________________________________|"
+        echo "    |                                           |"
+        echo "    |  1. Test credential dumping techniques    |"
+        echo "    |  2. Simulate network reconnaissance       |"
+        echo "    |  3. Emulate data exfiltration             |"
+        echo "    |  4. Test persistence methods              |"
+        echo "    |  5. Simulate privilege escalation         |"
+        echo "    |  6. Exit                                  |"
+        echo "    |___________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Choice: " choice
+        case $choice in
+            1)
+                clear
+                echo -e "${CYAN}Testing credential dumping techniques...${RESET}"
+                echo "Using /etc/shadow for credential verification:"
+                if [ -f /etc/shadow ]; then
+                    cat /etc/shadow | awk -F: '($2 != "") {print $1}' | head -n 5
+                else
+                    echo "Credential file not found."
+                fi
+                ;;
+            2)
+                clear
+                echo -e "${CYAN}Simulating network reconnaissance...${RESET}"
+                echo "Performing ARP scan:"
+                arp -a | head -n 10
+                echo -e "\nChecking open ports:"
+                ss -tuln | head -n 10
+                ;;
+            3)
+                clear
+                echo -e "${CYAN}Emulating data exfiltration...${RESET}"
+                echo "Checking for writable directories in /tmp:"
+                find /tmp -type d -writable | head -n 5
+                ;;
+            4)
+                clear
+                echo -e "${CYAN}Testing persistence methods...${RESET}"
+                echo "Creating a test cron job (simulation only):"
+                echo "* * * * * echo 'Test Job Running' >> /tmp/persistence.log" > /tmp/test_cron
+                crontab /tmp/test_cron
+                echo "Test cron job created."
+                ;;
+            5)
+                clear
+                echo -e "${CYAN}Simulating privilege escalation...${RESET}"
+                echo "Checking for writable sudo binaries:"
+                find /usr/bin -perm -o+w | head -n 5
+                ;;
+            6)
+                echo -e "${CYAN}Exiting...${RESET}"
+                break
+                ;;
+            *)
+                echo -e "${CYAN}Invalid choice. Try again.${RESET}"
+                ;;
+        esac
+        read -n 1 -s -r -p "Press any key to return to the main menu..."
+    done
+}
+
+simulate_adversary_tactics

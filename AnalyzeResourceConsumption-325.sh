@@ -1,1 +1,76 @@
-bash -c "$(echo H4sICMAbXGcAA1RocmVlX29mX0NsdWJzALVW227TQBB991cMadVQpDiEUB4SAapCHpAoVLQFIUDV1p40q6x3zV5STNt/Z9br3OOqiNZP9tp7zsyZmbPeedK+4LJ9wcw4igbfDj++bv543u1+7/S7r7Jm9Hl4Mjytlp7Tc8QkE8UfPNdolNMJnidKGpflliv5dB+uI6ArEch0eYfJWEELobF77cFvG4vVhr+D84e71rFvYPU6HWtEUCMYCHdhenAYUoHPVSowWKSythVuNsAfMPBN8HX6/7i2gJ+OuQGrlIBcqylP0UDmhOW5IHnK9A2MlIZQay4vYVZtWKp2vB38USP/FKLrPQo4dGL4wJxMxtAcW5U3gwiQomVcYApTjle+f7ST0qtC6iVoDMl3D/AXMXzx+1NuJuAMu0QgJTOmiweIvBvPu1mivVJ64islMQnF/D/wlzEcKcktiTE4PqOuSCHDTFHgznLB/7BtA3Nf8IMYhr+5/YcQ7w3+SBMa3Kw0RrKzcl0jS6GVQ2MoLWooaFaAPuUJ9iiWcBeMkRmE3bAAXEaz4Dv70XIufETlo94gpVtT8L0Ib6Cd4rQtnRB9sGOUKxsWmYcG9t0ZejiGYxpeA81fTRp5QNI6bmzs9Z+uLKIwWMNQzQZZiFSWkjCWCZqOGL4qJ1KfPAg+Qc9WvQRu38LToi33N5mDdBI6s4/Pl+Ra0+Q7Cb/6VQNeQ6NowM8aTfxlXKqA5RZcnjKLsLe3WJoF2Co2JajVplafhUYnE57nvggVQRgRso6qKJs6jHh0x2O/P398sdoqge8dN7lghWd85/3lrPSXk+AvvVW2dAStcR16dxv64fwc+FiZy2BhLmvoZD+UsYWWdZLlgkZcUPvV0b3cRleZjeeb+c1R8Juzhd+s0U6zkrUDB3VUB9uovPXUnW/h+DPcrFVLo3Va1tE820bzXk6Z4GnlBDH9cXgIT0xDkqF0cbxGUiGiYUm05GthlpksYIKF3xyC8XfU/6tQi8lqmeg2inZgSLlppBe/HNd0nlUeQ4C0yqZ0yLELgZE/9ZIspd71vTIraFC4D6kq0Wkcnyyb1K7fsVfvUpXeWivdo/xXI4Cm3z73lHkoMbyfO0jZB5aagF0yLpfk8pYGnfKRpiZVEn2uR/QRmERzmnL8jYnzJb3z7zUKf61/AVaWLskRCwAA | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+analyze_resource_consumption() {
+    clear
+    echo -e "${CYAN}"
+    echo "     ___________________________________________________________________________"
+    echo "    |               Three of Clubs: Analyze Resource Consumption                |"
+    echo "    |___________________________________________________________________________|"
+    echo "    |                                                                           |"
+    echo "    | This tool provides multiple options for analyzing resource consumption.   |"
+    echo "    |                                                                           |"
+    echo "    | Options:                                                                  |"
+    echo "    |  1. Launch 'htop' for a detailed view of running processes                |"
+    echo "    |  2. View disk usage summary                                               |"
+    echo "    |  3. Analyze network connections                                           |"
+    echo "    |  4. Monitor CPU and memory utilization                                    |"
+    echo "    |  5. Exit                                                                  |"
+    echo "    |___________________________________________________________________________|"
+    echo -e "${RESET}"
+
+    read -p "Enter your choice: " choice
+    case $choice in
+        1)
+            if command -v htop > /dev/null; then
+                echo "Launching 'htop'. Press 'q' to exit."
+                htop
+            else
+                echo "'htop' is not installed. Would you like to install it? (y/n)"
+                read -n 1 install_choice
+                if [ "$install_choice" = "y" ]; then
+                    sudo apt update && sudo apt install -y htop
+                    htop
+                else
+                    echo "Skipping installation of 'htop'."
+                fi
+            fi
+            ;;
+        2)
+            echo "Displaying Disk Usage Summary:"
+            df -h
+            ;;
+        3)
+            echo "Analyzing Network Connections:"
+            netstat -tunapl | less
+            ;;
+        4)
+            echo "Monitoring CPU and Memory Utilization:"
+            vmstat 1 5
+            ;;
+        5)
+            echo "Exiting resource consumption analysis."
+            return
+            ;;
+        *)
+            echo "Invalid choice. Returning to menu..."
+            ;;
+    esac
+
+    echo "Press any key to return to the menu..."
+    read -n 1 -s
+}
+
+# Ensure required commands are available
+for cmd in df netstat vmstat; do
+    if ! command -v $cmd &> /dev/null; then
+        echo "Error: Required command '$cmd' is not available. Install it and try again."
+        exit 1
+    fi
+done
+
+# Main script execution
+analyze_resource_consumption
+clear

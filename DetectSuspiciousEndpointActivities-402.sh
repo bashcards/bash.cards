@@ -1,1 +1,77 @@
-bash -c "$(echo H4sICJjoXmcAA0phY2tfb2ZfSGVhcnRzAK1W227aQBB95yumLlKTSjYBcpGCUilKqdqqjaomqlSlVbTYY1jF7Fp7gUQh/95ZYy7GGCjtPqD1Xs6cmTkzy+tXjR4XjR7Tg1rt6ufl9cWbX0ft9l2z0z4dvql97950b/OlI/quoYhSyYW5H0rBjVQHh/BcAxrjAU8QjLLYgUhmS26ECTI1/8JwIMFH8OrPztaLV9zxsun97mPd/QkUx2cWPoCM4SMRMbq4N6kEeI8GQwM3Vqc85NJq6Oaew2Vo+IgbjroK4C88qGaw46gCaAbwhWsDzLFFSJUMUWvUOwO0Avg6zTFYYbVlCSjU0qoQwWrWx20A7QCuBkjBVxgixS12AhnKiMc8ZIZLobcAHAezNMwIJLLPBTBjcJgu5bIK4GThgkxRgEAzluoBQikEwS4oVAGcBvCD43gWRKtRaWAiAgqkXvKgEuAsgO4jN1tyWAnwD0KaVllWv1Rm8z2FLAI/Be9qIHmI52QozGaLimUaoT5dBC7m6240Dwuf2fFCga+hkBW6kyIX/ZIagyBYkFwFSSnW9pHCmNDZ0m6nU1hq7UstV4hjt17nGzkamYLfA19Ak4gOsugKaB3BZJIn8gMj3Ud0EPKWuQpfBl1xrb2va1n5OccqK3Cjb3OtdIVBBREnGOL/5HzRIRNwEGHMbGLOoTFi6tCJiQ6VcGjtov5Mv+e+O/dSOhBzKimvTic88M1TihCDPzR8iOA3ofWuEeGoIWyS5FpYBPdabugusbQi2h7e433DO21Oy8Ip9qeNweUx3IEfZ5Fr0L0Gs2YQ0AR+d8AMUJRuuNFXSHrj4MWZqrw11ydgaG+mwvW1g0nJvMbQKtzTeH55N9Ma16JPE3ppnXmT59AFVIOQpjKXMd+W3pP/0BiqXo+NGSad+sYmYscGdrovT/dCLfXW8iO1keW4UEwFDGpV83dux1o6KzuxSte9h0R3I6ketZ6Hbbbebrf1SYxYwqP8iQvglpoX6zMuNthesoKahSsvp+vzPiVWZY3xm3LdiIkneMCsLSo0Vgk3IxnDkCzBEIUlZ6eGIimw9lL+G137Ax22696ICwAA | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+endpoint_monitor() {
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "     ___________________________________________"
+        echo "    |               Jack of Hearts              |"
+        echo "    |    Detect Suspicious Endpoint Activities  |"
+        echo "    |___________________________________________|"
+        echo "    |                                           |"
+        echo "    |  1. List active processes                 |"
+        echo "    |  2. Monitor unusual resource usage        |"
+        echo "    |  3. Check recent file modifications       |"
+        echo "    |  4. Detect unusual login attempts         |"
+        echo "    |  5. Monitor open network connections      |"
+        echo "    |  6. View active users and sessions        |"
+        echo "    |  7. Exit                                  |"
+        echo "    |___________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Choice: " choice
+        case $choice in
+            1)
+                clear
+                echo -e "${CYAN}Listing active processes...${RESET}"
+                ps aux | less
+                ;;
+            2)
+                clear
+                echo -e "${CYAN}Monitoring unusual resource usage...${RESET}"
+                top -b -n 1 | head -n 20 || echo "Failed to monitor resource usage."
+                ;;
+            3)
+                clear
+                echo -e "${CYAN}Checking recent file modifications...${RESET}"
+                read -p "Enter directory to scan (default: /var): " dir
+                dir=${dir:-/var}
+                find "$dir" -type f -mtime -1 2>/dev/null | less || echo "No recent file modifications found."
+                ;;
+            4)
+                clear
+                echo -e "${CYAN}Detecting unusual login attempts...${RESET}"
+                if [ -f /var/log/auth.log ]; then
+                    grep -i "failed" /var/log/auth.log | tail -n 20 | less
+                elif [ -f /var/log/secure ]; then
+                    grep -i "failed" /var/log/secure | tail -n 20 | less
+                else
+                    echo "Authentication logs not found."
+                fi
+                ;;
+            5)
+                clear
+                echo -e "${CYAN}Monitoring open network connections...${RESET}"
+                ss -tuln | less
+                ;;
+            6)
+                clear
+                echo -e "${CYAN}Viewing active users and sessions...${RESET}"
+                w || echo "No active users or sessions found."
+                ;;
+            7)
+                echo -e "${CYAN}Exiting...${RESET}"
+                break
+                ;;
+            *)
+                echo -e "${CYAN}Invalid choice. Try again.${RESET}"
+                ;;
+        esac
+        read -n 1 -s -r -p "Press any key to return to the main menu..."
+    done
+}
+
+endpoint_monitor

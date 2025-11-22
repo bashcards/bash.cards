@@ -1,1 +1,73 @@
-bash -c "$(echo H4sICJzRcGcAA0ZpdmVfb2ZfRGlhbW9uZHMA1VVNTxsxEL3vr5gukSBVdyGEciDqAYVU6qEVKqhS1UqR8U4Si429sh1o+PjvHXs/uiEbCClUqk9ee/1m5r3n8dab3Qshdy+YmQRB//vxlw/bP/e63R+dXvdwuh18HZwNzoulPfoOtuAzyhmMlAY7QfgorhDUCE4EmyqZGOgznQQjWh2q0TApVodTOrPThtsAaPAUmfYz5BMFEULYunWh78M/qyH4MXypsQR9B4+OpcJWj7snsU8Zv2RjhDOURliHfMIs8yQOfo1EajWzQsn1sF+Mkqfz3nw0Yp9PhAFOBgGWpurawFzNwCrgGplFMMhnGoFpPiGKjGPfVIQRS2gewWYygUxjxgiBjDn15GKdXPouIhirNMkRr5v3a3LSiaGfl8/IHj6945yAv8fej8leVD63RM9GsKuxuzF8E3gNfSUtSuvV2iBII/aBy1vY52f6JPar3J28gflOWXQwEjSBKINwQORoZ3MN9KfgeESZ5LO8FTKD0MoXQMigTL3TLi7FsLgN0OtVm/ttMraXtWm324YrEqZp68AdJF736otv2wVDn+QVS0VSpBfDuZ4DGzMh47AHJkXMoNODxtZe4qFhPLh3j0Tl6cVLHSxWtcaT4IGEHC9BxXH8KOnudUqERk6Xfe4uf95BqN2UzOyYjHGMjGsalFTSduL4v1bhSTbF6ukrYdwJ2MF4HL+rcrNMx+MbD1gsDd3ZGq6pgBlkzJhrRW2RkkPJ9Tyz9QgOpfyl4shPKAxE/GYEEbTy8u5AZdQzTeqAIGJoov33hxG/oA/DUguRmlkit55VSFUSvI9xFLbKUEsO93qUF3wBoTBr4rtwUQEmjfpI6FAmEGlP7alGCszkHC5x7srXaGdaupkjwHmLdM7PNzovd1uty5VGe3BD1nBaAeK9Jp/jsgUjOAlzoLXEd+cr+R84a7XuCxonD2QWck19ySzeQL+cgZ4hdlHfvxTYPzV88akpla53uzVkdlBO42a0TfR2Cfw3YttK7FeTq3njN9g7lURpDAAA | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Menu for the Five of Diamonds Card
+five_of_diamonds_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      _________________________________________________________________________"
+    echo "     |                              Five of Diamonds                           |"
+    echo "     |               Package Sensitive Data for Exfiltration                   |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  This card allows you to create secure archives of sensitive files      |"
+    echo "     |  and prepare them for exfiltration or secure storage.                   |"
+    echo "     |                                                                         |"
+    echo "     |  1. Create a Secure Archive                                             |"
+    echo "     |  2. Extract an Archive                                                  |"
+    echo "     |  3. View Contents of an Archive                                         |"
+    echo "     |  4. Exit                                                                |"
+    echo "     |_________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) create_archive ;;
+        2) extract_archive ;;
+        3) view_archive ;;
+        4) exit 0 ;;
+        *) echo "Invalid choice. Try again."; sleep 1; five_of_diamonds_menu ;;
+    esac
+}
+
+# Create a secure archive
+create_archive() {
+    clear
+    echo -e "${CYAN}Creating a secure archive...${RESET}"
+    read -p "Enter the directory or files to archive (space-separated): " files
+    read -p "Enter the name for the archive file (e.g., archive.tar.gz): " archive_name
+    read -sp "Enter a password to encrypt the archive: " password
+    echo
+    tar -czf - $files | openssl enc -aes-256-cbc -salt -out "$archive_name" -pass pass:"$password"
+    echo -e "${CYAN}Archive $archive_name created and encrypted.${RESET}"
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    five_of_diamonds_menu
+}
+
+# Extract an archive
+extract_archive() {
+    clear
+    echo -e "${CYAN}Extracting an archive...${RESET}"
+    read -p "Enter the archive file to extract: " archive_name
+    read -sp "Enter the password for the archive: " password
+    echo
+    openssl enc -d -aes-256-cbc -in "$archive_name" -pass pass:"$password" | tar -xzf -
+    echo -e "${CYAN}Archive $archive_name extracted.${RESET}"
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    five_of_diamonds_menu
+}
+
+# View contents of an archive
+view_archive() {
+    clear
+    echo -e "${CYAN}Viewing contents of an archive...${RESET}"
+    read -p "Enter the archive file to view: " archive_name
+    read -sp "Enter the password for the archive: " password
+    echo
+    openssl enc -d -aes-256-cbc -in "$archive_name" -pass pass:"$password" | tar -tzf -
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    five_of_diamonds_menu
+}
+
+five_of_diamonds_menu

@@ -1,1 +1,56 @@
-bash -c "$(echo H4sICObuXmcAA05pbmVfb2ZfU3BhZGVzAL1VbW/aMBD+nl9xyyIBUxOgYdUE2gdWIa1SxarBPkzdhExyEIvUzmwHhij/fXZ4a6AQhLadFCW+y/m5e/xc8vZNdUhZdUhkZFm339vdj6UfNd9/rLf8m6eS9bXT6/TXrppeWzREpuhoPiCMP5GYp3KQcKFkuQILC7TNIhojKJFiC0KeuYwFMRKxXWEQcXARbGdhMJd2PmJnj4Oz7bX0Z8hZlzIEPoJeQkKU+djz8fy7dbvQ3rQLXVQzLibwYNo+kX9++Sfwz7Jj+XUP7qlU0I5j+JIge1HyWfnXHvQCwmDEBXxjqUxJnG2IjLJxYf8Avrfj7zMdR25fkNGIBvt1HMtveND5TdWF/V/O/0qYmfS1MrcxgSQENwH7NuI0wKbGCbKnnciJRHBWTqBs6zdWr+SW2eu5mXilhGw2DOOGb6JPkZtTzOYNCAuBSMkDShSGIFFMNar0PG9X+v7WDJVURIGr0phphslsAqXq/V2v3+lWYZEIyhQ49StwGvp6r6+bZamwwAeB0tQzhwnOQXEIuD5zluLJWlZsMqiDKw+CrVbOdX0pd0a+mViNhNO1hOOthDMm/wJjjWVJx8YCE3CnYDc/1Bw752g0fOdw8/9PpH8pkZs5NqxFZpTVepSLKdQtuYrsyOv0+u1PmjuZxFSVtcrIld20Ky1YkUkeY2RjFZVJ5WdGq9QI+pYy+gvcYONwWXHR/57PxiGf+0WYL5hm7STkUGNOirDeFWPdsSmJabj+LHnQF3MgY0LZCewXKChJkC1CztBaHv/ZW38AvrSdGTYIAAA= | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+identify_anomalous_ports() {
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "     __________________________________________"
+        echo "    |              Nine of Spades              |"
+        echo "    |     Identify Anomalous Network Ports     |"
+        echo "    |__________________________________________|"
+        echo "    |                                          |"
+        echo "    |  1. List All Open Ports                  |"
+        echo "    |  2. Scan for Unusual Listening Ports     |"
+        echo "    |  3. Identify High-Traffic Ports          |"
+        echo "    |  4. Exit                                 |"
+        echo "    |__________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Choice: " choice
+        case $choice in
+            1)
+                clear
+                echo -e "${CYAN}Listing all open ports and associated services...${RESET}"
+                netstat -tuln | awk '/LISTEN/ {print $1, $4, $5, $6}'
+                echo -e "${CYAN}Press any key to continue...${RESET}"
+                read -n 1 -s
+                ;;
+            2)
+                clear
+                echo -e "${CYAN}Scanning for unusual listening ports...${RESET}"
+                netstat -tuln | awk '/LISTEN/ {print $4}' | grep -v ":80$" | grep -v ":443$"
+                echo -e "${CYAN}Press any key to continue...${RESET}"
+                read -n 1 -s
+                ;;
+            3)
+                clear
+                echo -e "${CYAN}Identifying high-traffic ports...${RESET}"
+                ss -tan | awk '/ESTAB/ {split($5,a,":"); print a[length(a)]}' | sort | uniq -c | sort -nr
+                echo -e "${CYAN}Press any key to continue...${RESET}"
+                read -n 1 -s
+                ;;
+            4)
+                echo -e "${CYAN}Exiting...${RESET}"
+                break
+                ;;
+            *)
+                echo -e "${CYAN}Invalid choice. Try again.${RESET}"
+                ;;
+        esac
+    done
+}
+
+identify_anomalous_ports

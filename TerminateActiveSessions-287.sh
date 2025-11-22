@@ -1,1 +1,78 @@
-bash -c "$(echo H4sICL7jW2cAA1NldmVuX29mX0hlYXJ0cwC9V9tu2kAQfecrphTlUslOCEmlgvIQtVSNVKUoRJWqNEKLGeJVYG1511Aa8u+d9Q1fIYSk84J3PT4zc+ayy/t3R0MujoZM2rXa518XV+f7v49brdtmp/Vxul+77va7N9HWMa1rCr0pF0zhQKKU3BFyMEXhHxzCYw1IrAkyL3ia23yCoDwfOzBygq2sgha0bAcMhHrjURt/qmff1IPHwatJGfwSNkgfZyjAGcM38lzJNZrLLfFvYjLhwlJ8hmQq5HQr/NejZ1v/t5Uq/B+u0lG33wq/acJ3LhWwyQRYyLRcz/R2+CcmfOVitAIdLsCX6Ak2xdfAb5mpUmEgXbT4mFuxvZ3xT034yXEOrudYBIkSxo6XNqSD2QH/zITuH65AOTBlXICeGM92eiP+29V/OJiCGUiTKXnnIRuB4UK9K2gcwsLxPSB1bmGbXAqfVvOOSYRGuAlcJPtamoeZZaCeGY8l3gRjUlczF/dlBd1eOZxHmdtOYS+MRUATDAmGF4TV8wgLmFjAAy500jxUvif0k7IxyJ5pmkX8TiezdVKMLsdc0iOELCluyw4KLwmF2NQqLySpHyBqmtKgwUKjtqGhf9bSRcV776ELBidUrV2H5TKqvSsnjelT++eQi4hvSHZrI9kaLU14cpIHb6JQYsoHuSqOhY/h9haMvxEdkVod7u46GkYUPkgSo/lKzKP2CEcmXAfB6hzp2VAV67O5sxxBfeFjKQpOZDGglX8XSuHUVZEvK3aqCieOvRQy+mjg8pE8bxy45LKf58xwgF6fFxOXIzqNtYHpDNv5k660SNdGUcmYFg1ELtFMg4yLmdtemTxwmlrGJ4qM1Ouwtxe5nBxxyUEKc65s6F1+IWe1biXsyBHVjkbpJaOFVGY4AJsRXUOky16S/VFFNY75y4v0mQ1eYiLX86dbDdhZ5oTXja4Xgx0GbC9zXYiKKgGtHqxxNySq2amavoXkKnb1xf+crWdFnkNn9aUmnl3xvaYUcEjePWwy86HKzKWYsQl1WlimJvQoO1L/tVoAuye7JQZ3n5Yp51AyK1gEbfZU+Sew9g8ULvIcTQ4AAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+terminate_sessions_menu() {
+    clear
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "     __________________________________________________________________________"
+        echo "    |                                Seven of Hearts                           |"
+        echo "    |                          Terminate Active Sessions                       |"
+        echo "    |__________________________________________________________________________|"
+        echo "    |                                                                          |"
+        echo "    |  Options:                                                                |"
+        echo "    |  1. List all active sessions                                             |"
+        echo "    |  2. Find sessions by username                                            |"
+        echo "    |  3. Terminate a specific session                                         |"
+        echo "    |  4. View processes for a specific user                                   |"
+        echo "    |  5. Exit to main menu                                                    |"
+        echo "    |__________________________________________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Enter your choice: " choice
+        case $choice in
+            1)
+                clear
+                echo -e "${CYAN}Listing all active sessions:${RESET}"
+                who
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            2)
+                read -p "Enter username to search for sessions: " user
+                clear
+                echo -e "${CYAN}Searching for sessions for user: $user${RESET}"
+                who | grep -i "$user" || echo "No sessions found for user: $user"
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            3)
+                read -p "Enter the username to terminate the session: " user_choice
+                if [[ -z "$user_choice" ]]; then
+                    echo "No username entered. Returning to menu..."
+                    read -n 1 -s -r -p "Press any key to continue..."
+                else
+                    echo "Attempting to terminate sessions for user: $user_choice"
+                    session_pids=$(ps -u "$user_choice" -o pid=)
+                    if [[ -z "$session_pids" ]]; then
+                        echo "No active sessions found for user: $user_choice"
+                    else
+                        for pid in $session_pids; do
+                            kill -9 "$pid" && echo "Terminated session with PID: $pid"
+                        done
+                        echo "All sessions for user $user_choice have been terminated."
+                    fi
+                    read -n 1 -s -r -p "Press any key to return to the menu..."
+                fi
+                ;;
+            4)
+                read -p "Enter username to view processes: " proc_user
+                clear
+                echo -e "${CYAN}Processes for user: $proc_user${RESET}"
+                ps -u "$proc_user" || echo "No processes found for user: $proc_user"
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            5)
+                echo "Exiting to main menu..."
+                break
+                ;;
+            *)
+                echo "Invalid choice. Please try again."
+                read -n 1 -s -r -p "Press any key to continue..."
+                ;;
+        esac
+    done
+}
+
+terminate_sessions_menu

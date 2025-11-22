@@ -1,1 +1,87 @@
-bash -c "$(echo H4sICE+rcGcAA1F1ZWVuX29mX0hlYXJ0cwDtV99v2zYQftdfcVODJR4iKa6LPsTIgKJw0QBr0jXBgCEtBEY62URp0iMpdUbb/31HUbFlR3HVztnT+GLpRH7367s7+slPyS2XyS0zsyB4+eeLi7PD9yej0c1wPHo+PwzeTa4m143ohN6DJ/AGZQmF0mBnCL+XiBJUAa+RaWvgJdN58JcTpqpIZ7UwndOJowF8DoBWJkhYP2E2UxAhhAefneKv4VoaQr3Sva172F9g19p2a+f60gP8xXSqccoswuUCZXSlSp0hnEuLQvApSno5urw6v7gefBt8f1HpY/kPr07w6xk3kBFJoDRooHYZXmk2x09Kf6xpxZpQcTmFimmuSgPKBc34oD0Mztvh1Oj3m2NAyW6Fg8vRMi4wp50VGsudFiUNMJlDzizbZTntnaEmlPgRwrKv9d+DD2P4jZUym93L5R7An8ZwRQVI4DUxwCww4wXPwDI9RfvvwEcx/MHxExhWESO89USaUnyr3vuAP4th8jfvb+F3gD9O+fs+XLf7phFrZDlECwgnVFYallRNQDt5hqdkin/yHZ0ZhAMvoMoK7mwfDkDU1EiVodJMixU1xuPVpqcDMHWK0yanrW+jAVSUoeb4XW5aG54NAF2UT9rCXwZNuM5lxQTPG1NjuNZLai6MyzgcgxGICxiOoWtY3cGhYVnw1Q29bo4H3f71mHUez/WkLcg4jjfTwAvI1HzuWlRUQa1pHciff01yrBJZCjF283gd/M2N3gZhcPV926CJ1kqf3iti6tZSWcqqsUxQ59wybs3Nt+Qq0aDihvIxs3ZhTpNk04iY/EjAKnBRkTBXGoHK2nXtqXaj0V0orFLCiZQnHMqKayUpKTb2KgveYqeEIUQGIl0T9S1RxDXzJXzEpVOk0ZakiZ4ctMsshdfDdKXdp3pXxwk2uNojzzvbV2n6EGCrDusg+fNHGE/jY8jVnEhNY45+xLEbrFoS2MCVaWP23ogEUeRDQB567PB/bvXn1kMDJ7jf53qQy6E5BnUAdrColqcLusachQevL99Mkg19q25zcwNRTjraJ0L48GGLF8Js71l96mBsQdcuR0oXL+crHLk/EMsFwmHG6LomDtcxrYnrDqStIbM27qD1Cc7OIPQAHSauGfSuBnaxIi0bufLkbdwutlxK2roeUCAcL3Yda6lp1ciOOnlFhze9dGVSqFJ2lUjD2T4FeKE6Lzs515hZRdOxS8cj10Sn/B+TnFUxlQ4AAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Menu for the Queen of Hearts Card
+queen_of_hearts_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      __________________________________________________________________________"
+    echo "     |                             Queen of Hearts                              |"
+    echo "     |                 Aggregate Open-Source Intelligence (OSINT)               |"
+    echo "     |__________________________________________________________________________|"
+    echo "     |                                                                          |"
+    echo "     |  This card uses OSINT Framework for aggregating various open-source      |"
+    echo "     |  intelligence resources, enabling detailed investigations and data       |"
+    echo "     |  gathering.                                                              |"
+    echo "     |                                                                          |"
+    echo "     |                                                                          |"
+    echo "     |  1. Launch OSINT Framework                                               |"
+    echo "     |  2. Search for a specific target                                         |"
+    echo "     |  3. View saved OSINT results                                             |"
+    echo "     |  4. Exit                                                                 |"
+    echo "     |__________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) launch_osint_framework ;;
+        2) search_target ;;
+        3) view_osint_results ;;
+        4) exit 0 ;;
+        *) echo "Invalid choice. Try again."; sleep 1; queen_of_hearts_menu ;;
+    esac
+}
+
+# Launch OSINT Framework
+launch_osint_framework() {
+    clear
+    echo -e "${CYAN}Launching OSINT Framework...${RESET}"
+    if command -v osintframework &>/dev/null; then
+        osintframework
+    else
+        echo -e "${CYAN}Error: OSINT Framework is not installed.${RESET}"
+        echo "Please visit https://osintframework.com/ to learn more or integrate the tool into your environment."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    queen_of_hearts_menu
+}
+
+# Search for a specific target
+search_target() {
+    clear
+    echo -e "${CYAN}Search for a specific target using OSINT Framework...${RESET}"
+    read -p "Enter the target (e.g., domain, email, username): " target
+    if command -v osintframework &>/dev/null; then
+        osintframework --search "$target"
+    else
+        echo -e "${CYAN}Error: OSINT Framework is not installed.${RESET}"
+        echo "Please visit https://osintframework.com/ to learn more or integrate the tool into your environment."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    queen_of_hearts_menu
+}
+
+# View saved OSINT results
+view_osint_results() {
+    clear
+    echo -e "${CYAN}Viewing saved OSINT results...${RESET}"
+    results_path="$HOME/osint_results"
+    if [[ -d "$results_path" ]]; then
+        ls "$results_path"
+        read -p "Enter the filename to view (or type 'cancel' to return): " file_choice
+        if [[ $file_choice == "cancel" ]]; then
+            echo "Returning to menu..."
+        elif [[ -f "$results_path/$file_choice" ]]; then
+            less "$results_path/$file_choice"
+        else
+            echo -e "${CYAN}Error: File $file_choice not found.${RESET}"
+        fi
+    else
+        echo -e "${CYAN}Error: No saved OSINT results directory found.${RESET}"
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    queen_of_hearts_menu
+}
+
+queen_of_hearts_menu

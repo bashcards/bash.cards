@@ -1,1 +1,81 @@
-bash -c "$(echo H4sICFshaGcAA1F1ZWVuX29mX0NsdWJzAL1WUW/bNhB+16+4ucESD7Fsx13RxXCAwXGGAE2RzenD0A0CI55sIhKpkZRTr+1/35GSbMGxE3dLxgebOtx9PH738chX33VvhezeMjMPgvHvP78fHf7RGww+9oeDN9lh8NtkOrmpTD36Dl7BFcoCEqXBzhF+LRAlqATGaXFrYMw0D/5ytkglUexsUUb+R234HACNOEWm/QzjuYIOQuvgs1v2a2ttbYEf0XONB9Bf4NGxsanHxpensc8xT9USLlhqEC4lFzGzShuwCq6EIT44uSQoOWrzFPazUbJH3v96bMW+mQsDMckDWJqqewNLVTgKeMkOx1gtzTGYIp4DM5B4thKRIhlTNaPf3dikRYn2Xuk7YLEVC2GXxw47q+jlK3qZpPUlS5fGmnCvvF+Sk34IY43MYiWOC7fdZ8I+CeEXlKgd+rkjF96pGUyk1eJb1tiKPQhhKrIiddjvK+JvNEsSEf/nvF+HMPkk7Lfg7In9ImenbGC+S1YdTDvFdXJoEdeoncw1kKeI8ZQyKWdlK2RU8oPSAEIGder9NsReFZE/BJE/BDAcrhxO2jCrShv5cxO5A9L0GLTBVAWKqpMR2apADbfXbUDHda9p/KFdsXYpFywVvEo5pAovgc2YkGFrCHSwMIf+ELY0+xoNDYuDr+7KeKjy4OEW97gjPI6Qs2Z7CMPw0QK4W4oLjTE13WWj4zQgXGHIxUdndzTz4Qc0aaporIWl3p2Coe6BGZWMLsGM8lGyBWelf1dkudKWSRtxZlloP9kmxBSlIZAFugpzlFZQEuvgnBlDteJmHcc5iGTU5bjoFpq6l8roXhqV7rzIsqXnLqQrvAW3ZtS/glgV0o5+BGOZLcxIKomNDC7Wu65URgtIcHhhkz4JfegY6JRUXGs0rnku4Q49hxptoaWbOXpd0akMZfwWQZQi2N2Ogi1y3kMNFaDTg49z9wRgCbmPKqo6uihHiNsNy3O6KSq4CgqOMJyFx9BdMN0l5y7F0V/bqYb+fQH8EiKBj9BJKL/a3II/h26p9eEuq3BwROrANnwwlMqhVsoe0s0VE8lUDrMSiYM4hS7auGvmjKt7kspZE34H7FhJSXonYQKztMXcQqJJOaYwuYiFKgxcXp9C/6eTsP/mbdgP+73entAfJCvsXGnxN2VKzmK9BEdLiyIPn4A636wVMM4JjehfxVRaQhLrRvS7ulorX5CK9keq51VUIl5WyLvuvmBXz91DyxWm03L9lKmC91GyZXqGlorqqPRbdO/zOh1eQznFlq6RyHdhySK7pSm9fnMW36H1D1XSJHfRpSnyPabWfKyyzL2rOguY57SBAXx/5huWLNJ0Q/6m4Kr26kzdym970ImJhiZyi75XeW7KZ7ra1QZRLknrVbSK3S2jidZKn9ap0NPUiUhIapppShKGa6qUwdoCwgPXhD4o0f+hu23mfwBbhVu2vQ0AAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Menu for the Queen of Clubs Card
+queen_of_clubs_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      _________________________________________________________________________"
+    echo "     |                              Queen of Clubs                             |"
+    echo "     |                Deploy False Indicators to Mislead Defenders             |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  This card allows you to deploy decoys, such as false files, logs,      |"
+    echo "     |  or network activity, to mislead defenders and analysts.                |"
+    echo "     |                                                                         |"
+    echo "     |  1. Create False Files                                                  |"
+    echo "     |  2. Generate Decoy Log Entries                                          |"
+    echo "     |  3. Simulate Network Traffic                                            |"
+    echo "     |  4. Exit                                                                |"
+    echo "     |_________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) create_false_files ;;
+        2) generate_decoy_logs ;;
+        3) simulate_network_traffic ;;
+        4) exit 0 ;;
+        *) echo "Invalid choice. Try again."; sleep 1; queen_of_clubs_menu ;;
+    esac
+}
+
+# Create False Files
+create_false_files() {
+    clear
+    echo -e "${CYAN}Creating false files...${RESET}"
+    read -p "Enter the directory to deploy false files: " dir
+    mkdir -p "$dir"
+    echo "Critical system information" > "$dir/important_data.txt"
+    echo "Sensitive credentials" > "$dir/passwords.txt"
+    dd if=/dev/urandom of="$dir/dummy_file.bin" bs=1M count=5 status=none
+    echo "False files created in $dir."
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    queen_of_clubs_menu
+}
+
+# Generate Decoy Log Entries
+generate_decoy_logs() {
+    clear
+    echo -e "${CYAN}Generating decoy log entries...${RESET}"
+    read -p "Enter the system log file to append decoy entries (e.g., /var/log/syslog): " log_file
+    if [ -f "$log_file" ]; then
+        echo "$(date) User 'root' accessed sensitive file: /etc/shadow" >> "$log_file"
+        echo "$(date) Connection attempt from suspicious IP: 192.168.1.100" >> "$log_file"
+        echo "$(date) Unauthorized login attempt detected." >> "$log_file"
+        echo "Decoy log entries added to $log_file."
+    else
+        echo "Log file $log_file not found."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    queen_of_clubs_menu
+}
+
+# Simulate Network Traffic
+simulate_network_traffic() {
+    clear
+    echo -e "${CYAN}Simulating network traffic...${RESET}"
+    read -p "Enter the target IP address for simulated traffic: " target_ip
+    read -p "Enter the number of packets to send: " packet_count
+    if command -v hping3 &>/dev/null; then
+        sudo hping3 -S -p 80 -c "$packet_count" "$target_ip"
+        echo "Simulated network traffic sent to $target_ip."
+    else
+        echo "Error: hping3 is not installed. Please install it to simulate network traffic."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    queen_of_clubs_menu
+}
+
+queen_of_clubs_menu

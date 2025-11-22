@@ -1,1 +1,82 @@
-bash -c "$(echo H4sICGRid2cAA05pbmVfb2ZfQ2x1YnMA3VZtb9MwEP6eX3GESl2Rmq2rxId2Q0zVJibBQHRCQmOqXOe6WHPtKnY3Cuy/c+ekW7qUqrx+4D4kjn33nH0vj/P0ye5Ymd2xcFkUDT4enR02P+11uxedfvf5tBm9Px4en5dTe/QdPYU3aOYwsTn4DOFMGQQ7gYGejx0MRJ5GhqZGdjKSPDWakvZOC75GQCI1ijyMUGYW2ghx4ys7vYsfZmMIMvpTUoP+Bhtl9Ugb5ds22K+tFB5DtI4/o5x7MdYIJ0oHLwIGdjoVJt0C+4+FZKt9/6KsxT7PlANJ1QEZ6pmDhaUSUnRojormAClrQjgM4EOQJhwkLjWxAVuW8SMAgs3BLZzHaQKnHuYOXXDRvM2UzJr3ut5CasHZ5D+NdydZlh0F9HHV/Sb2fgIfFN7CkdZV6LKMHSgD747OX/0SdjchSOV/5vxbYv+VXBYEFjhyhcGGksIuioKn6nWoUXpOhZ1xofcK3RxFCu0cyERJLAhSOIRGMUGBjJYH6rSKLsFRpTv6/fv1fVpXzldWXXW526KuUn7kZK5mvrryrFVu+dTcCK3ScjMJvEc/z4nKr7hXmMSTJIn74DTiDDp9qLP8EhadkNEd3xRvw2mh0/txMUa1Y/3osoiHZRSrTVxYg/KuQhtleEs1d7gTaxdDfJXjjF4MRi+yo6cRhj9uFD34CqTXbOEza7psICUrznNNr9srZIMrxc/UymvMaTAQRqKOW8FhmWY5TbkHqDCWO7h4eXlHsUvtfdjLPAfN+0mWVcSq1ANeU6nktchtTUNN4OIC2qbwfXnZZ3Y0NTWWmfDZYWMnECcdhvRj2H+xm+LNrplrXceu4H+BBptvdsDy+DegUh1M+0122wRjPX3OTZqsNlsNTTv8TVd0TRU1lYLwveIYm51OVG16zdSYmv16U8JC1/AgtQYr9EDtA23HNNGeQfwuR+eojRZwjQtugDy0KY/4mlv2abBfUzDVrtzvbUXj0WNe2eJn7jWZMHMIgq7wlaxAh5ua8Xur0T09GR72lswoIFW5g4ODA4Jm5UKH00ULZZOxSr3BykJMocGaa+vw8a5PcjtlXOphmy96wXJ96rUjI1p9mC0z/q9y1+0V1+Qw8HlU4fZ12WHNPbZfg/odu4fx+/8LAAA= | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Menu for the Nine of Clubs Card
+nine_of_clubs_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      _________________________________________________________________________"
+    echo "     |                              Nine of Clubs                              |"
+    echo "     |                  Locate the Executable File of a Command                |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  This card helps you find the location of an executable file for a      |"
+    echo "     |  command on your system. It uses the 'which' command to do so.          |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  1. Locate an Executable File                                           |"
+    echo "     |  2. View All Executable Commands in PATH                                |"
+    echo "     |  3. Exit                                                                |"
+    echo "     |_________________________________________________________________________|"
+    echo -e "${RESET}"
+    echo "Scan a card or select an option:"
+    read -r choice
+    case $choice in
+        1) locate_executable ;;
+        2) list_executables ;;
+        3) exit_script ;;
+        *) echo "Invalid choice. Returning to menu..."; sleep 1; nine_of_clubs_menu ;;
+    esac
+}
+
+# Option 1: Locate an Executable File
+locate_executable() {
+    clear
+    echo "Select a command to locate its executable:"
+    commands=("ls" "grep" "echo" "cat" "nano" "vi" "bash" "python3" "gcc" "curl" "wget" "git" "docker" "Cancel")
+    select cmd in "${commands[@]}"; do
+        case $cmd in
+            "Cancel")
+                nine_of_clubs_menu
+                ;;
+            *)
+                if [[ -n $cmd ]]; then
+                    path=$(which "$cmd" 2>/dev/null)
+                    if [[ -z $path ]]; then
+                        echo -e "${CYAN}Executable for '$cmd' not found.${RESET}"
+                    else
+                        echo -e "${CYAN}Executable for '$cmd' is located at: $path${RESET}"
+                    fi
+                fi
+                break
+                ;;
+        esac
+    done
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    nine_of_clubs_menu
+}
+
+# Option 2: View All Executable Commands in PATH
+list_executables() {
+    clear
+    echo -e "${CYAN}Listing all executable commands in your PATH:${RESET}"
+    IFS=: read -ra dirs <<< "$PATH"
+    for dir in "${dirs[@]}"; do
+        if [[ -d $dir ]]; then
+            echo -e "${CYAN}From directory: $dir${RESET}"
+            ls "$dir"
+        fi
+    done
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    nine_of_clubs_menu
+}
+
+# Option 3: Exit Script
+exit_script() {
+    clear
+    exit 0
+}
+
+nine_of_clubs_menu

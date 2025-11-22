@@ -1,1 +1,71 @@
-bash -c "$(echo H4sICKlSd2cAA1R3b19vZl9DbHVicwDVVktz2zgMvutXoIqaWO34VU97SMbd3aaZbg7b6Wxy2UkyHlqCLG5pUhEpu54k/70AJduJXaedPg7lgQ+Q+ACCAIi9J92x1N2xsHkQHP/31/vhwWVvMLjoHw1eTQ+Cf0/OTs4bUo/WwR58KDHFTGpMweaoFIwrqVxbakjMdCp0aiEzJdBWEfgtqUfLnWErAGphkoYQFnPuMckNDUJJYWms9HKGnwpTOk+y6MKasUTBTEyA0JWi4EUuM+cZJA9jOvORxsRoEl1hw4kzofwhTGhg7XiQ1plyQbP/zZiFZhNG4O6jVKphnQsPXE2FZWCH1ktfFMiDnCJzTtCZwtkwiNlIb6UtlFiAyxHO5wZMBseqGlv4B3UVuLkZmWyUMGU0JUorhhsvK1EoSj9ju0AbIYxu+FnuwjU1BN9GP61tYd/Co+3BjR5vt9+I/Q4d/E2P4n3nzPvVG+9XpxqOl371deyfZpJv1ft72hexz8kXIRFlCkVpZjJFCwKUnORujtyD1A7LTCToTSSSBK2VeuIDDQoxQbsTmxl2xGrnx/T+XeztwddhucpUZAmXl4hEUdVUW39OmUQocMYJNYxu9jaT2MWfV3f3z+WyTIdRq+UZoAsDeA7N4iktXkMP/oA+HEIvjmPPyO8hWXbUsnhNe5EHiY8gNcFS6xpdYeaGlAO2lCCBEtrQj+Orw3aTHdZsU5mmCnczPq/V3g1Qss89xv8Cnu3GKEry1mz7IZ+2B2mH+v5Lu3N+e6lDuAzgXgsjSRk2YlvweO8CccyE+rbrrZVu9ba/S61cajQGv60Xb2OfocLEUaZonoe8FmYS5yCdrTODqVxROeAMkAgNB9cHfOa6kq7zKPYvsUn9n/miovEW/tChXUB4wukNFqYqgU7KBA9Jk3pWP5jM4OICopoEwyGE1yFcXR3xH6tX7sJFAPRqieohS3uCFGr7+2uCQoo8H6hbODY385E34I4YWGJ451/+zsriWhNvzFNNdYdMm5t04LxcgJgIqTvraLEKsYD+ar1VHtRJQwZ3XFqckWa+rsiX3yUvrHcEqsk2M3ywusmqyKgjvNkfRv2vVB5N0lz9NSxyU8ohRDfN9O7hA9MbNGZs9kPYf91NcdbVlVIbVt88eUv5z9pdtn1vagYxE1KJsap/xrUiWyZ+sTTkl61M5t0mfgZGCgG1IQsAAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Predefined shell built-in commands for help
+builtin_commands=(
+    "cd" "pwd" "echo" "alias" "unalias" "export" "unset"
+    "read" "set" "trap" "shift" "exit" "break" "continue"
+    "eval" "exec" "help" "history" "jobs" "fg" "bg" "kill"
+    "wait" "umask" "test" "type" "times" "getopts"
+)
+
+# Display the Two of Clubs Menu
+two_of_clubs_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      __________________________________________________________________________"
+    echo "     |                              Two of Clubs                               |"
+    echo "     |                     Get Help for Shell Built-In Commands                |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  This card provides a lightweight interface for accessing help pages    |"
+    echo "     |  for shell built-in commands.                                           |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+
+    # Display commands in three columns
+    local total=${#builtin_commands[@]}
+    local third=$((total / 3 + (total % 3 > 0 ? 1 : 0)))
+    for i in $(seq 1 $third); do
+        local left="${builtin_commands[$((i - 1))]:-}"
+        local middle="${builtin_commands[$((i + third - 1))]:-}"
+        local right="${builtin_commands[$((i + 2 * third - 1))]:-}"
+        printf "     |          %-3d. %-15s %-3d. %-15s %-3d. %-15s |\n" \
+            "$i" "$left" "$((i + third))" "$middle" "$((i + 2 * third))" "$right"
+    done
+
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  Select a command to view its help output or scan 'q' to quit.          |"
+    echo "     |_________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+
+    if [[ $choice == "q" ]]; then
+        exit 0
+    elif [[ $choice -ge 1 && $choice -le $total ]]; then
+        show_help "${builtin_commands[$((choice - 1))]}"
+    else
+        echo "Invalid choice. Try again."
+        sleep 1
+        two_of_clubs_menu
+    fi
+}
+
+# Show the help for the selected built-in command
+show_help() {
+    local command=$1
+    clear
+    echo -e "${CYAN}Displaying help for built-in command: ${command}${RESET}"
+    if help "$command" &>/dev/null; then
+        help "$command" | less
+    else
+        echo "No help available for ${command}."
+        sleep 2
+    fi
+    two_of_clubs_menu
+}
+
+two_of_clubs_menu

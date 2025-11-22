@@ -1,1 +1,66 @@
-bash -c "$(echo H4sICCUTXGcAA0ZpdmVfb2ZfRGlhbW9uZHMA1VZLT+MwEL7nVwylArqiKaVoD612JbSkUiUoFe0e2F0JucmktXDsyHYKFfDf1076SNrwFHtYn5yZ+JuZbx727k5jTHljTNTUcX5cn/a/7f85arV+Nzutr9G+c+UNvdFCdGS+nV3oJtzXVHDQAiT6YoYSQspQwR3VUxhMhRZX6DsL3U2qO6jBgwNm+QyJTHfoTwXUESrVB2v3qbKWVuwObj5vbWI/QmF16QxBhHBGSSR4oNpGwhCusgjmMBKCwcEyslrx8OMW+Cc6vg0On7dKwJcxAlUQoKITjsF2okMpIghIRCZGK4xUyIhobT6UFtJI3VLwITL0NRAOIk4raIxM3Fn4WAofMWh/3PP/mHNounBOTFetm8cyCmHC2JL4+YfBj91lHeeTR0DF6NOQ+hBQdftR8NZr4DGRmqa5fj/4iQvePdVvivyd4P+oWrJpls5MM85SuUQSQD2Gise1YWkuEgnmV+pj2/iS7bLBSBRCNRMA5c7S+WbNyceSBZGVC+WTVcW4rgtdwdJ+mloAY42YOW0Gm2muKNbKrRSAVBKYvrOnTYkVNJ3O6vO4zPjpjFBGxmZA2tJR7SIuU2N2C3UTtID+6YV3OOz98g4vLs+888J/G8RYp9NK5CRCOEB34h6CCkjN0mQVN1ZR4s2i/iwXuRKsro4YYl4IHBoBzhrVcgM5IlovE7Eq82fYyFPRHY6uB5aRn/3R4LLXH71Gy7qHNrhppuSs1O9kqHjuTTS9YCrH1UkZV7aTrQfbF+uGXYk6kfw57C9l2D0+I4wGi26yI8lCWGvmaomQJ1vBLRBREd/JzYaBRKXM/TSHW5xn155FsjubiAJUligOTagr58k+jDyuEomFK5RypQljGDg0hB3wRRQRbo7N1szufc/I5Wbad6wZnncoh8WFXuO50Mu2Nkou7lZupWkjsa5PUEMSB0Qj7O0VxQsUqJsYUWlb/E5IbQgXhHJQvqSxBrxHP7HJLr7knOwF9xcuAmB2OAoAAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Function to recover files with PhotoRec
+recover_files() {
+    clear
+    echo -e "${CYAN}"
+    echo "     ___________________________________________________________________________"
+    echo "    |              Five of Diamonds: File Recovery Tool (PhotoRec)              |"
+    echo "    |___________________________________________________________________________|"
+    echo "    |                                                                           |"
+    echo "    | PhotoRec is designed to recover files from damaged or formatted storage.  |"
+    echo "    | Select an option below to proceed:                                        |"
+    echo "    |___________________________________________________________________________|"
+    echo "    |                                                                           |"
+    echo "    |  1. Launch PhotoRec for full recovery                                     |"
+    echo "    |  2. Recover files from a specific disk                                    |"
+    echo "    |  3. Recover files from a specific partition                               |"
+    echo "    |  4. Exit                                                                  |"
+    echo "    |___________________________________________________________________________|"
+    echo -e "${RESET}"
+
+    read -p "Enter your choice: " choice
+    case $choice in
+        1)
+            echo "Launching PhotoRec... Follow the interactive prompts."
+            sudo photorec
+            ;;
+        2)
+            echo "Available disks:"
+            lsblk -d -o NAME,SIZE,MODEL
+            read -p "Enter the disk name (e.g., sda): " disk_name
+            echo "Recovering files from $disk_name..."
+            sudo photorec /dev/$disk_name
+            ;;
+        3)
+            echo "Available partitions:"
+            lsblk -o NAME,SIZE,FSTYPE,MOUNTPOINT
+            read -p "Enter the partition name (e.g., sda1): " partition_name
+            echo "Recovering files from $partition_name..."
+            sudo photorec /dev/$partition_name
+            ;;
+        4)
+            echo "Exiting File Recovery Tool."
+            return
+            ;;
+        *)
+            echo "Invalid choice. Returning to menu..."
+            ;;
+    esac
+
+    echo "Press any key to return to the menu..."
+    read -n 1 -s
+}
+
+# Ensure PhotoRec is installed
+if ! command -v photorec &> /dev/null; then
+    echo "PhotoRec is not installed. Installing now..."
+    sudo apt-get update && sudo apt-get install -y testdisk
+fi
+
+# Main script execution
+recover_files
+clear

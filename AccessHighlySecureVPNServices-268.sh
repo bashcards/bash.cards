@@ -1,1 +1,80 @@
-bash -c "$(echo H4sICIshaGcAA0tpbmdfb2ZfQ2x1YnMAvVZta9swEP7uX3Fzy9qM2mmasg8NG5QssDFWyloGoxtGsc+JiC0ZyQ4Lbf/7Tn6LE2dJ1rXTh+KepOdOzz13l4NX3TEX3THTU8safr+8enf047Tfv+sN+m/jI+vr6GZ0W5pO6X/rAL6gyCCUCtIpwmcuJiBDGEbZWMOQqcCakcmToecbkxfT6eMO3FtAy4+QqfwL/akEB8E+vDdOH+2l1YZ8ec+2WtgPsHWtvmn7etgP/NL3UWv4yCfTaAE36GcK4dv1FX2qOae9fcGfjZQ9A3/S2oh9O+UafBIIoGDjiJ68kBmkEjSmkCXARAAxE2yCZKn58aUQ6KdcCr0NPNMmZ5dc0Z0TcqAzZQxMSLGIebrI0VH4apGkGBBqHGeC+ywHdndE/pKs9FwYFk80VBQPeC7sMxc+cF0yCKGS8ZMcbMTuU9xT9Gd5koZ1kuAmZWm2q2h2YJ+7MPrF07+Lci/sF6meoovljbJsYwpZAE4C9kikqIzOFdBJqvMLiqT4Kvoh0wiHhQG4sKrQe51K+B7jap4IGAzqzbMOBHVaN+z36bJJjUd2Txf5aGyfdwANu6dN45tOydMnMWcRD8ogXbhVVDsTxoVrD0BHiAn0BtBu8RUYauZbj2ZMtGRtrYa8x1CodEWVXKO4rrub7FLm5DDkk0zlZQ4hjxASlk7hGN2JewJFHK6kP508Mflxz5zLkXkId+CEFE5jx4afAzP5lsmiY6afmA7jzEEmKExCXr/vBjjviiyK1s6bpbNA1kcdp8Bfd/R65UqRn+XLqorjgqecUVerKtKM5TLtZkrnkCrOOXDtGhIjjRvwR0pJdVGHRi1byJR8EGAUGR/XlC2NlQV4nmB/PdcNRyG3Wv5WfA3bWWrykAcQykwEJWgJWORdQA8cDY7KJXCtzJRlYgEzXJhoFKaZEubLsGKESvopYNoaLnS7uWVarZLbQ79LKCPhBlpLxKShZKKouHbLJ5dOMuNEfnl4jdalV5p0Taf2nxJxJYFRjPP1kfs/ad8yTaz1drZP6zBXDOtrLyoA/oX/lTo0P2kqrp/Ab4Bp8+qLUrzB+hugc6nc/AsAAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Menu for the King of Clubs Card
+king_of_clubs_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      __________________________________________________________________________"
+    echo "     |                              King of Clubs                               |"
+    echo "     |                    Access Highly Secure VPN Services                     |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  This card enables you to set up and manage secure VPN connections       |"
+    echo "     |  using AirVPN, ensuring anonymity and encrypted communications.          |"
+    echo "     |                                                                         |"
+    echo "     |  1. Connect to AirVPN                                                   |"
+    echo "     |  2. Disconnect from AirVPN                                              |"
+    echo "     |  3. Check VPN Connection Status                                         |"
+    echo "     |  4. Exit                                                                |"
+    echo "     |_________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) connect_airvpn ;;
+        2) disconnect_airvpn ;;
+        3) check_vpn_status ;;
+        4) exit 0 ;;
+        *) echo "Invalid choice. Try again."; sleep 1; king_of_clubs_menu ;;
+    esac
+}
+
+# Connect to AirVPN
+connect_airvpn() {
+    clear
+    echo -e "${CYAN}Connecting to AirVPN...${RESET}"
+    read -p "Enter your AirVPN configuration file path (e.g., airvpn.ovpn): " config_file
+    if [ -f "$config_file" ]; then
+        if command -v openvpn &>/dev/null; then
+            sudo openvpn --config "$config_file" &
+            echo "AirVPN connection initiated. Check the status for confirmation."
+        else
+            echo "Error: openvpn is not installed. Please install it to connect to AirVPN."
+        fi
+    else
+        echo "Error: Configuration file $config_file not found."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    king_of_clubs_menu
+}
+
+# Disconnect from AirVPN
+disconnect_airvpn() {
+    clear
+    echo -e "${CYAN}Disconnecting from AirVPN...${RESET}"
+    if pgrep openvpn &>/dev/null; then
+        sudo pkill openvpn
+        echo "Disconnected from AirVPN."
+    else
+        echo "No active VPN connection found."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    king_of_clubs_menu
+}
+
+# Check VPN Connection Status
+check_vpn_status() {
+    clear
+    echo -e "${CYAN}Checking VPN connection status...${RESET}"
+    if pgrep openvpn &>/dev/null; then
+        echo "AirVPN is connected."
+    else
+        echo "No active VPN connection detected."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    king_of_clubs_menu
+}
+
+king_of_clubs_menu

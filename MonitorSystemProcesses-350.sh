@@ -1,1 +1,84 @@
-bash -c "$(echo H4sICLrMdGcAA0tpbmdfb2ZfSGVhcnRzAL1WbW/bNhD+rl9xU+M1WiPFL+k+2EiBwXPXYnAXxM6AYQMEWjpHQiVRICk3Wpv/3qNkybIju06WjggQ+UQ+9/Lcc9SLH84XYXK+YDIwjPFfv3y4fPlPdzD4uzca/By/NK4ns8l8berS79+uJ5PGln6x5deNoUcG4wVMMclgyQWoAOH3MLkFvoR3yISSMGbCNz6SzeVLNyhsbkz7Ty34bAAtLyJj8YRewMFGME8+69DuzY3VhGK5z7UeQH+BQ2snp4Pry2OwpzwJFRVulkuFMVwJ7qGUuM9FC/azleRRcT9ytWLPg1CCR+0BqeCr0KesGXg8TgUGmMhwhSDLsqRlWSAuq6XJ+AZ2mCgUS+ahA+OAc4nAEuCpCnkCC4z4J1C8ggP6YwmL8n+x8oTS2Y/9PWvSc+AaWWTPwxirpphusj5VPLWeit134M8QPzWabJGTN8kz4SHcSHaLT4574MDbMKKab6PfSLL815pcODBj1AxrZJglLJUBV5pCcnpU0PuwXzswuQvVY2I8Evu76LIcjsWUXk9HgcwHOwVzojseciITaGfo4ZAiKZ/KMctIBCelgeRhVKH3LI0RuYo6zm0IbDSqt/T1lrJN3Kxok8bLgQXLgnl3kdNbiqHx8sICSdS5sqKs8e61BahL320af7LWRXyfrFgU+usMHJiLHNgtCxPHHIGMEFPojaDlXqnQUDLPuNe30x+l7HvDQ9Iy2opwxB01U+RZ1+ugbK+EbtyxEtGrsW5bnbg13GaSpF38b8lpK4/+8JsyNrbpOiKNDdiMC4X+Q8ydaBsAxUfC/Zyn0O/C+OrGfk+tWM7vGnbndEqjPrsD25bk7dLueGlGagyKXqYMu7WLg76mGHORP8FdTPQ8cCfWP3tgS7BFIaqSN5bk8BFzTZxAlYlEP+lPHc2N4zjmUbwNhntHpLGtoBa+dmSuneudCaN+o2DK85vbS2u/el+cD5dAYjJPKqMJP74593F1nmRRNNJ4m4mwvzf0J14h8YqIGm+n4Oui29mWS5tDGvpnXuyfacbPCh6aPVCyHUlsi4U+PO8nQnAxLK+VGhh8TrElNF1IVlI526Esw/+F3Yvh4UvK2JqDLQxH3GORJhJ1Tpfmmsv6iHty6jOF8Krz1u28sztTuzOzHHWnHuixnEtspSePlwmBiaq/oGQjLO1ruKGyct0qnTcEXG3YMwDqjHWmPsjM0x6X1F9FbevjTtsF9uzEtJm/AoSIyaf9DAAA | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+GREEN='\033[1;32m'
+RED='\033[1;31m'
+
+# Menu for the King of Hearts Card
+king_of_hearts_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      _________________________________________________________________________"
+    echo "     |                             King of Hearts                              |"
+    echo "     |                          Monitor System Processes                       |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  This card provides a comprehensive system process monitoring           |"
+    echo "     |  interface. Choose an option below to monitor or analyze processes.     |"
+    echo "     |                                                                         |"
+    echo "     |  1. Real-Time System Monitoring (top)                                   |"
+    echo "     |  2. View Processes by Resource Usage                                    |"
+    echo "     |  3. Filter Processes by User                                            |"
+    echo "     |  4. Save Process Snapshot to File                                       |"
+    echo "     |  5. Exit                                                                |"
+    echo "     |_________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) real_time_monitoring ;;
+        2) resource_usage ;;
+        3) filter_by_user ;;
+        4) save_snapshot ;;
+        5) exit 0 ;;
+        *) echo "Invalid choice. Try again."; sleep 1; king_of_hearts_menu ;;
+    esac
+}
+
+# Option 1: Real-Time System Monitoring
+real_time_monitoring() {
+    clear
+    echo -e "${CYAN}Starting Real-Time System Monitoring (Press Ctrl+C to exit):${RESET}"
+    top
+    king_of_hearts_menu
+}
+
+# Option 2: View Processes by Resource Usage
+resource_usage() {
+    clear
+    echo -e "${CYAN}Processes Sorted by Resource Usage:${RESET}"
+    echo -e "${GREEN}Top 20 CPU-Intensive Processes:${RESET}"
+    ps aux --sort=-%cpu | head -n 20
+    echo
+    echo -e "${GREEN}Top 20 Memory-Intensive Processes:${RESET}"
+    ps aux --sort=-%mem | head -n 20
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    king_of_hearts_menu
+}
+
+# Option 3: Filter Processes by User
+filter_by_user() {
+    clear
+    read -p "Enter the username to filter processes: " username
+    if id "$username" &>/dev/null; then
+        echo -e "${CYAN}Processes for user ${GREEN}$username:${RESET}"
+        ps -u "$username" -o pid,cmd,%cpu,%mem --sort=-%cpu
+    else
+        echo -e "${RED}Error: User $username does not exist.${RESET}"
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    king_of_hearts_menu
+}
+
+# Option 4: Save Process Snapshot to File
+save_snapshot() {
+    clear
+    local filename="process_snapshot_$(date +%F_%H-%M-%S).txt"
+    echo -e "${CYAN}Saving current process snapshot to file: ${GREEN}$filename${RESET}"
+    ps aux > "$filename"
+    echo -e "${GREEN}Snapshot saved successfully to $filename.${RESET}"
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    king_of_hearts_menu
+}
+
+king_of_hearts_menu

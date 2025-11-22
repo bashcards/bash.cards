@@ -1,1 +1,71 @@
-bash -c "$(echo H4sICLkRXGcAA1R3b19vZl9EaWFtb25kcwDVVktT2zAQvvtXbE1mIJ3GIYTpgUwPLQ1DD+10gEuHdjKKvU402FJGkoHw+O+VkJz4maZAD9XFevnb1bffrrTzpj+lrD8lcu55xz8+fvuw+3N/OLwcjIbv013vbHw+vnBT+3rs7cBJxkJFOQPFQaBUXCDIpVSYQix4ClMSXmUL6bm1iR3vdeHeA93CBIl46mE459BD8Dv3xvCjv571TQ8mr9eq2A/Q2i5uOPAYPlOSchbJIzi3hztzZ621hxr4KzpeB2/3/K9bA/jFnEodWZ4ASRJ+I2HJs2Kk9VCUwo23VCrKZi7uENMEZdAMfo4JhgpIvneNe/Riz/9jzmEQrNQVZ0mS8+tY2usLzlXfTrp0ChQRweyuuwX4wRp8zlOEiAodBC6WFXyzuBG9CXy4Bg8z/U0L8IVq8DxaDgMY31L1bKo3gP8jtdhq9lQ0dTl7mhdIIugtwB8zhcLmj95KQ6153/VsYSQSoWMngDIvd37Q9YpnoTFcQi+GdlHArxGoObLSb+vz23iZjK1rLQgCv/abzCIOGhp6t3fXGw33jqHfYtUV0byMhDxdJKgwqtjDRGILwkk9MxhXEPOMRUDUBr8qNmJaGo5Gq+HBJqrr+bE10Y15tz3XDZY3MH1aNvYCxk8by0UD6XUHt6Z8WKa8ki2a3eK9Agui5rCHwSx450zb1QkjKeZVy+SVmzb7G0Pqdwo7/NZANrijjcxQFWgpXmK+W56slv+ojfx4plgWnTK4nSraNpqpHE0rxa/h1EGsW8e2hr9AM58K0SodZyWbraVxWJaGxTcXgqEtd9E8VSqIAlUmWBvq2ybUL+yaJDRy5djcaQbC2NFRSJFlNeIdIkoSeoXL5bv2SwJhS7hCJw2DZHpGPCUoKy4GA+hJ79E8rb8SykCGgi6UfldhmJl3duUh7dkH9G90QLVLuAsAAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Function to restore system from backups
+restore_backup() {
+    clear
+    echo -e "${CYAN}"
+    echo "     ___________________________________________________________________________"
+    echo "    |                          Two of Diamonds: System Restore                  |"
+    echo "    |___________________________________________________________________________|"
+    echo "    |                                                                           |"
+    echo "    | This tool allows you to restore your system from existing backup files.   |"
+    echo "    | Select a backup to restore:                                               |"
+    echo "    |___________________________________________________________________________|"
+    echo "    |                                                                           |"
+    echo "    |  1. Restore full system backup (/root/system_backup.tar.gz)               |"
+    echo "    |  2. Restore home directory backup (/root/home_backup.tar.gz)              |"
+    echo "    |  3. Restore custom directory from backup                                  |"
+    echo "    |  4. Exit                                                                  |"
+    echo "    |___________________________________________________________________________|"
+    echo -e "${RESET}"
+
+    read -p "Enter your choice: " choice
+    case $choice in
+        1)
+            if [ -f /root/system_backup.tar.gz ]; then
+                echo "Restoring full system backup..."
+                sudo tar -xzvf /root/system_backup.tar.gz -C /
+                echo "System restore completed."
+            else
+                echo "Full system backup not found at /root/system_backup.tar.gz."
+            fi
+            ;;
+        2)
+            if [ -f /root/home_backup.tar.gz ]; then
+                echo "Restoring home directory backup..."
+                sudo tar -xzvf /root/home_backup.tar.gz -C /
+                echo "Home directory restore completed."
+            else
+                echo "Home directory backup not found at /root/home_backup.tar.gz."
+            fi
+            ;;
+        3)
+            read -p "Enter the backup file path (e.g., /root/backup_name.tar.gz): " backup_path
+            if [ -f "$backup_path" ]; then
+                read -p "Enter the target directory to restore: " target_directory
+                echo "Restoring backup from $backup_path to $target_directory..."
+                sudo tar -xzvf "$backup_path" -C "$target_directory"
+                echo "Custom restore completed."
+            else
+                echo "Backup file $backup_path not found."
+            fi
+            ;;
+        4)
+            echo "Exiting restore tool."
+            return
+            ;;
+        *)
+            echo "Invalid choice. Returning to menu..."
+            ;;
+    esac
+
+    echo "Press any key to return to the menu..."
+    read -n 1 -s
+}
+
+# Main script execution
+restore_backup
+clear

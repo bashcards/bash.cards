@@ -1,1 +1,90 @@
-bash -c "$(echo H4sICO2pcGcAA0phY2tfb2ZfSGVhcnRzAO1XUW/TSBB+96+YC9W1QdhuCOKhUU+qqiBAcEKlOulUkLW1x/ZenV1rdx2IgP9+s+skdhPXDTTwxL7E2R1/M/PNN7PJoz/Cay7Ca6Zzzzv/9+zv08MPx+Px1Wgyfj479C6m76eXy61j+u49grcoKkilApMjvGbxDcgUXiJTRsM5U4n3H+1FMo1ytxfNyP5oCF88oBUXtOmeMM4l+AiDgy/W7bdBszsAt6K9rS3sr9C7NrLqXV93Aj+rjJwxg/BexpwVMBUZF4iKiwzOjCF/nW46wPfHym6R/+DqBL/MuYaYNAJcGMwUEaKdjGpW/BUrcCllccMNHJH6hk5srCbQ8nUHeEngOZ0/AV1S3VrfmUhAkhsFumYfW+wzxz7MMTZS6WDXgu6Tlp8KPgrgDatEnANxCa+Id8Viw+cI51JoWeBDwJ8GcFEJYFAqTDAlUpM171ToWcl4Jn4UfBzAPxw/ubhjKVKeVaQYLgWkvMB72vI+8GcBTD+Twh66flmH1qPSzePlrFTIEvBLGExtUWEhKwVkyWM8oVDqp3roMo1wUG9Q53mr2EdDKJw0Io0GJpP1wdMhqEpEq0pG60q2bMZDmFN17KtRXZ326bMhoKX3uL35eLjk6ZWYs4InyxgDuFQLYBnjIhhMQBeIJYwm0HGPrNBQs9j7Zm+jfm17TX47XEE1lpVu/zzqcBQEwe3i8JQ0O5vZ0ePPgfwvEf78K0xwHoqqKCZ29DXVWNvUsRUa10ebgU6VkurEJU0DVUhDVdWGFQUmG2E02nxHaWtcGe4wdSttmXCqKqkSLEOgdOhDAc3jOddkmRtT6pMwzLjJq+uAMg6NqrTBRGMc1tPWX01bf5lfUIeW8paKBYzA1+ArJ+h3CrWmsb2AG1yAkWRkKiXsk43bKoEIr2E6VFIr4/7B5HWKfAehELRwd0cv/B40sdHiNvnt8bo9G+EIgyx40kRiTYZuKjjbyBqtnVBYV1fgp5Re63gAHz9uRHNLpeDHGy80gmtrt0e/59uBtwGdsFNZiS5RL9Xzu00e2iZ9V6y3MeF3aA0L5yZoN+JWTyzrXTKTnw5CNETHSmHrprHqTBqxWdsOdRZ6w6Svi2wwgs3QcmWThCP7h2ZRIhzGTMRYHDZ8usaxL0StO7UJ7aB1BKenMKgB7uifWmUXDtjyRF5u1akW9XZL2ozCtqs78AsriZ63vrtJX7i2bOe4x7a8rZCEK/crfHGni5/bDF3b/wMex77iIA8AAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Menu for the Jack of Hearts Card
+jack_of_hearts_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      __________________________________________________________________________"
+    echo "     |                              Jack of Hearts                              |"
+    echo "     |                   Automate Social Engineering Attacks                    |"
+    echo "     |__________________________________________________________________________|"
+    echo "     |                                                                          |"
+    echo "     |  This card integrates the Social-Engineer Toolkit (SET) for automating   |"
+    echo "     |  phishing, spear phishing, and other social engineering attack vectors.  |"
+    echo "     |                                                                          |"
+    echo "     |                                                                          |"
+    echo "     |  1. Launch SET Interactive Console                                       |"
+    echo "     |  2. Run a predefined phishing campaign                                   |"
+    echo "     |  3. View SET configuration files                                         |"
+    echo "     |  4. Exit                                                                 |"
+    echo "     |__________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) launch_set ;;
+        2) run_phishing_campaign ;;
+        3) view_set_config ;;
+        4) exit 0 ;;
+        *) echo "Invalid choice. Try again."; sleep 1; jack_of_hearts_menu ;;
+    esac
+}
+
+# Launch SET Interactive Console
+launch_set() {
+    clear
+    echo -e "${CYAN}Launching Social-Engineer Toolkit (SET) Interactive Console...${RESET}"
+    if command -v setoolkit &>/dev/null; then
+        setoolkit
+    else
+        echo -e "${CYAN}Error: SET is not installed.${RESET}"
+        echo "Please install the Social-Engineer Toolkit (SET) using your package manager or visit https://github.com/trustedsec/social-engineer-toolkit."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    jack_of_hearts_menu
+}
+
+# Run a predefined phishing campaign
+run_phishing_campaign() {
+    clear
+    echo -e "${CYAN}Running a predefined phishing campaign...${RESET}"
+    if command -v setoolkit &>/dev/null; then
+        read -p "Enter the phishing campaign configuration file (e.g., campaign.conf): " config_file
+        if [[ -f "$config_file" ]]; then
+            setoolkit -c "$config_file"
+        else
+            echo -e "${CYAN}Error: Configuration file $config_file not found.${RESET}"
+        fi
+    else
+        echo -e "${CYAN}Error: SET is not installed.${RESET}"
+        echo "Please install the Social-Engineer Toolkit (SET) using your package manager or visit https://github.com/trustedsec/social-engineer-toolkit."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    jack_of_hearts_menu
+}
+
+# View SET configuration files
+view_set_config() {
+    clear
+    echo -e "${CYAN}Viewing SET configuration files...${RESET}"
+    config_path="/etc/setoolkit"
+    if [[ -d "$config_path" ]]; then
+        ls "$config_path"
+        read -p "Enter the filename to view (or type 'cancel' to return): " file_choice
+        if [[ $file_choice == "cancel" ]]; then
+            echo "Returning to menu..."
+        elif [[ -f "$config_path/$file_choice" ]]; then
+            less "$config_path/$file_choice"
+        else
+            echo -e "${CYAN}Error: File $file_choice not found.${RESET}"
+        fi
+    else
+        echo -e "${CYAN}Error: SET configuration directory not found.${RESET}"
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    jack_of_hearts_menu
+}
+
+jack_of_hearts_menu

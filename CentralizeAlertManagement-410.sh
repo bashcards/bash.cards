@@ -1,1 +1,62 @@
-bash -c "$(echo H4sICJT5XmcAA1NpeF9vZl9EaWFtb25kcwCdVm1v2jAQ/s6vuDGklm0Jb9U+FHUSokzah05TqSZNm4RMciVegx3Zhpa1/e87JzSQkrdyH5Bz8fm5e+45h/fvOnMuOnOmg0Zj/Gv0/eLkT3cw+N0bDj4vTxrXk+nkZuvq0nPDQ2EUC/k/nLEQlZktmWALXJL7tA2PDSC7D3iIYNQKh+DL2GXNC5Gp9Am9QIKD0Gw9WtjnZvZNM17Oalte+BPs25Q/gLyFS86WUvg68w6eSuLHackwsiXDVVpyRXz99Mvw61hRfM+FnxzvwVspZfPVG21wCXHrdI34vguTh0hS0dsQI4HBTgQ+3NpeF8YPXJiigVUEESoufe4lBwH1gBupuFiU4p9ZfL7j+W31H89/IsxY/aTM9J1C5oMTQXMcSO7hOeF48WoncqYRWokTuEj91nrtzGO8PTMTOSnEs/EVjRdYqnLb6LruLtXXR/2VKyVY6JnQ5o1KgSNBB9RRh2sCcYR0IlKzIrYN47RLQL9bmdEl11HINtR/hVYNL6kUJzIcZlz9Y7lI5GjJKFNkKScYHzGz+y6anTVTnVAuOntHzLbVkPvNjH6hTPcActBfFTRKykhiKH2qZ/+A+pQOjqWUJjQmtGxKSwlNx2IiDCmJ2981C2kBGr34tj1Fd+F+gl63bYfmZUdlale7ayJ7deEa1QZaKdQWx4UfCrWGsVHhx7HlUhsZlaRe8K2qJjEv2+tkFpKOnheDWjtmMHuHg2lNh4hEfkrGIaAvBVbJ5+xQPoezx02VFuYkhrsqrA/VWN8EVcL97f3qwg21my0YF/UGAjXzCv9rJBphYgN3uLEiUWioG3ZlAgT6sq9ya0x0Tn0AR4OTaCKm9rn0j1HjPzWwGedlCQAA | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+centralize_alert_management() {
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "     __________________________________________"
+        echo "    |             Six of Diamonds              |"
+        echo "    |      Centralize Alert Management         |"
+        echo "    |__________________________________________|"
+        echo "    |                                          |"
+        echo "    |  1. View current system alerts           |"
+        echo "    |  2. Export alerts to a centralized file  |"
+        echo "    |  3. Set up periodic alert monitoring     |"
+        echo "    |  4. Exit                                 |"
+        echo "    |__________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Choice: " choice
+        case $choice in
+            1)
+                clear
+                echo -e "${CYAN}Fetching current system alerts...${RESET}"
+                journalctl -p err -o short-iso --no-pager | tail -n 20
+                echo -e "${CYAN}Displayed recent alerts.${RESET}"
+                ;;
+            2)
+                clear
+                echo -e "${CYAN}Exporting alerts to a centralized file...${RESET}"
+                export_file="/var/log/centralized_alerts.log"
+                journalctl -p err -o short-iso > "$export_file"
+                echo -e "${CYAN}Alerts exported to $export_file.${RESET}"
+                ;;
+            3)
+                clear
+                echo -e "${CYAN}Setting up periodic alert monitoring...${RESET}"
+                read -p "Enter interval in seconds (e.g., 10): " interval
+                echo -e "${CYAN}Monitoring system alerts every $interval seconds. Press Ctrl+C to stop.${RESET}"
+                while true; do
+                    clear
+                    echo -e "${CYAN}Recent Alerts:${RESET}"
+                    journalctl -p err -o short-iso --no-pager | tail -n 10
+                    sleep "$interval"
+                done
+                ;;
+            4)
+                echo -e "${CYAN}Exiting...${RESET}"
+                break
+                ;;
+            *)
+                echo -e "${CYAN}Invalid choice. Try again.${RESET}"
+                ;;
+        esac
+        echo -e "${CYAN}Press any key to return to the menu...${RESET}"
+        read -n 1 -s -r
+    done
+}
+
+centralize_alert_management

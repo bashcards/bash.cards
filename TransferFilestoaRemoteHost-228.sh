@@ -1,1 +1,75 @@
-bash -c "$(echo H4sICLfNcGcAA0FjZV9vZl9EaWFtb25kcwC9Vl1P2zAUfc+vuAuVoJMaKJX2QDVtqBSNh00V8DIxFJnkhlpL7M52gAr47/NH0gSapmWi80OVOPbxveeec92dD/s3lO3fEDn1vNHP4x+fd38dDAZX/eHgU7brnY8vxpfF1IF+93bgO7IcEi5ATRGOIwSewAklGWexhBERsUciDHkSxsVkmOkde1149ECPKEUi7BNGUw49BL/zaA5+9qtZH+wI320sYT9B63idV8t42gj7AqNcYDqHS0GYTFDAKU1RguJA4BwzrhC+canWYr8fJ5sF/o+jEfxySiVEWiIwE/yOxjp/Aim9nap7NL9AmUKRaP0YXmRJmSopSyxlK8BvUKMgg5RHJAXCYhCOVjmXCjMJuaTsFi5GE9hz1YARn81hIrjiEU+7QUvkW6Vlq+D9oJIcsaJbo7m3gB8GcMLvWcpJXIIngmdvhm8EHwQwfqCbRfc27O14yLUy2zGLXiZQ89KbgT82uoY5zwXolTTCIx2Ke3JNkUiEjpvQJvDK2PvdhfhDxcNC0MPhYsFhF+KiAKFhvmHJoAtoaDyoT37sFoScsTuS0rgIxmhlDuSWUBb4Q5Ap4gz6Q2jq6CUcShJ5z+ZmqOksWeisCGiqheAt57LBtbBOva2UmzvKNQQb0YyoqQEoAzFlsJ9D83kVQJFCLlEwktnalc9rtpis4WwC+raMeaZZNXstFe37dGdUlBFFObMxm23uU2hePbudJnB1Bb1EM1Xl4MP19dBAVSKS0ezVEr9Txv+1Y6I56tTA/cVGd0Dni67GHy2fJeCmatkSyTyKUMokT2vdW2BsqG87+mUpLXwqsfW8sRBcl/GU6HPjemktnSbdYBk1od4S+Cpgk0+NPGBc6X8/OYtf4RaYrqYM+tCT0BO2vBOhydA30hx+49zEKFDlgtlodZDGTEEQOJgmpzl31RptUmu0dX81tYINHLa+ha/12P+3yAs/l4nXfNJmaNcRmkzmCl15zHlnhWRLM1Wb/JoxV/tmvWfKfArLVAe8LMRGAl44owRd5YwtK7hx/i/H7VZrfwwAAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Menu for the Ace of Diamonds Card
+ace_of_diamonds_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      __________________________________________________________________________"
+    echo "     |                              Ace of Diamonds                            |"
+    echo "     |                   Securely Transfer Files to a Remote Host              |"
+    echo "     |__________________________________________________________________________|"
+    echo "     |                                                                          |"
+    echo "     |  This card provides a lightweight interface to securely transfer files   |"
+    echo "     |  between local and remote systems using SCP (Secure Copy Protocol).      |"
+    echo "     |                                                                          |"
+    echo "     |                                                                          |"
+    echo "     |  1. Transfer a File to a Remote Host                                     |"
+    echo "     |  2. Download a File from a Remote Host                                   |"
+    echo "     |  3. Exit                                                                |"
+    echo "     |__________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) transfer_to_remote ;;
+        2) download_from_remote ;;
+        3) exit 0 ;;
+        *) echo "Invalid choice. Try again."; sleep 1; ace_of_diamonds_menu ;;
+    esac
+}
+
+# Transfer a file to a remote host
+transfer_to_remote() {
+    clear
+    echo -e "${CYAN}Transfer a File to a Remote Host${RESET}"
+    read -p "Enter the local file path to transfer: " local_file
+    read -p "Enter the remote username: " username
+    read -p "Enter the remote host IP or domain: " host
+    read -p "Enter the remote destination path: " remote_path
+
+    if [[ -f "$local_file" ]]; then
+        scp "$local_file" "$username@$host:$remote_path"
+        if [[ $? -eq 0 ]]; then
+            echo -e "${CYAN}File successfully transferred to $username@$host:$remote_path${RESET}"
+        else
+            echo -e "${CYAN}Error: Failed to transfer the file.${RESET}"
+        fi
+    else
+        echo -e "${CYAN}Error: File $local_file not found.${RESET}"
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    ace_of_diamonds_menu
+}
+
+# Download a file from a remote host
+download_from_remote() {
+    clear
+    echo -e "${CYAN}Download a File from a Remote Host${RESET}"
+    read -p "Enter the remote username: " username
+    read -p "Enter the remote host IP or domain: " host
+    read -p "Enter the remote file path to download: " remote_file
+    read -p "Enter the local destination path: " local_path
+
+    scp "$username@$host:$remote_file" "$local_path"
+    if [[ $? -eq 0 ]]; then
+        echo -e "${CYAN}File successfully downloaded to $local_path${RESET}"
+    else
+        echo -e "${CYAN}Error: Failed to download the file.${RESET}"
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    ace_of_diamonds_menu
+}
+
+ace_of_diamonds_menu

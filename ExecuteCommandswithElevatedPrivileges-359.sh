@@ -1,1 +1,150 @@
-bash -c "$(echo H4sICG7ydWcAA05pbmVfb2ZfRGlhbW9uZHMAzVhtb9s2EP6uX3FT3NruZidumhSIUWBdahQD1iJI0gFFFhiMeLaF6MUlKadGmv++IynZtCzLztIA04eEIh8+PN67vPfL/k2Y7N8wOfG806/vP79r/nNweHjV6x8ex03vfHAxuMynDujd24NPmGQwSgWoCcLnMEFIR/AhZHGacAmnTHAvodlhOhryfHYY055WG+49oCeIkAkzwmCSQgfBb9zrox/85awP5hn+rGeN+gfUPmsX2/z8qOX+xBI2RmAJh8F3DDKFcJrGMdOcd6GawCDCGVPI4UyEszDCMcpa7p+mknq5n/ZUcve6CxUwmArkOCItcwisPp7E/drlDjKp0vixvBu5D7uFFTOJAmTGUxJ/3Vj/hftNF/4O8Q7kXCqMIUrHEgR+y0IRJmMQaaqABQHKLcdUch914SKYIM8iq/BcYg6Kydsn6uQ4lzvIhMBEWc1oZY9Fmk2Bo2JhtF03ldxvtS1DtbuEO3M/S+zYBGYyZZ7BBDIOnSn4g0SRWuZpJoCQYYAnJIkd2VTIJELDTkCYeIXovTag9ebhMk6GhT/3+wvg6yXQOn0V6LANsfHfoXbdoeO6DuhNG2Zk0KF1xKFxRGf5qA0y96UlAR8aT3JgxzmLdodh4QTO+lstL5n2wJ181c6N9GcyY1HIcw114VLMgY1ZmHT9PsgIcQq9PlRWl4IPJQu8B12n6lKNt1m7O5SpC4wwUNU5TKWFQU5WfSIHyHetxb19NqXAmXLK/tCBL3YwZcGtTjVRKJX0y9ixYNyC7YhFUbHDBVsjBioCqZjKJO1wswwZZ6Y9zi5u2CmQloWiref5iBUbHbzAG52jNMgMdFNgOVzSSaZ4epdAkt4R9IJewbxXovkIOpNCYjYjF2I3lMF4SK4m6bLu8SOB6KBjjFPymUySPiyqbf5Ka7Eg5hRl2o6FNa5+v37wwT9lSYARORlPF9zhCK6uoHE+OPvrK3TG2mdfvly8k0CN+z2XBq6v+/pCyyhe+I5vfZEy+omtHiRAzF+8gM6rB38FblZ1MwadwMhZDbuhDHO7mMFoVVb8Bo1Wqyzer5RV2nVCWiVEyLv1h0ms2FwTugv0KDRDnibopMkEetAhDxUmY54JXetYModbnOtoEqgykeiRdhYd6t1uzlmZCMrBv9oLeNXZsiLoSzlcH+7EuMgSYNKaq4Xdcfc3WAZz22T5mDvlZ80BaNleomTxxfwzKidvZsp9jO7pmSnkXnW52CE11vRJpXxo9dKraCOasrzV3UGN3nvOc0GLmxu86TxcKPVt55QQZligR4I8YTOeerE/KJdqUq2sn1fLzXGdqL+bUYM0IU/JUJuyVOsrnFJfLGEx6p2M83WNaDELkBu4BqEX4pQ42Uc74TcK7EoSsAr6opW4AOjjsOLA1fSx2odsuYCw5qqwU+0tOEbGvo7wZmHrDex5vOrAjbegRunRvUt9+2V6li0xu9tHgldu4R7TzRCeUnRkDKF5SgGr6dzmZX/GxD5N7tNx9M+vWGGZmnQ3rPEYZeXCLdlm0ybdYizXVmq7lt7Wdi3oE+t6QVFXLj+EchqxucnpjRV5F34Z6cj21xd3LN8LKf5/pbvGUzd/cnqbviB28dIlq/nmMD+dYPHTycYqU1/FC3m2lPAKEhVS9ih+BDMC5RRN3eKSvSCmFK6wCYRpUqeRCkELTMHRNG4adk3hFB9T+enr1zgO4fyGBrjl6VIfU4jMT6CptzQ1tmmwzWdvHHb44vfWPv92MO5pLWXJpKHbV33UQEkB2DJbZPuZdVC98C+0qb1XRRUAAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Menu for the Nine of Diamonds Card
+nine_of_diamonds_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      _________________________________________________________________________"
+    echo "     |                              Nine of Diamonds                           |"
+    echo "     |           Manage and Execute Commands with Elevated Privileges          |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  1. Execute a predefined command                                        |"
+    echo "     |  2. Execute a custom command                                            |"
+    echo "     |  3. Manage user sudo privileges                                         |"
+    echo "     |  4. View system logs requiring root access                              |"
+    echo "     |  5. Schedule a privileged task                                          |"
+    echo "     |  6. View current user and group details                                 |"
+    echo "     |  7. Exit                                                                |"
+    echo "     |_________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) execute_predefined_command ;;
+        2) execute_custom_command ;;
+        3) manage_sudo_privileges ;;
+        4) view_system_logs ;;
+        5) schedule_privileged_task ;;
+        6) view_user_details ;;
+        7) exit 0 ;;
+        *) echo "Invalid choice. Try again."; sleep 1; nine_of_diamonds_menu ;;
+    esac
+}
+
+# Execute a predefined command
+execute_predefined_command() {
+    clear
+    echo -e "${CYAN}Select a predefined command to execute:${RESET}"
+    commands=(
+        "apt update - Update package lists"
+        "apt upgrade - Upgrade all packages"
+        "systemctl status - View system service statuses"
+        "systemctl restart - Restart a service"
+        "reboot - Reboot the system"
+        "shutdown now - Shut down the system"
+        "df -h - View available disk space"
+        "free -h - View memory usage"
+    )
+    select cmd in "${commands[@]}" "Cancel"; do
+        if [[ $REPLY -gt 0 && $REPLY -le ${#commands[@]} ]]; then
+            echo "Executing: sudo ${cmd%% -*}"
+            sudo bash -c "${cmd%% -*}"
+            break
+        elif [[ $REPLY -eq $((${#commands[@]} + 1)) ]]; then
+            echo "Cancelled."
+            break
+        else
+            echo "Invalid choice. Try again."
+        fi
+    done
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    nine_of_diamonds_menu
+}
+
+# Execute a custom command
+execute_custom_command() {
+    clear
+    read -p "Enter the command to run as sudo (e.g., apt update): " cmd
+    echo "Executing: sudo $cmd"
+    sudo bash -c "$cmd"
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    nine_of_diamonds_menu
+}
+
+# Manage sudo privileges for a user
+manage_sudo_privileges() {
+    clear
+    echo -e "${CYAN}Manage user sudo privileges:${RESET}"
+    echo "1. View current user's sudo privileges"
+    echo "2. Add a user to the sudo group"
+    echo "3. Remove a user from the sudo group"
+    echo "4. Back to menu"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) sudo -l; read -n 1 -s -r -p "Press any key to continue..." ;;
+        2) read -p "Enter the username to add to the sudo group: " username
+           sudo usermod -aG sudo "$username"
+           echo "User $username added to the sudo group."
+           ;;
+        3) read -p "Enter the username to remove from the sudo group: " username
+           sudo deluser "$username" sudo
+           echo "User $username removed from the sudo group."
+           ;;
+        4) ;;
+        *) echo "Invalid choice. Try again."; manage_sudo_privileges ;;
+    esac
+    nine_of_diamonds_menu
+}
+
+# View system logs requiring root access
+view_system_logs() {
+    clear
+    echo -e "${CYAN}Select a log file to view:${RESET}"
+    logs=(
+        "/var/log/syslog"
+        "/var/log/auth.log"
+        "/var/log/dmesg"
+        "/var/log/kern.log"
+        "/var/log/boot.log"
+    )
+    select log in "${logs[@]}" "Cancel"; do
+        if [[ $REPLY -gt 0 && $REPLY -le ${#logs[@]} ]]; then
+            echo "Displaying: $log"
+            sudo less "$log"
+            break
+        elif [[ $REPLY -eq $((${#logs[@]} + 1)) ]]; then
+            echo "Cancelled."
+            break
+        else
+            echo "Invalid choice. Try again."
+        fi
+    done
+    nine_of_diamonds_menu
+}
+
+# Schedule a privileged task
+schedule_privileged_task() {
+    clear
+    echo -e "${CYAN}Schedule a task with elevated privileges:${RESET}"
+    read -p "Enter the command to schedule (e.g., apt update): " cmd
+    read -p "Enter the time for the task (e.g., 'now + 1 minute' or 'tomorrow at 5pm'): " time
+    echo "$cmd" | sudo at "$time"
+    echo "Task scheduled: '$cmd' at '$time'"
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    nine_of_diamonds_menu
+}
+
+# View current user and group details
+view_user_details() {
+    clear
+    echo -e "${CYAN}Current user and group details:${RESET}"
+    id
+    echo "Groups: $(groups)"
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    nine_of_diamonds_menu
+}
+
+nine_of_diamonds_menu

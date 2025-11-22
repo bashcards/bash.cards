@@ -1,1 +1,81 @@
-bash -c "$(echo H4sICIsgaGcAA1Rlbl9vZl9DbHVicwC9Vm1v2zYQ/q5fcXODNS4mJY6DoqixAZ3nYQXmoViMAMUGCIx0srlQpEtSboy2/31HipJfG9tFW36iqbvneM89vPOTHy7uuLy4Y2YWRcO3r/76+em/l/3+P71B/3n5NPp7dDOahKNL+h09gTHKCgqlwc4QJihBFTAU1Z2BIdN5ZFGmqkgzd5KWZHvehQ8R0MoEMu13mM0UxAidsw8u5KfO6rQDfqVfbe1gf4TH10ZKj6+PR4K/Nkowi/DKWpbdw0QpYaDQqoQ/lLFwszQWy+1ge8C/GinHXvxL1l7syYwbyEgfwIRQ7w0sVQVWgWEFiiXwQJD1zJC2TKb53BrgEjIlrVZCYP45cJQLrpUksZEHgc61sphZmDlyTSDX011JLkmgOWERrMF3FcoMTfLIzb8lK70Ehhpd4kw2IslhtEoH3nM7g99Udo/6ROyrFTbccm0rJmDMshmXCOe3465/wnVMruRp2P0E/mSVzGabiqZiMbhhMr9TD1/MyXUCowduj/E/EfubvJ66i/k2GdoYkZ5DPIfOiKSmndA1kCXP8CXdpN7V/ZAZhLP6gLiLmqv3upD5yqW5L3y6pm8YDFq7q9ZuUdc3LUN914z6XRC+VCmXqQm1Wft+3QV0dF+uHz7rBuJeywUTPA+3TmCil8CmjMukMwAjEOfQG8BOy2+w0LAs+uSGxvEyjz6b+xGDxIfhcuoC8SYQ7g+UJMlm4XhBTaEsiSOIF1DHhx9/uchxcSErIQZu4q3KtFVnNw3DQ+Ulm7peBhUV+ByTafIT3BOPseCyeug6GXiTFirE0pWEmGoRx7qklLxNpzWqK+LeBuUUIrneSNWgZIIkhcFtB62VftlezYBUltRmLHMtNYE3RKbB5qSxK7g2NoAWfE3XEnoQG4i1T/2NRmOI7CXc49JlrNFWWrqd48NpgWiuYXZUsqmMI5pUtF/uJ+kCgjM0b8VF4E2EA5pY0OOhvavuSbq4HYNkpZdEnYIbcSQOp4RFmbpvrfvtr+phXMeobRclCcK7d86CccdJBKecJpve51iqnBfLRbnpUWKp6P1eXV6/oF/ZvDJwtc+bhKDthvOWpLYr1djVniSqQ2IMABTysCDXbL+fKA9Nt2inpx4hwhrUq7DGtSvcgHJAf0QA/se4OE19DYD/u1UPgNCUZMnmvh0FkxalDRTH7yqOlsbUlkVdz2GAbj7TLMGscg1qI6tDevi9CXdQDa3l99LC7uH/ddvCCDINAAA= | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Menu for the Ten of Clubs Card
+ten_of_clubs_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      __________________________________________________________________________"
+    echo "     |                               Ten of Clubs                               |"
+    echo "     |                     Isolate Attack Tools from Host Systems               |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  This card allows you to safely isolate tools or scripts in controlled   |"
+    echo "     |  environments to protect host systems from unintended consequences.      |"
+    echo "     |                                                                         |"
+    echo "     |  1. Create an Isolated Environment with Docker                          |"
+    echo "     |  2. Create a Virtual Machine (VM) for Isolation                         |"
+    echo "     |  3. Launch Attack Tools in a Sandbox                                    |"
+    echo "     |  4. Exit                                                                |"
+    echo "     |_________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) create_docker_environment ;;
+        2) create_virtual_machine ;;
+        3) launch_in_sandbox ;;
+        4) exit 0 ;;
+        *) echo "Invalid choice. Try again."; sleep 1; ten_of_clubs_menu ;;
+    esac
+}
+
+# Create an Isolated Environment with Docker
+create_docker_environment() {
+    clear
+    echo -e "${CYAN}Creating an isolated environment with Docker...${RESET}"
+    if command -v docker &>/dev/null; then
+        read -p "Enter the Docker image to use (e.g., kali-linux): " image
+        docker run -it --rm "$image"
+        echo "Exited Docker container."
+    else
+        echo "Error: Docker is not installed. Please install Docker first."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    ten_of_clubs_menu
+}
+
+# Create a Virtual Machine (VM) for Isolation
+create_virtual_machine() {
+    clear
+    echo -e "${CYAN}Creating a virtual machine for isolation...${RESET}"
+    if command -v vboxmanage &>/dev/null; then
+        read -p "Enter the VM name to create or use: " vm_name
+        VBoxManage createvm --name "$vm_name" --register
+        VBoxManage modifyvm "$vm_name" --memory 2048 --cpus 2
+        VBoxManage startvm "$vm_name"
+        echo "Virtual Machine $vm_name started."
+    else
+        echo "Error: VirtualBox is not installed. Please install VirtualBox first."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    ten_of_clubs_menu
+}
+
+# Launch Attack Tools in a Sandbox
+launch_in_sandbox() {
+    clear
+    echo -e "${CYAN}Launching attack tools in a sandbox...${RESET}"
+    if command -v firejail &>/dev/null; then
+        read -p "Enter the command to sandbox (e.g., nmap): " command
+        firejail --quiet $command
+        echo "Command $command executed in a sandbox."
+    else
+        echo "Error: Firejail is not installed. Please install Firejail first."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    ten_of_clubs_menu
+}
+
+ten_of_clubs_menu

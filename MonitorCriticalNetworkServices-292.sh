@@ -1,1 +1,75 @@
-bash -c "$(echo H4sICDIDXGcAA1F1ZWVuX29mX0hlYXJ0cwC9V1Fv2jAQfudX3DIk6KaEAe0eQJ02oVbbw7qunSZN3VS5wYBHsKnt0Eal/31nJ4SGhEBZWz8Q2zjf3X333SV5/apxxXjjiqhRpdL79enksPb7Xbt90ey2309qlbOj86MfydY7XFcmgjMt5KWicsZ8qup7cFcBHDcjFlDQMqRd6Au7ZYYfUCLTFfVHAlwKTvXO2Lp3sv84dnr5ZKMIfg4bxveQUg5iAJ/Rc61KTs63x/8a0wY9yTTzSQAnVN8IOYbzhMft8Z+Onkf4v9NYh/9tqpngqvNc+E0PeiPqj0GPKChNdKhMPv0F96qE823wW16aT56kMYVkHCQlgavZhO6K3/bgjKLfUgOBAcG66i8MPAk/+x78ZPQGiK/ZjKYx+IJz6tvU/B/+gfFfh5KDFjAhSMmE8vBRrpfgP5/+48ZkWx52pvQ/zGcf3Ck4R1xTCZEIJeBxzEYHXYpny35HFIVqvIliSPfNaO5llvZ4pj0WeGPbpFUz48MyMXuet/R9FXBx6LDuKDVywCFT4o9oC2d8yPgtXieRug7wOhVKDyU1i7y7A5T8QomYVvRvgXzx8c+9k+n8DwcbgIqUphNfBxAwpd0Q60eB6w7CIACX4M8c0OwU3ONrxE1gERFrmBdi2rgsH4fV+hKdKTfR9RIlH0iG6fRgB6oxYp5BezhQdGukE6GRIoQLsHyL8QYst90XPG8iFiCHJrhImbRaPMUUKSA8gjGNTJ3JtOJM1zMFh4rI2+12M1utXSWZNEAjyvIeWO9pGbztGceUFtO9TolKw76Av1henAQmle4A3BBQsOaSKNZMrWTNxGrWTJaifUny2ruSl3R3Q95qgy8t45VOZHzlBDnGfmAfdUll2oCsBdOgkt1LczKHmCnM5Kaliu09DrQ+NPp01uBYqiX1GBdA8j4DtQxGbYFtAg19FIkyhR8VcLy2yGL845itZYhp1CsWF+8AGCHTQG+x6agCcwU1+IyK2d9VMeZ5beWy9pG9qa7wFtPbwNVhwKcwn8fbGFW885I0HORpiLMbvzaYQB++ORRCXqF/402G3qwz9IXPSMD6ydPbg1PMgjKfLxGQIdotMLgVH5gQLOuQbmKBKuLbhW349/nvqso/r6tjS5kNAAA= | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+monitor_services() {
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "     __________________________________________________________________________"
+        echo "    |                                Queen of Hearts                           |"
+        echo "    |                     Monitor Critical Network Services                    |"
+        echo "    |__________________________________________________________________________|"
+        echo "    |                                                                          |"
+        echo "    |  Options:                                                                |"
+        echo "    |  1. Check the status of critical services                                |"
+        echo "    |  2. Monitor network services in real-time                                |"
+        echo "    |  3. Restart a failed service                                             |"
+        echo "    |  4. View active network connections                                      |"
+        echo "    |  5. Return to main menu                                                  |"
+        echo "    |__________________________________________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Enter your choice: " choice
+        case $choice in
+            1)
+                clear
+                echo -e "${CYAN}Checking status of critical services...${RESET}"
+                services=("ssh" "apache2" "nginx" "mysql" "postgresql")
+                for service in "${services[@]}"; do
+                    if systemctl list-units --full -all | grep -Fq "$service"; then
+                        status=$(systemctl is-active "$service")
+                        echo "$service: $status"
+                    else
+                        echo "$service: Not installed"
+                    fi
+                done
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            2)
+                clear
+                echo -e "${CYAN}Monitoring network services in real-time (Ctrl+C to stop):${RESET}"
+                sudo journalctl -f -u ssh -u apache2 -u nginx -u mysql -u postgresql
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            3)
+                clear
+                echo -e "${CYAN}Restarting a failed service...${RESET}"
+                read -p "Enter the name of the service to restart: " service_name
+                if systemctl restart "$service_name" 2>/dev/null; then
+                    echo "Service '$service_name' restarted successfully."
+                else
+                    echo "Failed to restart service '$service_name'. Check if it exists."
+                fi
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            4)
+                clear
+                echo -e "${CYAN}Viewing active network connections:${RESET}"
+                sudo netstat -tulnp || sudo ss -tulnp
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            5)
+                echo "Returning to main menu..."
+                break
+                ;;
+            *)
+                echo "Invalid choice. Please try again."
+                read -n 1 -s -r -p "Press any key to continue..."
+                ;;
+        esac
+    done
+}
+
+monitor_services

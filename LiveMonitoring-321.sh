@@ -1,1 +1,65 @@
-bash -c "$(echo H4sICJTIXWcAA1F1ZWVuX29mX1NwYWRlcwDVVl1v2jAUfc+vuEsrdXRKKKXdA2gPE2PSpHXaSl+mbqqMc0OsJXZkO1DU9r/PJiEhNJQPVZN2H5DtxMfH5557ydGb9pjx9pioyHEGPz9++3Dy66zbve30u++TE+d6OBreFEtnZu4cweeMU80EBy0gEZxpISFmUwQ1VxoToBHhE1RO8eyumL9twYMDJmiMRC5GSCMBHoJ7/GBPfnKrVdeO4O4VYx38ERrjR4bIQYQwSkmAqgdf7dWu8rswPmnc9PgM/BWJPwdvZn5QNIDfREyZ3IoYUimmzIgAIrUJV88yXqTWrutoaQD/JfARxkg1EF5g2q1jnDC+BDYS9w5k/h9rDh1/6bFc2ZDFlbxGnfaUyHYsmu23Dfy8AjcppagUUIlkoT/hAWiUCeP5fG/wbgXOUc+E/ANUcI40t4zhbo6KPc0S3B/8ogJf8RoBlSJlIaMQMGlOEnJ+gCyXPgzvmd6yc4f4Z1bMe+WiJ5tmuVg34gbgpeAOuUkjzEVmpRKMYs9wyUd52yUK4ThfMFlxluQ7LWf1LlV3XkZ+rZUO+KJBffgurcEGWsbvBjZbSovUd2uQKgtMxyAsBi8sd7ZPffNbe6/fL6fne9PcZvXdmeI9UsWFSDeR6+5Nblup7E7OvOTpdGYMPSOaRuBx6GzieVHnueYd28Kreqp6vTVSuV4DYCHcghcYU5bPXfjdt0i89mKzKo3KrNR5CdqD6oCdlCnVYVxoFs5nxNS5l4Ana1zrOYoVbqD3qVTFwEEoMh74cI06k9xStlIhz3x/jUXINiXistVgD9uMyvqq/g7XQOXi2E3Ap03AX/iUxCwousEuzAtEVIQ6T/aj74oYdyoqWaoX5ZBZy65/4jl5iv8COLKVFFMKAAA= | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Function to monitor live system changes
+monitor_changes() {
+    clear
+    echo -e "${CYAN}"
+    echo "     ____________________________________________________________________________"
+    echo "    |                      Queen of Spades: Live Monitoring                     |"
+    echo "    |___________________________________________________________________________|"
+    echo "    |                                                                           |"
+    echo "    | This tool provides options to monitor live changes to the system.         |"
+    echo "    | Select an option to begin monitoring:                                     |"
+    echo "    |___________________________________________________________________________|"
+    echo "    |                                                                           |"
+    echo "    |  1. Monitor live file changes in /var/log                                 |"
+    echo "    |  2. Monitor process creation and termination                              |"
+    echo "    |  3. Monitor network connections in real-time                              |"
+    echo "    |  4. Monitor changes to a specific directory                               |"
+    echo "    |  5. Exit                                                                  |"
+    echo "    |___________________________________________________________________________|"
+    echo -e "${RESET}"
+
+    read -p "Enter your choice: " choice
+    case $choice in
+        1)
+            clear
+            echo "Monitoring live file changes in /var/log. Press Ctrl+C to stop."
+            sudo tail -f /var/log/*.log
+            ;;
+        2)
+            clear
+            echo "Monitoring process creation and termination. Press Ctrl+C to stop."
+            sudo execsnoop
+            ;;
+        3)
+            clear
+            echo "Monitoring network connections in real-time. Press Ctrl+C to stop."
+            sudo ss -tpw | watch -n 1
+            ;;
+        4)
+            read -p "Enter the directory to monitor: " directory
+            if [ -d "$directory" ]; then
+                clear
+                echo "Monitoring changes to directory: $directory. Press Ctrl+C to stop."
+                sudo inotifywait -m -r "$directory"
+            else
+                echo "Directory not found. Returning to menu..."
+            fi
+            ;;
+        5)
+            echo "Exiting live monitoring."
+            return
+            ;;
+        *)
+            echo "Invalid choice. Returning to menu..."
+            ;;
+    esac
+}
+
+# Main script execution
+monitor_changes
+clear

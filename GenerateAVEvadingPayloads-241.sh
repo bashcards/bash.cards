@@ -1,1 +1,76 @@
-bash -c "$(echo H4sICBm7cGcAA0FjZV9vZl9TcGFkZXMA7VVRa9swEH73r7i5ZV0Glpum7CFhg1LCGGyjrKUwNjCKfU5EFclIsrPQ9r9PsuMkTtokW9I97Z6ck/Kd9H2n745ehQMmwgHVI8+7/H7x9f3Jz9NO50e713k3PvG+9a/7N7PUqf3tHcEXFDmkUoEZIVzECDKF64wmqOGSqsSjMUYyjXSZisZ295sW3HtgI+ZIVfmF8UhCgOAf37uij/4i60MZ0aFiDfoBNkbzShvjYVfsjyhQUWP5ug36BU2YGMIVnXJJk+dKPIF9MEp2PvdfxJPYNyOmIbbdAZmSBXPEUgFMGFSp7RcwEoY1RVnNixlRA2jZwo3YVBhWMJVrSNBgbJgUkGvH8C0yTvY694Hin2O3yaLlaM3ogbDPCHxm2gAtKON0wJcU2xu7Q+CW4aRUDhIZ59Y+DC0l3Rv7nED/FzN/BLQb9ou8y8ocS/+duaNCq2GQgd937wamMldgd7IYu/Yk1Vdls1QjHFcJ+8i8+ujt1vyVRXVP9Hrz5bMWcCtsNJdzaa3TgsIKEzU1Wdpw3gJ07J4uJ9+2Zjx9EgXlLJkdksCNmgIdUiaI3wPNETNo92B9ctRgqGnsPbrps97W3uqddhg3MxRnEnMcQkiTb5ZCLMdjKizrBRSuJV9/CBMsQpFz3nPzb8GtW65KcY3z7GrdvlJSdav2to4opLH6aEM5x2Sl+qLJruw1NNYbqz8PpnYEcy4n7gpuELtVlZfuZ73VwMiYTHfDcDKZEHe2IFV0jBOp7oi9VEiqIilb6iwBbQg0BKpssiuF2rn0FO5w6gxaocmVcF+unlPHMlbBrAtXifWMT3iNNttBLodTarUGtb9oEPzXbVW3ZzzYW7eAHcRzYPU0buJtEe9XMgxkhmKDgPMt/hbeGnVDf7viM/EKppnpblOlid6804tK9UT2N+in/u/RCwAA | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Menu for the Ace of Spades Card
+ace_of_spades_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      _________________________________________________________________________"
+    echo "     |                              Ace of Spades                              |"
+    echo "     |                      Generate AV-Evading Payloads                       |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  This card provides an interface to generate payloads that evade        |"
+    echo "     |  antivirus detection using Veil.                                        |"
+    echo "     |                                                                         |"
+    echo "     |                                                                         |"
+    echo "     |  1. Generate a payload                                                  |"
+    echo "     |  2. List available payloads                                             |"
+    echo "     |  3. View Veil documentation                                             |"
+    echo "     |  4. Exit                                                                |"
+    echo "     |_________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) generate_payload ;;
+        2) list_payloads ;;
+        3) view_documentation ;;
+        4) exit 0 ;;
+        *) echo "Invalid choice. Try again."; sleep 1; ace_of_spades_menu ;;
+    esac
+}
+
+# Generate a payload
+generate_payload() {
+    clear
+    echo -e "${CYAN}Generating a payload...${RESET}"
+    if command -v veil &>/dev/null; then
+        veil
+    else
+        echo -e "${CYAN}Error: Veil is not installed.${RESET}"
+        echo "Please install Veil by following the instructions at https://www.veil-framework.com/."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    ace_of_spades_menu
+}
+
+# List available payloads
+list_payloads() {
+    clear
+    echo -e "${CYAN}Listing available payloads...${RESET}"
+    if command -v veil &>/dev/null; then
+        veil -l
+    else
+        echo -e "${CYAN}Error: Veil is not installed.${RESET}"
+        echo "Please install Veil by following the instructions at https://www.veil-framework.com/."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    ace_of_spades_menu
+}
+
+# View Veil documentation
+view_documentation() {
+    clear
+    echo -e "${CYAN}Viewing Veil documentation...${RESET}"
+    if command -v xdg-open &>/dev/null; then
+        xdg-open "https://www.veil-framework.com/documentation/"
+    else
+        echo -e "${CYAN}Please visit: https://www.veil-framework.com/documentation/${RESET}"
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    ace_of_spades_menu
+}
+
+ace_of_spades_menu

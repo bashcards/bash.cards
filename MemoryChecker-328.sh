@@ -1,1 +1,64 @@
-bash -c "$(echo H4sICGIeXGcAA1NpeF9vZl9DbHVicwC1ll1P2zAUhu/9Kw6FrbApaUthF+2YNHWV2AUMtexi2iRw01Ni4diZ7bRkwH+fHQdoS8rHBpYquU7ynPfkvD7O+lpjxERjRHVMSO/H58O9+q9mu/2z1W1/SOpk0B/2j8ulpv1Pohij85MEE6nyEzqljNMR48zkm1twScCOiCNVxQyjWEKAUNu4dOTr2t1qzc3g5OXGMvsKVo8huwA5gR7PRroDB0Uu0HOJoaq6/+oe/AWF34c/oPy5owJ+HDMNRkoOqZJTNkYNU6qYzDTI1DAp3FUoygxUjO2P8vwPgi85ZJqeYbgK/qrKv3l5nVeBQyuEL0ynnOagsyShNlfrkfms/wO+HcIwlrNF3IyZGOIsoSJQSMd0xNGWgme2Is+Ct0M4kIIZqcByeGBYgv8ivBK+U6U8tfvEuidC/YDUJ8B3Q+hfMPNkxjPgr7RDfTcruqJtZ8W6qx0EKdT6wtj3kstM2e0jWYQdq8XPfGOkGmHDLwAT5EZ8a4vM5+KTKLvS9+J9D70hO7WFGycKcWGh2739u/0oc3O/cN6gdN5WBRyCeBW/XcUfOPcdO/ctRjpSzig9o/j7nmsu2sh0Od6MmiiGQEDrsdA7j6Z2ZMtw5O25FMXfXKUnXLwx1UCzCwgCLZXZC95Y+1vD0tk51A8HH/dazctUMWFgo3ldXyV0t0qo8zsTZ0unzlJ0hSZTYhX3XRX3q7Ctg41Lv4UwKBAukk0wQZGF4VKQkoiaRmRu9/iXQ0UO55i7h70YNzMxLqK89V3NAk2uCVmHvtCZQjh1NTyFSFrf2jPEnjjlpwJHwiawdnslmPpyv/0EjTFOGyLjvOsCiTlJfaWk6tiUfmdM4fj24bp7tO7oQpq7COGNimIr6lwbW7yYarCdhgltKOc4LjNA135aZMKc+APKBOhIsdTYCxhl7rxZ/cVD/JfOXzO01dRCCQAA | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+check_memory_availability() {
+    clear
+    echo -e "${CYAN}"
+    echo "     ___________________________________________________________________________"
+    echo "    |                           Six of Clubs: Memory Checker                    |"
+    echo "    |___________________________________________________________________________|"
+    echo "    |                                                                           |"
+    echo "    | This tool provides various options to check and analyze memory usage.     |"
+    echo "    |                                                                           |"
+    echo "    | Options:                                                                  |"
+    echo "    |  1. Display summary of memory usage                                       |"
+    echo "    |  2. Show memory usage with human-readable values                          |"
+    echo "    |  3. Monitor real-time memory usage                                        |"
+    echo "    |  4. Show memory usage per process                                         |"
+    echo "    |  5. Exit                                                                  |"
+    echo "    |___________________________________________________________________________|"
+    echo -e "${RESET}"
+
+    read -p "Enter your choice: " choice
+    case $choice in
+        1)
+            echo "Memory Usage Summary:"
+            free
+            ;;
+        2)
+            echo "Memory Usage (Human-Readable):"
+            free -h
+            ;;
+        3)
+            echo "Real-Time Memory Usage (Press Ctrl+C to stop):"
+            watch -n 1 free -h
+            ;;
+        4)
+            echo "Memory Usage Per Process:"
+            echo "Press Ctrl+C to stop."
+            ps aux --sort=-%mem | awk 'NR<=10{print $0}'
+            ;;
+        5)
+            echo "Exiting Memory Checker."
+            return
+            ;;
+        *)
+            echo "Invalid choice. Returning to menu..."
+            ;;
+    esac
+
+    echo "Press any key to return to the menu..."
+    read -n 1 -s
+}
+
+# Ensure `free` command is available
+if ! command -v free &> /dev/null; then
+    echo "Error: Required command 'free' is not available. Ensure your system has it installed."
+    exit 1
+fi
+
+# Main script execution
+check_memory_availability
+clear

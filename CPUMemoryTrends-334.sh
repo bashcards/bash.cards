@@ -1,1 +1,68 @@
-bash -c "$(echo H4sICKEhXGcAA1F1ZWVuX29mX0NsdWJzAL1W21LbMBB991cs4RJosUMI7UMydIZJMy0PtJRCZzq0wyj2QjTIkivJoeHy713ZDiSOQzoUqidFWZ09e/YiLy81+lw2+swMPK/7fe/Tbv3HVqt12uy03sZ176j3tXdcHG3Rby9M0rMYY6VHZ1ajjMz6Btx4QCsUyHS2w3CgwEeordw4xLvaw2nN7eDs+VYZ+xYq15cUUYI6h65I+6YN3cMTWIODLBA4zgKZvXQ7A/6MxGfBq5k/aVWAHw+4gZDpCJgQ6srASKVgFXBpEgxtpgiTEeTJhdSwCwQ1RA2Wxxg8Dn5iEOyA7BPLlTTQR3Lh0GMluVU6Q2aSidE1gkajUh3SjUz3YBHzF5Xlc864/SLg0AzgG8crCpkJ3+lYLfPTwLcD2CskpdySyjxkouzAzqntReCtAPaLykhQ+4lWIRrzBPpV4DsB9H5z+xdxL1j/rUPzaZZNQxpn2TnlNAI/gVpPWuoSaicNZMpDbBOXfJcPRkbdsZIfULt5Y/LNDW8yljyIo0crpV2bumJVAr6EJmk6yNjQ/s2URadz/3O7yt3HBYVTcphf+oASNbNcXkDTj7lMrYuLRBgyYeCc2r2KewCHOishq8XrrhsO5DoJph0YpsFPoTkviNZ0EKUcuBEkGWlHg97tx1U7MebWiR09VEOEvmDyMmNLA3HD5awwn/LAz+EU/GvKfvFvDX52HLicMnsQ5z03iWAjJ05lsxQOx86wLLFbiaGCU5DwaDNUcby5Sq/u5irBgO8bpe2u707mZx2FwX+gV1Brw33MlQy7k6L4C+lOYZzzeRneqSpTNy3GlEvPdqmANNpUy3ngr6rA9yXVLY+Klg3gKINw7twDhjINgpKTAhENC72JAZTXN5MjuMSRu5yTcTtXjVNQepw58I1353nL0JMm1VS/6ARlFJ/TkrnhzeiYDRkXrC/QcxkK44gqOut/ygRZdyBSGS7V69L4JvhDShHZ1mDtHTQiHDZkKkSpfAuFtVa6TbH/SrnG6B6i7u7Xgb4dpLIPLCYEQTfJ84alrEZKoovmgBE/E2qeWLLAMHXP7OzXo5d/Nf4B1cseyoYKAAA= | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+cpu_memory_trends() {
+    clear
+    echo -e "${CYAN}"
+    echo "     ___________________________________________________________________________"
+    echo "    |                      Queen of Clubs: CPU & Memory Trends                  |"
+    echo "    |___________________________________________________________________________|"
+    echo "    |                                                                           |"
+    echo "    | This card allows you to inspect CPU and memory usage over time.           |"
+    echo "    | Use the options below to monitor and analyze resource trends.             |"
+    echo "    |                                                                           |"
+    echo "    | Options:                                                                  |"
+    echo "    |  1. View real-time CPU and memory usage                                   |"
+    echo "    |  2. Analyze historical CPU and memory trends                              |"
+    echo "    |  3. Inspect per-process CPU and memory usage                              |"
+    echo "    |  4. Exit                                                                  |"
+    echo "    |___________________________________________________________________________|"
+    echo -e "${RESET}"
+
+    read -p "Enter your choice: " choice
+    case $choice in
+        1)
+            echo "Real-time CPU and memory usage:"
+            top -n 1 | head -n 15
+            ;;
+        2)
+            echo "Historical CPU and memory trends:"
+            echo "Generating 1-minute intervals for CPU and memory usage. Press Ctrl+C to stop."
+            sar -u 1
+            ;;
+        3)
+            read -p "Enter the name of the process to inspect (or leave blank for all): " process
+            if [ -z "$process" ]; then
+                echo "Displaying CPU and memory usage for all processes:"
+                ps -eo pid,comm,%cpu,%mem --sort=-%cpu | head -n 15
+            else
+                echo "Displaying CPU and memory usage for process: $process"
+                ps -C "$process" -o pid,comm,%cpu,%mem --sort=-%cpu
+            fi
+            ;;
+        4)
+            echo "Exiting CPU & Memory Trends."
+            return
+            ;;
+        *)
+            echo "Invalid choice. Returning to menu..."
+            ;;
+    esac
+
+    echo "Press any key to return to the menu..."
+    read -n 1 -s
+}
+
+# Ensure necessary commands are available
+for cmd in top ps sar; do
+    if ! command -v "$cmd" &> /dev/null; then
+        echo "Error: Required command '$cmd' is not available."
+        exit 1
+    fi
+done
+
+# Main script execution
+cpu_memory_trends
+clear

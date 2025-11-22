@@ -1,1 +1,69 @@
-bash -c "$(echo H4sICPHwXmcAA0phY2tfb2ZfU3BhZGVzAM1W32/aMBB+56+4sUpdt4UU6PZQtElVh9ZO3VQNXqZuQsY+iIWxM9uBsrb/+y4hpaSkQNuX+sm+i7/78d2d8/pV2Jc67DMXVSrHv45+fNr9vd9sXtRbzY/j3crPdqfdzUX7dK54xr3krufkOFHMG/tmD64qQGsaSYXgbYItECYTpYsrZHZxQh4ZCBCqO1epsZtqUVPNtr3HrDKEa7i3vjE+AjOATswEunvK63KIdhYgQnce8XvoklbLvwnSnmkB59ZwFIklwHKIR8XxgBePWQ9B1GvQkXk0xxYFai+ZghNmJ+i81MPNEI0ahe88nBGGpbvfzQTHhLOUlE0QzdoipV+YZ9C+HEjlLfPS6C0DOSCIS+mfnotnMTIv26wjqG4XOotMQBBD9TgykuMhmeLZ7q4FmEPYmQtB6oU8XfW9wjH7vNAxJS5knZMzmrJXymmtVrtzthSMHEY+SgEGxoKLmDBTGKRNzDhH5whh9aYcwAUEFkL0PMzv/GmBj1CvfFvm9lEGDd4UEAR65B7FqzUuK4fPsqAlijUpGciNKT/yHsdxlnJC5yz21PyQOLTAFxQ4mEgGnc4JKDN0a1kYWowhkFBN8x1T+BAz56bGiiqEE2ZDQghZ4qMabe4kDnlqt/E5FDgJdaIU9YZnUkGgobG/MYxzm+aH6RmMcJZFYshzneBaZ+dlrqEOgVtRtloFUeOpRd3N59GaMbNFXXfIFI9uCzulggItL+eBpEEeUlxsTF5I0bOOVSEwSxJRlIy0mepeZJx31XscKMrrAy4VS0dJGqVTKz3rU7cJaan4jZU0Q1OHVR78OA9+reN+FhMCBAu0oktRztqLKIvmU8uivRh1Ky/HFuVwZvj8smJ2iNmEy8aDu30TsYi3IdkDilT+Q3hX/7o9/7eFbRLfNwmhUXI1sU4WHU2QVEVNrUqtpwoITh1E3seHYYiXbBwrrHEzXmL4wwsg+GCV4BUq6f3e9Dr1yeZok623m22d6glTUuTPMf3B2BmwIZN6je0lK+gYzw7CaKzclPz7Vv4DG3Zy+D4LAAA= | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+tactics_simulator() {
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "     _____________________________________________"
+        echo "    |                Jack of Spades               |"
+        echo "    | Emulate Tactics, Techniques, and Procedures |"
+        echo "    |_____________________________________________|"
+        echo "    |                                             |"
+        echo "    |  1. Simulate Credential Harvesting          |"
+        echo "    |  2. Test Lateral Movement Techniques        |"
+        echo "    |  3. Emulate Data Exfiltration               |"
+        echo "    |  4. Exit                                    |"
+        echo "    |_____________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Choice: " choice
+        case $choice in
+            1)
+                clear
+                echo -e "${CYAN}Simulating Credential Harvesting...${RESET}"
+                echo "Checking for shadow file access..."
+                if [ -r /etc/shadow ]; then
+                    echo -e "${CYAN}Access to /etc/shadow detected!${RESET}"
+                else
+                    echo -e "${CYAN}Access to /etc/shadow denied.${RESET}"
+                fi
+                echo -e "${CYAN}Attempting to capture user credentials via SSH logs...${RESET}"
+                grep -i "accepted password" /var/log/auth.log /var/log/secure 2>/dev/null | tail -n 20
+                echo -e "${CYAN}Press any key to continue...${RESET}"
+                read -n 1 -s
+                ;;
+            2)
+                clear
+                echo -e "${CYAN}Testing Lateral Movement Techniques...${RESET}"
+                echo "Searching for SSH keys..."
+                find / -name "id_rsa" -o -name "id_dsa" -o -name "known_hosts" 2>/dev/null | less
+                echo "Attempting to list writable directories for lateral movement..."
+                find / -type d -writable 2>/dev/null | head -n 20
+                echo -e "${CYAN}Press any key to continue...${RESET}"
+                read -n 1 -s
+                ;;
+            3)
+                clear
+                echo -e "${CYAN}Emulating Data Exfiltration...${RESET}"
+                echo "Locating large files to simulate exfiltration..."
+                find / -type f -size +1G 2>/dev/null | less
+                echo "Testing outbound connections using curl..."
+                curl -Is http://example.com | head -n 5
+                echo -e "${CYAN}Press any key to continue...${RESET}"
+                read -n 1 -s
+                ;;
+            4)
+                echo -e "${CYAN}Exiting...${RESET}"
+                break
+                ;;
+            *)
+                echo -e "${CYAN}Invalid choice. Try again.${RESET}"
+                ;;
+        esac
+    done
+}
+
+tactics_simulator

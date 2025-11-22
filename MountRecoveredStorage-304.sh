@@ -1,1 +1,74 @@
-bash -c "$(echo H4sICJUVXGcAA1Rlbl9vZl9EaWFtb25kcwDFVm1P2zAQ/p5fcQRE6bSmlKJ9aLVJE+ukSWObgE2aGEKu41KLxK78Uqgo/33nOC1Jk2rlTfOHyHbs557zPT7f9lZ7yEV7SPQ4CI5+f/z2vvFnv9s97/S779JGcDI4HZzlU/s4DrbhsxXUcCnASEilFQYUo3LKFItBG6nIFQuy+ct8tNeEuwCw0YQRlfUYHUtoMQh37pzN+/BhNnQ9uHy5too9h0o7YwLkCD5xkkoR6x4cZ36dLP069Z5UNs4r4C9IvApeZf7kVgN+NmbQyCLXACrTlIgYSJLIGw0zaV24iTGEjoEUIj7iCQM904albgUuVLXg+ZKRVBATQ4BQyrQGZyMHmwF++IhT4tQVPYb5qx7L94njg6J4DXDoRLnYyOLyQMymnFa19gTwgwh+cXYD1CrFhElm/sJi2LwN/RzwbgQ/RfoC3OvADyMY3HLzOKDNwF/phvpsluVLTGfZvGIkhtYEwgGeufJ3A5fiAfWQi+/5xEg0gx0/AVwEC/KdZlD0xTtRL5coisLS4hXjZrwMzoSYMeyx6Cp6C22ca+t42Gk6Sn7Bv2B8zCeS43cBkwrTXiaFDMs/AdmqEiAfwfk5tATs5HR2d7NRYT1cXPSdJVHa6Jq2MT461zFXGafiprCyuHBcXFwt7RFTMlY5uAc7mZ9hvi9cMed4ewunNstlI5sULtg6a2VbLNFsDe8vYkoSHqMcJtZE+BYZq4Tzwz27TNgVpBEvDfv95fCgTkRH6zJCrwzrz2CO70FiUwEts85Kt87KuvywiViLKkOXbQ71HMFtJLES80w3G4nFLtSygUZyX5xK/q80DuuC5vKuA/MOGSmTSrCcvXWYb+owF4x9iqujvHqwOSLThAaFDP5D+aphBtds5jZ7Mq6XiaYI5UUloAMtHdy70nUgtFULaXHEmRKekCFWMHt6LG0SwxDTo2ItLrTB0gcjhHVuKrWBr1zY27yK0c0ARbW1LJJa0xxy94NPqALDXJBXfq5KSdWrVFhIQ0jzQCXCOgznKFF4XES4f0jKas/FuH+eRe4lc89kJ8Ago4PHhAvQVPGJwR+MWle6lKvxwFfhfwHQJmIO+AsAAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Function to mount recovered storage
+mount_storage() {
+    clear
+    echo -e "${CYAN}"
+    echo "     ___________________________________________________________________________"
+    echo "    |                  Ten of Diamonds: Mount Recovered Storage                 |"
+    echo "    |___________________________________________________________________________|"
+    echo "    |                                                                           |"
+    echo "    | The 'mount' command allows you to attach a recovered file system to your  |"
+    echo "    | system for data access and recovery verification.                         |"
+    echo "    |                                                                           |"
+    echo "    | Options:                                                                  |"
+    echo "    |  1. Mount a storage device                                                |"
+    echo "    |  2. View currently mounted devices                                        |"
+    echo "    |  3. Unmount a storage device                                              |"
+    echo "    |  4. Exit                                                                  |"
+    echo "    |___________________________________________________________________________|"
+    echo -e "${RESET}"
+
+    read -p "Enter your choice: " choice
+    case $choice in
+        1)
+            echo "Mount a storage device..."
+            read -p "Enter the device path (e.g., /dev/sdb1): " device
+            read -p "Enter the mount point (e.g., /mnt/recovered): " mount_point
+            if [[ -n $device && -n $mount_point ]]; then
+                sudo mkdir -p "$mount_point"
+                echo "Mounting $device at $mount_point..."
+                sudo mount "$device" "$mount_point" && echo "Successfully mounted $device at $mount_point."
+            else
+                echo "Invalid input. Returning to menu."
+            fi
+            ;;
+        2)
+            echo "Currently mounted devices:"
+            mount | column -t
+            ;;
+        3)
+            echo "Unmount a storage device..."
+            read -p "Enter the mount point to unmount (e.g., /mnt/recovered): " mount_point
+            if [[ -n $mount_point ]]; then
+                echo "Unmounting $mount_point..."
+                sudo umount "$mount_point" && echo "Successfully unmounted $mount_point."
+            else
+                echo "Invalid input. Returning to menu."
+            fi
+            ;;
+        4)
+            echo "Exiting mount tool."
+            return
+            ;;
+        *)
+            echo "Invalid choice. Returning to menu..."
+            ;;
+    esac
+
+    echo "Press any key to return to the menu..."
+    read -n 1 -s
+}
+
+# Ensure mount is available (should be pre-installed on most Linux systems)
+if ! command -v mount &> /dev/null; then
+    echo "Error: 'mount' command is not available. This card cannot be used on this system."
+    exit 1
+fi
+
+# Main script execution
+mount_storage
+clear

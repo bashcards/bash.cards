@@ -1,1 +1,96 @@
-bash -c "$(echo H4sICEjoXmcAA1Rlbl9vZl9IZWFydHMA3Vdtb9owEP7Or7gxJNqqpFDaaiqqNMTYWmmropVNmroKmcQBq8HOHENHS//7fElISBMC1aim9T4AduJ77uW58/H2zcGA8YMB8UelUudH+/Ks+rPebF43Ws2TcbX0tXvV7UVbdb0uEU7c2T3texbx+g5zqb+zCw8l0HI30ktQckJbYItgC8VyKZHxilojATUK5coDoj2W00/Kwc/+5pJ3fg4p6VEOwoFzbYby4YnMCxW0Q2/BJNYtVdAhnppICh/R70IFz/Cg2IINZJWChgGfma+ATAlzyUDnxuy0TXCWjC9WcGjAd0bvwmP+ZDwmcvYsC5oGhkpRCV4QQB8GM/CkUMIS7iYKjgzo/laSWArOez1Tk4s4DrM2t+DYgCudd2sEjpDge9RieP7CBGLbkvr+IhSrFJygBUzlR369BX/Bg7BIggLUVRI/k5TYUPOg3BkJZtFTDWQFv5KCIz6FSrgJjMf7KI3d1DJ4PVWfOSYEdYpMYnyYTybGQY0oWBMpKVdgM0ktJeTMMIzEg6cISQc529kzcAXhFx9mjWQOXEONoznJuev6zWMZbloIzjNHUDDp+CpamD76Xh9NtancAJShBhU8kDUfxRacZiPn+tnNROOlWI6cIybcXh2/LKzDMlshIzg0oOZDTQbkMJHbQPgMbukMlABLcJ2/CdUpySpttVJbh5uSJOZil2ORow+xbwga9gx2H7A0Dv6K5Do6Q/E7xWl9Ss5PlFNJAn4u2hRmPlFXSEQUZXn2ZOxh+FJW1H5hZOcwimJ8WIf5PMrkR10J1E75uQyZBVrDDLxVgAsVkuJ0Sde/oUFzWzRwgjtgyxzIAY1vlhgTdqgxNPah1zH34dsH/XHR+WLuBqZEL29EsPAWQ35VEpDoLnKkGG+FatiiFtrLmnMu5i6HbZFrr4lqR9uiGs2ZFl64+UQDCpIjNaNskRe1NlT1Y/CEVPCuXi0gR14A/n9+HG/tRgqGwZdvRcmAmaDinYTIzOtHzzbiVzi/Ir3wTluwi/GpcKdBR0r04SCxpU40Evqfw5LqooYUufeaGtJJlnDZumdY9IVRHmjDbtdh7a3HuuBT4jI7mvQN6OkJhwwJ4wXYSyjUJ1awCAbWx7x/8aU/afmpbAkQAAA= | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+analyze_pcap_files() {
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "     ___________________________________________"
+        echo "    |              Ten of Hearts                |"
+        echo "    |        Analyze Packet Capture Files       |"
+        echo "    |___________________________________________|"
+        echo "    |                                           |"
+        echo "    |  1. List available PCAP files             |"
+        echo "    |  2. View PCAP summary                     |"
+        echo "    |  3. Filter packets by protocol            |"
+        echo "    |  4. Extract HTTP traffic                  |"
+        echo "    |  5. Search for specific IP addresses      |"
+        echo "    |  6. Exit                                  |"
+        echo "    |___________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Choice: " choice
+        case $choice in
+            1)
+                clear
+                echo -e "${CYAN}Listing available PCAP files in the current directory...${RESET}"
+                pcap_files=(*.pcap *.pcapng)
+                if [ -n "${pcap_files[0]}" ]; then
+                    for file in "${pcap_files[@]}"; do
+                        echo " - $file"
+                    done
+                else
+                    echo "No PCAP files found in the current directory."
+                fi
+                read -n 1 -s -r -p "Press any key to continue..."
+                ;;
+            2)
+                clear
+                read -p "Enter the PCAP file to summarize: " pcap_file
+                if [ -f "$pcap_file" ]; then
+                    echo -e "${CYAN}Generating summary for $pcap_file...${RESET}"
+                    tcpdump -r "$pcap_file" -q -n | head -n 20 || echo "Failed to summarize $pcap_file."
+                else
+                    echo "File not found: $pcap_file"
+                fi
+                read -n 1 -s -r -p "Press any key to continue..."
+                ;;
+            3)
+                clear
+                read -p "Enter the PCAP file to filter: " pcap_file
+                if [ -f "$pcap_file" ]; then
+                    read -p "Enter the protocol to filter (e.g., TCP, UDP, ICMP): " protocol
+                    echo -e "${CYAN}Filtering $protocol traffic from $pcap_file...${RESET}"
+                    tcpdump -r "$pcap_file" -n "$protocol" | less || echo "Failed to filter $pcap_file."
+                else
+                    echo "File not found: $pcap_file"
+                fi
+                read -n 1 -s -r -p "Press any key to continue..."
+                ;;
+            4)
+                clear
+                read -p "Enter the PCAP file to extract HTTP traffic: " pcap_file
+                if [ -f "$pcap_file" ]; then
+                    echo -e "${CYAN}Extracting HTTP traffic from $pcap_file...${RESET}"
+                    tcpdump -r "$pcap_file" -n -A 'tcp port 80' | less || echo "Failed to extract HTTP traffic."
+                else
+                    echo "File not found: $pcap_file"
+                fi
+                read -n 1 -s -r -p "Press any key to continue..."
+                ;;
+            5)
+                clear
+                read -p "Enter the PCAP file to search: " pcap_file
+                if [ -f "$pcap_file" ]; then
+                    read -p "Enter the IP address to search for: " ip_address
+                    echo -e "${CYAN}Searching for traffic involving $ip_address in $pcap_file...${RESET}"
+                    tcpdump -r "$pcap_file" -n "host $ip_address" | less || echo "Failed to search $pcap_file."
+                else
+                    echo "File not found: $pcap_file"
+                fi
+                read -n 1 -s -r -p "Press any key to continue..."
+                ;;
+            6)
+                echo -e "${CYAN}Exiting...${RESET}"
+                break
+                ;;
+            *)
+                echo -e "${CYAN}Invalid choice. Try again.${RESET}"
+                ;;
+        esac
+    done
+}
+
+analyze_pcap_files

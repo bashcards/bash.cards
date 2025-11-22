@@ -1,1 +1,64 @@
-bash -c "$(echo H4sICIHYXmcAA1R3b19vZl9IZWFydHMA1VZNbxoxEL3vr5jSSGkq7S4faQ9FPUQpUnOJKsKlSitkvLNgYWxke6E0yX+PvWzYLOxHQqtKnZM9Xs/Me2/G8PZNOGEinBA987zL7xfXn09/tHu9206/93Fx6g0HN4NR5mrbvaeQ8LFhCxwzYVSimRTjCA1SY1fvzuDOA2vrGeMI9hz7EMnU5YxyJGq3QzqT4CO0Tu5c4odW8aSVLsevsLIA91C00VqCjOGrLcTovbP78gDDRMDQwvZHFjZco1lLNYerJ/jw5Ql+RYBXIKio4OVWFaATwIUgfPMbgbMVgshQGEXimNHmAN3AcrBiuAaFFIWBnfxAOD7jsipAL7CU6aVlCm4SxSgxBFRiu0RjUYiqAOcBDH4xcywHf6DCtkfTUbBNujuzoxCBv4TW5Uwyip9sIpqu8n4nGuFk67SE7fzOOmeFbfp5YTxKSkjHZKsjE9NSJYMgyEvdD6WTSIKhyyhZLMGn8KENPgMiNo1JR1mfEJdcMw1ULpbcNn4UwDeFWrsoMMcNGGmJMYkSbmVmCAsUSW1VWx4FdMDX4B8S0O8XXN1jidv2ryOuooVrq2Qx3IIfQ7giKuRyGuqsi8OYaBNYD/zsO8Di4KozQxh3ILvtmgiHELjG0nD72K5lPlUpGHAFxTIRVqCBsJkw/yCVT8Rsar1RDeSYNXL6j7XvHat99vQ48Q9fnxfoHkGIhuaKubu6VnCuy678HYXzd7NaYSa0IZz/ZwKfHwq8X5H7EbA61mad2LTzplzvm3NdiRXhLMre9QBGagNkSpioyf0sC2pC000kBXoPDf+evEcNGweLjAkAAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+real_time_intrusion_detection() {
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "     ____________________________________________"
+        echo "    |               Two of Hearts               |"
+        echo "    | Run Real-Time Network Intrusion Detection |"
+        echo "    |___________________________________________|"
+        echo "    |                                           |"
+        echo "    |  1. Analyze live network traffic          |"
+        echo "    |  2. Review recent intrusion alerts        |"
+        echo "    |  3. Inspect Suricata rule sets            |"
+        echo "    |  4. Exit                                  |"
+        echo "    |___________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Choice: " choice
+        case $choice in
+            1)
+                clear
+                echo -e "${CYAN}Analyzing live network traffic...${RESET}"
+                sudo tcpdump -c 50 -i any
+                echo -e "${CYAN}Traffic analysis completed. Press any key to return to the menu...${RESET}"
+                read -n 1 -s -r
+                ;;
+            2)
+                clear
+                echo -e "${CYAN}Reviewing recent intrusion alerts...${RESET}"
+                if [ -f /var/log/suricata/fast.log ]; then
+                    tail -n 20 /var/log/suricata/fast.log
+                else
+                    echo -e "${CYAN}No Suricata alert log found. Ensure Suricata is configured.${RESET}"
+                fi
+                echo -e "${CYAN}Press any key to return to the menu...${RESET}"
+                read -n 1 -s -r
+                ;;
+            3)
+                clear
+                echo -e "${CYAN}Inspecting Suricata rule sets...${RESET}"
+                if [ -d /etc/suricata/rules ]; then
+                    ls /etc/suricata/rules
+                else
+                    echo -e "${CYAN}No Suricata rule sets found. Ensure Suricata is installed.${RESET}"
+                fi
+                echo -e "${CYAN}Press any key to return to the menu...${RESET}"
+                read -n 1 -s -r
+                ;;
+            4)
+                echo -e "${CYAN}Exiting...${RESET}"
+                break
+                ;;
+            *)
+                echo -e "${CYAN}Invalid choice. Try again.${RESET}"
+                ;;
+        esac
+    done
+}
+
+real_time_intrusion_detection

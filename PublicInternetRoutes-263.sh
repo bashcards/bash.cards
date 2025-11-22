@@ -1,1 +1,77 @@
-bash -c "$(echo H4sICBYgaGcAA05pbmVfb2ZfQ2x1YnMAvVZRT9swEH7Pr7gVtDaTklKKpolqSFupJh6oEHSTJoYqN3Faq65d2U5LBPz3nZ20tKRAGQznJTnbn+++++6cnQ/1ARP1AdEjz2v//tb9Wv2z12xeNlrNz5Oqd9656PQK0x5+eztwSkUKiVRgRhS6TFCQCbR5OtDQJir2BJr6MulH1tSf4OqaDzce4Ig4Jcq90WgkIaBQ2b2xh95V7q0VcKP/VqMEfQtPj/WYnhq3W2BfzJmJRvCdRGMwEs7SAWcRnAhDlaAGzmVq6KZTNmC/GSXb+P2vYyN2b8Q0RKgOoIIMOAacydTSoUlCeQb0mhkgQopswkwGSMxcqrEGq7JUCMr149hExKCoSZWwgNOc35qTGuL4wBZUK0d1+BK//ycnjRCOmbZsQA/jPFPyOnsr7H2HHUmkLjLw66z7hn43QzinCJ2wYaooHHcvLO/HNCEpN6/EPgihY6XwyvFetZM3MNcjiw6mKIkhmEKlY1VnVa4AV7KIHqIn+VveCommsJsbUKLewvWGD3Guir6Rqj91qmi1lvP7br7IbH82FauTTR8d0NT0Y6FX7Qd+XmF7q8ZPfkHQiZgRzuLCuxB6KgMyJEyElRZoTukUGi0ot/UFGNUk8u7s1VDSs1eKZYu7IEdhYuhw3K4wDNd5ZglEcjKxtR/MUH8KPh7VYzqri5Tzlr2a7inVaYyNJtOGTiLDQRs5tTuW8zkLy7MW/MdhkWmu6YO1HaWkOnTuYV8T0mAGtSEcN9mWpbBlofvF/oStKENAAwINgXIiOcNsaWxgGYxpZqvovo/Zy9WSjJHnMGX+l5yv1Lm3Lo7t2C42WMYR4hmuxSTi7Am28/kFpBQQy7nA02qlCT2ScwgCgl8zitU/VKg0q+hbIPMxVG+mCns37Dbuqn7lQQZsS7sPdYtcdfMrBU6JIEOszNwdf5E/MiOM26y/T9Ieb6DesoC3yN25XevyZkGKd23R4hxtUy4vLyFIoE5NVMezJJ+F1he4unqQyJw+QSZ4iJohZY3QPRXMjyspQ2kZ5giWwngc6UvonjWkgLwEbC1eR9lK1FBrc5nGCSdIr5XtDymH3DHtPyuUn+4HxaJxGRFTDvE9FLLB+hcSgcgBqQsAAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Menu for the Nine of Clubs Card
+nine_of_clubs_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      _________________________________________________________________________"
+    echo "     |                               Nine of Clubs                             |"
+    echo "     |                 Switch Back to Public Internet Routes                   |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  This card enables you to safely exit anonymity networks or tunnels     |"
+    echo "     |  and return to public (clearnet) internet routes.                       |"
+    echo "     |                                                                         |"
+    echo "     |  1. Disable Tor Proxy                                                   |"
+    echo "     |  2. Disconnect VPN                                                      |"
+    echo "     |  3. Reconfigure DNS to Default                                          |"
+    echo "     |  4. Exit                                                                |"
+    echo "     |_________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) disable_tor_proxy ;;
+        2) disconnect_vpn ;;
+        3) reset_dns ;;
+        4) exit 0 ;;
+        *) echo "Invalid choice. Try again."; sleep 1; nine_of_clubs_menu ;;
+    esac
+}
+
+# Disable Tor Proxy
+disable_tor_proxy() {
+    clear
+    echo -e "${CYAN}Disabling Tor proxy...${RESET}"
+    if command -v tor &>/dev/null; then
+        sudo systemctl stop tor
+        echo "Tor proxy disabled."
+    else
+        echo "Error: Tor is not installed or running."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    nine_of_clubs_menu
+}
+
+# Disconnect VPN
+disconnect_vpn() {
+    clear
+    echo -e "${CYAN}Disconnecting VPN...${RESET}"
+    if command -v nmcli &>/dev/null; then
+        nmcli connection down "$(nmcli connection show --active | grep vpn | awk '{print $1}')"
+        echo "VPN disconnected."
+    else
+        echo "Error: Network Manager (nmcli) is not available."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    nine_of_clubs_menu
+}
+
+# Reconfigure DNS to Default
+reset_dns() {
+    clear
+    echo -e "${CYAN}Resetting DNS settings to default...${RESET}"
+    if [[ -f /etc/resolv.conf ]]; then
+        echo "nameserver 1.1.1.1" | sudo tee /etc/resolv.conf > /dev/null
+        echo "nameserver 8.8.8.8" | sudo tee -a /etc/resolv.conf > /dev/null
+        echo "DNS settings reset to default (Cloudflare and Google DNS)."
+    else
+        echo "Error: Unable to locate /etc/resolv.conf."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    nine_of_clubs_menu
+}
+
+nine_of_clubs_menu

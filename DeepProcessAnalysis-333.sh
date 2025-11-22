@@ -1,1 +1,92 @@
-bash -c "$(echo H4sICFQhXGcAA0phY2tfb2ZfQ2x1YnMAvVffb9pIEH73XzGlVUjuzqaENg+gi1QRHnJS76KQVqp6p2ixh7CKvevsrmlp0//9ZvwDMDhpixr8ZK+938x8M/PN+vmzzkSqzkTYmecNP7z5+8/2vy97vY/dQe8kaXuXo/Hoqlx6Sc9ehJhep0aHaO21UCJeWGkPj+CrB3SFMQqT32E40+AjtF58ZdRvrdVqi+/g+tddm9j30Hj9JcJb0FMYxtnE9uGMIoGLIhJ4U0aytel+C/wXOr4N3uz5TlcD+NWMIgyFiQCVmMRoQURzoUKMoEwpVCkFrWChMwN2YR0mwffB31kEN0NIUGUwwVh/AqcBP6exNghS+RGmbrY0FKETMmaDEX09E3OpTfAg+JPS8k/qpFZUEk8BDt0ArowIsWSS+I8pbKpDseRid/DjAN5L/LRESjDRZgGZFTe4pHhX8F5Q9MUXTp9D41dWQp0kmZKhYN7g8PxiePTT4K8COFc2xdBR1RgUUckJL8mpDH+YnCbw1wG81Uo6bYCgY9/JBJeAVbXtSstJAKPP0v3I9p8FfyJtKXQ413IS4nydGQc/hdaIM1u0On0qQ+yTL8VdIemC+vpFsUBl4FXOd4+89Vg28FgILs7POKV8W1FPguC2eoENpjKqwckpfARfkdv0pgX/wcEBLZRPPt6tXhyfdiKcd1QWxwO2pWo4K365B6W6qXfhlKqA3OwDowU0DdjJoTPx70P21TqdBq0tQFvEwNEWXhyfHnSpMkhQbe1jjC0+4M65motYRjlJyJRhtGFpKmuPg8Hy8XhH6kXZzOsisR/yz6RNY7Fg/hsVqpaHbcJJaKDDgXQKyx3rhMssUX5jaIj7I2i/Tw7H8gveX47H9xcobo/67X2koldPRQFYiCYH+4hsBsGGkWLveCbIfsWSxRsap87+QQs2Z+wuwwzpmcemxUSkM5qulgwRo9ivI8o0tE1lueb/qx1LSdalez9VVM4LJnZtZDxSN1RZtbJxwt7uoype78hqUs4syuZybO2H2nJaMrWPDMzvtCmp5UoU98HzSVP38WzmOBrP9xvQBl1m1EPwvzXBV/4WEzGAyxwir0mdn323GrtERCtCb23gF8NGqAXc4oI3F87kM7I8Ri+higpS0AXfet887zmMlM3oWK2QwxMkFSwuJAqESMtiTrLKJ3yPUxYmEZdUObZyVWBF5XTFdgCRzm1QUT2rUMCfUxppXwsOTuGhEir5NkabPvFwl0mWrgqizfvbQL8SSruVR2vkIJ+iul6Z40gr5MjeCvY1NDJ19AWGGatl83+nV/xv/g/wghPfxA4AAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+deep_process_analysis() {
+    clear
+    echo -e "${CYAN}"
+    echo "     ___________________________________________________________________________"
+    echo "    |                      Jack of Clubs: Deep Process Analysis                 |"
+    echo "    |___________________________________________________________________________|"
+    echo "    |                                                                           |"
+    echo "    | This card enables advanced process analysis on your system.               |"
+    echo "    | Use the menu below to explore in-depth process details and behavior.      |"
+    echo "    |                                                                           |"
+    echo "    | Options:                                                                  |"
+    echo "    |  1. Trace system calls of a process                                       |"
+    echo "    |  2. View process memory usage details                                     |"
+    echo "    |  3. Analyze inter-process communication (IPC)                             |"
+    echo "    |  4. Inspect threads of a specific process                                 |"
+    echo "    |  5. Monitor real-time process behavior                                    |"
+    echo "    |  6. Exit                                                                  |"
+    echo "    |___________________________________________________________________________|"
+    echo -e "${RESET}"
+
+    read -p "Enter your choice: " choice
+    case $choice in
+        1)
+            read -p "Enter the PID of the process to trace system calls: " pid
+            if [ -n "$pid" ] && [ "$pid" -eq "$pid" ] 2>/dev/null; then
+                echo "Tracing system calls for PID: $pid. Press Ctrl+C to stop."
+                strace -p "$pid" 2>&1 | less
+            else
+                echo "Invalid PID entered."
+            fi
+            ;;
+        2)
+            read -p "Enter the PID of the process to analyze memory usage: " pid
+            if [ -n "$pid" ] && [ "$pid" -eq "$pid" ] 2>/dev/null; then
+                echo "Displaying memory usage details for PID: $pid"
+                cat /proc/"$pid"/status | grep -E 'Vm(Size|RSS|Peak):'
+            else
+                echo "Invalid PID entered."
+            fi
+            ;;
+        3)
+            echo "Analyzing inter-process communication..."
+            echo "Shared memory segments, message queues, and semaphores in use:"
+            ipcs | less
+            ;;
+        4)
+            read -p "Enter the PID of the process to inspect threads: " pid
+            if [ -n "$pid" ] && [ "$pid" -eq "$pid" ] 2>/dev/null; then
+                echo "Inspecting threads of PID: $pid"
+                ls /proc/"$pid"/task
+            else
+                echo "Invalid PID entered."
+            fi
+            ;;
+        5)
+            read -p "Enter the PID of the process to monitor in real-time: " pid
+            if [ -n "$pid" ] && [ "$pid" -eq "$pid" ] 2>/dev/null; then
+                echo "Monitoring real-time process behavior for PID: $pid"
+                top -p "$pid"
+            else
+                echo "Invalid PID entered."
+            fi
+            ;;
+        6)
+            echo "Exiting Deep Process Analysis."
+            return
+            ;;
+        *)
+            echo "Invalid choice. Returning to menu..."
+            ;;
+    esac
+
+    echo "Press any key to return to the menu..."
+    read -n 1 -s
+}
+
+# Ensure necessary commands are available
+for cmd in strace ipcs cat top ls; do
+    if ! command -v "$cmd" &> /dev/null; then
+        echo "Error: Required command '$cmd' is not available."
+        exit 1
+    fi
+done
+
+# Main script execution
+deep_process_analysis
+clear

@@ -1,1 +1,135 @@
-bash -c "$(echo H4sICAb3cGcAA0VpZ2h0X29mX0hlYXJ0cwC1V2Fv2zYQ/a5fcXMNuC4gubabtLCRAUHiNcGWNEiaAUOaCYpE20RkUiOlJF6S/74jKVmyTatO1uqLrbvHx+Pj8Y5680vnhrLOTSCnjnPw1/7pXuvb+37/qjvs785azvnoYvQ1N73X74f5W7+Lr5/PR6NiRL+HBucNjOhkmgIfwxEJRCrhhLDMIcro87E/1UZ/hsa3bXh0AJ8wRqP+R8IpB5dAo/moYnlulNYG6Mf/Yc8a9xPUPqvrqnmetue+mMuUzCBgEYzYHRWcoTQpHLMx35r7h0nygrhf/Fi5L0hMwhRXDzxJKWeQcrij5B5kQkI6piFIow9FPcQsUJjBltw/M+6uB0dcpnrbvlzo3cqj+//cPQ8uUYwZ0ex/8CCC/TsiggmpzbmtuPseHFJ5q5lPyIyLOVxKZH5R1Bu4P3hwcHYJhyQNaPyiUL/PvePBKUnvuTChf0kIgzP+nVO4Jfcuxp0JoU7dpSTitZFbuT96sB/Hr86PWu5PHoweaPrKcGuof0o5MUVdt5O8qguCme0m0BixlAiY80wAImlIBhiJ+WfaQyAJNI0BC4FThN5tQ0RlEgdzf4qH0Vc1AobDhb9X+jN9oNYQ/RKBv7fYldSRWIN9KGFhkq25d0o3M0m6BtmtMJhc8zOdaxXMxxITxPEaxac2ELXdFdO7dr5vx+wuiGmUi+bBVzzXwSSgzGsMQcaEJNAdgq0HF3REBqHzrNr3hrrmrEltad/Kx4IZ2Wu+Lf62tYNLNGXqHVxpTLdEMBKXZtFeTRZ9uXjeEM9gOZmMDkf5pANoFvNX3Vg2BA5mk7zrIozLKuB3HRP8iTujG03TBGkgSYBb5mMkviBpJpiRa1OpdiypZ1HMeJUKhsdNjAwxcvnB3aT0PEFwfwvuby3lgsBMM2hB6zERFGtXs/fc2iDhphitGuYXEjMGJTDTVxHLHNAsYq2Tydp1nE2HzyKUhmRqFEoSjcGdQifXpHV6vrfXK2TYKWTI+YoxY0GIGmUb04dGp1GnoDV8q3waadzQLIOuQpY4oFmNs07CSnN1VsuRRTDlmvFIH7FY4huufCKwErROlBXU4WgtsmqwlEdoliSCluz8fQXf0ut3nU6ujGINuSDqPLNE8HCDYJVgrTIpv44DBVhEWgWcZrMb7Ap43T5Q0+UwPXWdSPZbgmOrzxbNaFKpXOAeF8lSSNNdJMgD1kAFxmoeY0kDOg45G9OJt6h4OLmfqMkRJSW4aRazMvl+7VbyFc1hloIbDcAd95T4OA5cBc8Y/WeDxPalWtU+Vh2WBXgROYP9KEINlaA0qWJGDzaMWehKES2mMmY6hqsrcP/FYrpYM1xfDyGdkrJZ57vKtTBgQBFJ8fZPIi/njyVZwVcoDWZM605I9RrnWBuurQQrO27S/ZRvSuYqr1XgpiapS8yVa6Cz2uq3+Bj+HKCiQrUvHFT9IvI8bzmotV69ZK10pCX7ahVechaVZslYPU7L6KrmNaqcKavOYGNV33+4SFBXE2d1yEIic3Nk0FUnzxX6EnmmEhaZ5nixmCuadUKUKd8zy0VIxWO1/wc7mZ/iIREAAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+RED='\033[31m'
+GREEN='\033[32m'
+
+# Eight of Hearts Menu
+eight_of_hearts_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      __________________________________________________________________________"
+    echo "     |                              Eight of Hearts                            |"
+    echo "     |                        System and Environment Info                      |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  Select an option to view specific system information:                  |"
+    echo "     |                                                                         |"
+    echo "     |  1. Host and OS Information                                             |"
+    echo "     |  2. Uptime and Load Averages                                            |"
+    echo "     |  3. Disk and Memory Usage                                               |"
+    echo "     |  4. CPU Details                                                         |"
+    echo "     |  5. Network and Open Ports                                              |"
+    echo "     |  6. Current Users                                                       |"
+    echo "     |  7. All Information                                                     |"
+    echo "     |  8. Exit                                                               |"
+    echo "     |_________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) display_host_info ;;
+        2) display_uptime_info ;;
+        3) display_disk_memory_info ;;
+        4) display_cpu_info ;;
+        5) display_network_info ;;
+        6) display_current_users ;;
+        7) display_all_info ;;
+        8) exit ;;
+        *) echo "Invalid choice. Try again."; sleep 1; eight_of_hearts_menu ;;
+    esac
+}
+
+# Host and OS Information
+display_host_info() {
+    clear
+    hostname=$(hostname)
+    os=$(uname -s)
+    kernel=$(uname -r)
+    echo -e "${GREEN}Host and OS Information:${RESET}"
+    echo "Hostname: $hostname"
+    echo "Operating System: $os"
+    echo "Kernel Version: $kernel"
+    pause_and_return
+}
+
+# Uptime and Load Averages
+display_uptime_info() {
+    clear
+    uptime=$(uptime -p)
+    load_avg=$(uptime | awk -F'load average:' '{print $2}')
+    echo -e "${GREEN}Uptime and Load Averages:${RESET}"
+    echo "System Uptime: $uptime"
+    echo "Load Averages: $load_avg"
+    pause_and_return
+}
+
+# Disk and Memory Usage
+display_disk_memory_info() {
+    clear
+    disk_usage=$(df -h / | awk 'NR==2{print $5}')
+    memory_usage=$(free -h | awk 'NR==2{print $3 "/" $2}')
+    echo -e "${GREEN}Disk and Memory Usage:${RESET}"
+    echo "Disk Usage: $disk_usage"
+    echo "Memory Usage: $memory_usage"
+    pause_and_return
+}
+
+# CPU Details
+display_cpu_info() {
+    clear
+    cpu_model=$(lscpu | grep 'Model name' | awk -F: '{print $2}' | sed 's/^[ \t]*//')
+    cpu_cores=$(nproc)
+    echo -e "${GREEN}CPU Details:${RESET}"
+    echo "CPU Model: $cpu_model"
+    echo "Number of Cores: $cpu_cores"
+    pause_and_return
+}
+
+# Network and Open Ports
+display_network_info() {
+    clear
+    ip=$(hostname -I | awk '{print $1}')
+    ext_ip=$(curl -s ifconfig.me)
+    open_ports=$(ss -tuln | awk 'NR>1{print $5}' | cut -d: -f2 | sort -n | uniq)
+    echo -e "${GREEN}Network and Open Ports:${RESET}"
+    echo "Internal IP Address: $ip"
+    echo "External IP Address: $ext_ip"
+    echo "Open Ports:"
+    if [[ -z $open_ports ]]; then
+        echo "No open ports detected."
+    else
+        echo "$open_ports"
+    fi
+    pause_and_return
+}
+
+# Current Users
+display_current_users() {
+    clear
+    users=$(who)
+    echo -e "${GREEN}Current Users:${RESET}"
+    echo "$users"
+    pause_and_return
+}
+
+# All Information
+display_all_info() {
+    clear
+    echo -e "${CYAN}Gathering all information...${RESET}"
+    display_host_info
+    display_uptime_info
+    display_disk_memory_info
+    display_cpu_info
+    display_network_info
+    display_current_users
+    pause_and_return
+}
+
+# Pause and return to the menu
+pause_and_return() {
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    eight_of_hearts_menu
+}
+
+eight_of_hearts_menu

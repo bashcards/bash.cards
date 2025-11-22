@@ -1,1 +1,63 @@
-bash -c "$(echo H4sICKYPXGcAA0FjZV9vZl9EaWFtb25kcwDVlltP2zAUgN/zK84KEnRSUkrRHqh44NJpe9g0UV4mNiHjnBCLxI5sh1Eu/312nJZcUSvYw/xkn8Sfz93e+jC6Znx0TVTseac/j78f7fzam0wux9PJp3THO5/NZxelaM+svS34nHOqmeCgBZBci5RoBLVQGlO4JvQ2z5S3lF85we4QHj0wgyZIZDFDGgvwEQbbj/bU58GLdGBncPV+o8l+gt5xTBFEBGeMpIKH6hDmzrCTwo6ODU8t+Dsq3ob3a77x6IBfxEyZsIpkFVgFy5jCH6ZjEJkNvYJISAhZFKFErstfQC8yVEEffI4JUg2ElxCbP5kUFDE8fKvm/7HPYRyYkkqSegnB7kgKoUdOWJZRoIkMbh6GG8D3A/giUjSxksb5Qi4a/Nh8XIveBZ8EcJorkyht/NvdchDA7J7pDUlrwf9RtrhuVnRM084KuUQSgp/BYMY1SliIXIL5lVE8NLq4mWuMRCFsOwEw7i2VHw+9qi3OiFOD1YzfQNTKmyAIBrUdKg8FmMiCTx/uIujPKvB9vKdJHuLRej/Z2q2udZpVl6npC5VliHfVpYHDqMO0jkqgIs0S1LZL9CtWN3o6XS33X3Vg3FUb6/mwXTlQyDqO667All1tYq9Vk7pVjTTTcfU402Yd1KbcSlzbzyK4BD806bv6PoDfUwvitR/tcLArTlI82t41Dwe009reYWtTw++lC+wt8rKt5fde35syq2jx3HBaTZUeTU56YvAquB7aRGEP/Gzl+xdFIBTmMuVCA94zpRuWRqwv0gdd+WsbY8WN9sZuACXqXPI+6Mcu6Fd+RxIWll0pgPMCYY8xGZQiz1vxKYmoCPUqPfaHRKXMPb+AWyzSzyljZzYzayiXuRzG4Cvv2T4vvxHGQVHJMusqpLl9KzQflJ57SP4FrK8A4b0KAAA= | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Function to automate system backups
+automate_backup() {
+    clear
+    echo -e "${CYAN}"
+    echo "     ___________________________________________________________________________"
+    echo "    |                          Ace of Diamonds: System Backup                   |"
+    echo "    |___________________________________________________________________________|"
+    echo "    |                                                                           |"
+    echo "    | This tool automates  backups with options for different backup types.     |"
+    echo "    | Select an option to proceed:                                              |"
+    echo "    |___________________________________________________________________________|"
+    echo "    |                                                                           |"
+    echo "    |  1. Full system backup (/root/system_backup.tar.gz)                       |"
+    echo "    |  2. Home directory backup (/root/home_backup.tar.gz)                      |"
+    echo "    |  3. Custom directory backup                                               |"
+    echo "    |  4. Exit                                                                  |"
+    echo "    |___________________________________________________________________________|"
+    echo -e "${RESET}"
+
+    read -p "Enter your choice: " choice
+    case $choice in
+        1)
+            echo "Creating full system backup..."
+            sudo tar -czvf /root/system_backup.tar.gz --exclude=/root/system_backup.tar.gz --exclude=/proc --exclude=/tmp --exclude=/mnt --exclude=/dev --exclude=/sys /
+            echo "Full system backup completed: /root/system_backup.tar.gz"
+            ;;
+        2)
+            echo "Creating home directory backup..."
+            sudo tar -czvf /root/home_backup.tar.gz /home
+            echo "Home directory backup completed: /root/home_backup.tar.gz"
+            ;;
+        3)
+            read -p "Enter the directory to backup: " directory
+            if [ -d "$directory" ]; then
+                backup_name=$(basename "$directory")
+                echo "Creating backup for $directory..."
+                sudo tar -czvf /root/"${backup_name}_backup.tar.gz" "$directory"
+                echo "Backup completed: /root/${backup_name}_backup.tar.gz"
+            else
+                echo "Directory $directory does not exist."
+            fi
+            ;;
+        4)
+            echo "Exiting backup tool."
+            return
+            ;;
+        *)
+            echo "Invalid choice. Returning to menu..."
+            ;;
+    esac
+
+    echo "Press any key to return to the menu..."
+    read -n 1 -s
+}
+
+# Main script execution
+automate_backup
+clear

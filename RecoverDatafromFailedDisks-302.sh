@@ -1,1 +1,89 @@
-bash -c "$(echo H4sICBoVXGcAA05pbmVfb2ZfRGlhbW9uZHMA7VdLb9s4EL7rV0zdIG4WlVzXxR4SZIGidYEeti2aXopsUTASLRORSJWkvFUf/70zJCVLtoIm3QS7hxUMmK/5OI+Pw+H9e7MLIWcXzKyj6Nn7p69Op389WizO5yeL38tp9HZ5tnwXhh5hP7oPL2qZWqEkWAWap2rDNWTMMqiNkDlkmeYmrXkU5j7S3IMj+BoBfmnBmXYtnq4VxBwmB19p2++T7eiEWvDx9r5d7G/Q/14JyUGt4LlgpZKZOYa3waznZNZKqxJeMFHwDJeYSzMQhm974Leo+D443N43Aj5tozcFYYD5uIZANhhwVUDGjcgl+mKlNE6xjILOZAapqhpHAJIZA3eOTJXWdWVRXhFtSpZjM9Niw00CLy2kCGk57V2yaoVOJ5pZzdJLqLTKUTszCk4amEtRGbhg2OKpVdqQbMk+i1J84UNbkhu55U59/rqi04SsuwtwmCcdm7OOzRhYJDJ5h0kQFANwrr4p+GMCN3XJEbHSfCNUbbZ0MRgryhO/qPkigbO1+nsbdjyiPTKqimtmr4M/Bv4kgeVnYa+j203B7+j4+1Tp8jHmSjdOpw/iCiZLaTG+jao14FKR8mPUxbd81mWGw4EfACGjVvn5UdS3xRsR6NId5V2WJEkyGYjtqGHXHAyqgls5lj3gSZ48hFnGNzOTsSPSzc//DMUynXPbJ2iLVTG7nlk1c1OJKHOH6tf/DLXNK4VKPX92QcOCBP8dbOgPcMUKzs8hlnAQTD08dL2gcui1W334cEJbywFEz+O1lOTuLvt2qC1eizTdcz59ps5Ud+8iS7zwBFtenFoBYCjMC8Ov0Oml3LBCZMiWqrZ0zG2tnZKUUrmsd9RYiUH35KTrPh7nGGYNd3FcnTf+59nd8yzWi3/ENZL/j/FtMcY3rNuqgrnypL1OrkOvWw7hr4apUDnExU0CEyT+xTA8GQsDXbn9N4KrKPfCQFteBfvbGGyrtL/gxrTedVhA5IalUe/+fuPqDCYbuOSNf98QkitBiQ59KE8XCXOITfSdHkZLaWrNt8ZRBb3BdwO7QEYgC+5h8VuWVKjGm+2qwz98ypJ1UfRoERymtdLHO2W5VJirpLGsoCcJPcTWOGoaY3mJNbSfQet3VEVmn6V4k0+bKRkUEDpFXMmg5Ero0gl52h6EITg9hUkz2aeuox2rbEypo66wYnA5ajDcbhU3kHfPwz0ieov73tP8Uy10eGo4I1OmM1+59e1z0lTNzaNASvxhQP5kQoJJtagszvO0pjM8eJdG/j36A2xcRlMFDwAA | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Function to recover data using ddrescue
+recover_data() {
+    clear
+    echo -e "${CYAN}"
+    echo "     ___________________________________________________________________________"
+    echo "    |             Nine of Diamonds: Recover Data from Failed Disks              |"
+    echo "    |___________________________________________________________________________|"
+    echo "    |                                                                           |"
+    echo "    | 'ddrescue' is a data recovery tool designed for reading and copying data  |"
+    echo "    | from corrupted or damaged drives. It creates a mapfile to track progress  |"
+    echo "    | and skips bad sectors to maximize data recovery.                          |"
+    echo "    |                                                                           |"
+    echo "    | Options:                                                                  |"
+    echo "    |  1. Recover data from a disk to an image file                             |"
+    echo "    |  2. Resume a previous recovery session                                    |"
+    echo "    |  3. Show progress of a recovery operation                                 |"
+    echo "    |  4. Exit                                                                  |"
+    echo "    |___________________________________________________________________________|"
+    echo -e "${RESET}"
+
+    read -p "Enter your choice: " choice
+    case $choice in
+        1)
+            echo "Recovering data to an image file..."
+            read -p "Enter the source disk (e.g., /dev/sda): " source
+            read -p "Enter the target image file (e.g., /path/to/image.img): " target
+            read -p "Enter the mapfile location (e.g., /path/to/mapfile.map): " mapfile
+            if [[ -n $source && -n $target && -n $mapfile ]]; then
+                echo "Running 'ddrescue $source $target $mapfile'..."
+                sudo ddrescue "$source" "$target" "$mapfile"
+            else
+                echo "Invalid input. Returning to menu."
+            fi
+            ;;
+        2)
+            echo "Resuming a previous recovery session..."
+            read -p "Enter the source disk (e.g., /dev/sda): " source
+            read -p "Enter the target image file (e.g., /path/to/image.img): " target
+            read -p "Enter the mapfile location (e.g., /path/to/mapfile.map): " mapfile
+            if [[ -n $source && -n $target && -n $mapfile ]]; then
+                echo "Running 'ddrescue -r3 $source $target $mapfile'..."
+                sudo ddrescue -r3 "$source" "$target" "$mapfile"
+            else
+                echo "Invalid input. Returning to menu."
+            fi
+            ;;
+        3)
+            echo "Displaying progress..."
+            read -p "Enter the mapfile location (e.g., /path/to/mapfile.map): " mapfile
+            if [[ -n $mapfile ]]; then
+                echo "Running 'ddrescuelog -l $mapfile'..."
+                sudo ddrescuelog -l "$mapfile"
+            else
+                echo "Invalid input. Returning to menu."
+            fi
+            ;;
+        4)
+            echo "Exiting ddrescue tool."
+            return
+            ;;
+        *)
+            echo "Invalid choice. Returning to menu..."
+            ;;
+    esac
+
+    echo "Press any key to return to the menu..."
+    read -n 1 -s
+}
+
+# Ensure ddrescue is available
+if ! command -v ddrescue &> /dev/null; then
+    echo "Error: 'ddrescue' is not installed on this system. Installing..."
+    read -p "Scan 'y' to install ddrescue: " confirm
+    if [[ $confirm == "y" ]]; then
+        sudo apt-get update && sudo apt-get install -y gddrescue
+    else
+        echo "ddrescue is required for this card. Exiting..."
+        exit 1
+    fi
+fi
+
+# Main script execution
+recover_data
+clear

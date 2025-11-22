@@ -1,1 +1,89 @@
-bash -c "$(echo H4sICEXfD2cAA1RocmVlX29mX0hlYXJ0cwDdWFtv0zAUfu+vOJQhNiDptjIkVg2ExiYmLqpgPKBtVF5yulgkdmQnG2WD386x0yRN22TtKDzglya+fZ+/c3N6/17nnIvOOdNBq7X/5dWHvYenm93uyVav+yx62Pp48OngeNy1Se+tbzwMBxELucdlqgexkh5qjXp9A65bQO0q4CFColLsgS9tl2leiEwVb+gFEhyE9tq1wfzZro60s+fBytrc/W+guR0HChHkEN4Q9UQ3Tb1ZFuAtyQjvcxmhn8u4JMDqFFr6BMu2WoBPGKKXABMg44RLAYkE7qNI+HBEvT4Yl4PC5aBwud0FAf76CbZceMc1HYF4qlQILi5KlqsA2HbhkJMS5aaeFDqNDFDALwLY738GqSDCSKrRHQC6buaRLIeA8xH0j14vQb4Z4KlLdmbKC0qLVrAEi/CPAHZcOPjOk2UJLwrwPwRafTsQCSoYyVQBreAe7jbN/ucSZYXCliKqFMWYQuaDE0N7f8y5PWZfFh2mEdayTuCi6Ddta6PyaqdXatQcCrZWmVA3gTc32l3XLZlO7xRrYOl3cBwtVbLnPPDi9InzgIKWrBPS8pkFvV6la/uulPsL5Y3duzEPrBkEbO3cxr+7KP/CspljJgHaZESl2DzmaYPqhEkkxu4x92c24UM4OSEJaKwNe7/g68mm8/zs8RqcnfXMPmJmxXiVzU7O83zp9ouOj5cdkYZhw7oG2eGKJ4E9gNkQAkYZD5HqHCqyBEvQb/AZu2+ocWHQQ0b3Lz8XpxCrwoFyJbmBQhPyxOcSra6eVMpU4tjw0ppKsb6F2JDPul4d12meR+KSSrpvOLnwEZNU2Ugi3hGKtDGO5sBOedrTP/A0W4pmXU1Xy5f1OhodmOlzfc/EBLlQPqcNTW4XscQL6PwDso7eW1uPLxTGleWzJyqBftDMyg7NYKZNm+ODnLhdDGVKx7QuUyhyOkHmtL1Sj7VoBmgow1BeVRJqQ1LK2zg53cCMZnmfc2l/a3covCC7BNnrZqZmSeQlrI86YsPY3X4DTZWaeYYx2Wdi7jgLfRmd3ZKDioPZCJ48UOP0aV1fleGPutGaWQ5YLilZxCYzz6NU8bIrpAy0FN6cwK/pXjgNlYwyYdDkASKz8pS0c9fiba61RKMRHs3Vd/M2Co9mKdRl5cxjXTimzwl2wbhoAJ9AQc282o/8vjIqMzGCbzgyqiorsXkyfhkRSr3QKr9lgKPByVTzpcDWz/r/JFq/AaDQ7kTdEAAA | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+kill_malicious_processes() {
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "      __________________________________________________________________________"
+        echo "     |                               Three of Hearts                            |"
+        echo "     |                          Kill Malicious Processes                        |"
+        echo "     |__________________________________________________________________________|"
+        echo "     |                                                                          |"
+        echo "     |  Select an option to identify and kill malicious processes:              |"
+        echo "     |                                                                          |"
+        echo "     |  1. List all running processes                                           |"
+        echo "     |  2. Find processes consuming high CPU or memory                          |"
+        echo "     |  3. Kill a process by PID                                                |"
+        echo "     |  4. Search and kill a process by name                                    |"
+        echo "     |  5. Exit                                                                 |"
+        echo "     |__________________________________________________________________________|"
+        echo "     |                                                                          |"
+        echo "     |                            Enter your choice:                            |"
+        echo "     |__________________________________________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Choice: " choice
+        case $choice in
+            1)
+                clear
+                echo -e "${CYAN}Listing all running processes...${RESET}"
+                ps aux --sort=-%cpu,-%mem | less
+                ;;
+            2)
+                clear
+                echo -e "${CYAN}Processes consuming high CPU or memory:${RESET}"
+                ps aux --sort=-%cpu,-%mem | head -n 15
+                ;;
+            3)
+                clear
+                read -p "Enter the PID of the process to kill: " pid
+                if [[ "$pid" =~ ^[0-9]+$ ]]; then
+                    if kill -9 "$pid" 2>/dev/null; then
+                        echo -e "${CYAN}Process with PID $pid has been terminated.${RESET}"
+                    else
+                        echo -e "${CYAN}Failed to kill process with PID $pid. Ensure you have the correct permissions.${RESET}"
+                    fi
+                else
+                    echo -e "${CYAN}Invalid PID. Returning to menu...${RESET}"
+                fi
+                ;;
+            4)
+                clear
+                read -p "Enter the name of the process to search and kill: " proc_name
+                if [ -n "$proc_name" ]; then
+                    matching_pids=$(pgrep "$proc_name")
+                    if [ -z "$matching_pids" ]; then
+                        echo -e "${CYAN}No processes found with the name \"$proc_name\".${RESET}"
+                    else
+                        echo -e "${CYAN}Found the following processes:${RESET}"
+                        ps aux | grep "$proc_name" | grep -v grep
+                        read -p "Kill all matching processes? (y/n): " kill_choice
+                        if [[ "$kill_choice" =~ ^[Yy]$ ]]; then
+                            pkill "$proc_name"
+                            echo -e "${CYAN}All processes with the name \"$proc_name\" have been terminated.${RESET}"
+                        else
+                            echo -e "${CYAN}No processes were terminated.${RESET}"
+                        fi
+                    fi
+                else
+                    echo -e "${CYAN}No process name entered. Returning to menu...${RESET}"
+                fi
+                ;;
+            5)
+                clear
+                echo -e "${CYAN}Exiting...${RESET}"
+                exit 0
+                ;;
+            *)
+                echo -e "${CYAN}Invalid choice. Try again.${RESET}"
+                ;;
+        esac
+        echo -e "${CYAN}Press any key to return to the main menu...${RESET}"
+        read -n 1 -s -r
+    done
+}
+
+kill_malicious_processes

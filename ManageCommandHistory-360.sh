@@ -1,1 +1,100 @@
-bash -c "$(echo H4sICNbydWcAA1Rlbl9vZl9EaWFtb25kcwC1Vl1v2zYUfdevuFOM2lomNY7bPMRxu8J10QFLVzTGgCILDFq6tolIpEvJcY00/32XlCh/RPacpeaLKIr38H6cc6mjX14OuXg5ZOnEcbpf333q1P85abWum+3WWVJ3vvSuev1i6YTenSO4RDGDkVSQTRD6KECO4D1niRRRCl2mIidDMZCjQVQsDhKyaHhw7wCNMEamzAzDiQQfwa3d64Mf3OWqC2YMftZ4BP0Ddo7NsHaMH/ti/81xDkxEcMkEGyN0ZZLo1488zaRa7In901Kyt9//Y1RiN4M8BaNZHENYBD/ZHvxTsE8DuCJahZMScLiAW1zMpYqei90KoPcdw1mGwGCq8I7LWVoG8DzsVxp7KlVW+p1JOmXEY3yC29XYrwPoaq09I9dbsc+03zx7ItQ+2Afhd95kTC8ruoxCFoE/BbcnMlSwkDPK00TyEM/Jk3yWtyuWItTyBeDCsa43PbgjNg80mwc2s+12+f3Ug9QwsupjywPMKTWwhBrYKq1se6W3aXZUYbz28lZa9e1MG1J5TlYXf/WKRP8h7ljMoyLKAPpkzMaMi8BtQxojTqHZhqombuEwZaHzoC+DrYp2HmVnjxvggwba6Ivn64Wz8MsiCmiCn4KvTD0/K0xTarNG/lpNCrOZEnqm7ysdRRAEOVZViHlYW5uJs17Uipg2mMXKNkQe5MZEI4usyWaRqxJyybJwwsXYJiWtzgZJcqyobL4fyliqDovnbJESSoHtHjhd2/ujs43ne7DhCmMMMwK11DLu+QXiRiYSNjVd08/s9hQu4KKxzBCb30L9Xv+4NHjntA38ovPpAz2Ojz1ym4tsBDVO9SARmFdw3Yc62WWMxzptpyeeOSnN3QqTSBeSnLXnXf9+80DmXSZCjAklkqX2+Aiur6H2pff5z6/gj7UyX7wo38nt2v3RKgzc3LR1AZb9Ztkn82QTKc6pLyVFbcstJG3y6dH6kIp/W65gvO4QfoNao7HpwzE1OW+XJ3mkMUbB7sNSrDDe0YXK3SNuppEUeHAGV9/CznoD/m+96zO1oWAJGsmzOyxhGxiMg9/sa5B9zzzdAez+NUm/oTLaD6vXpP1d1MBGEuWu4NAyr/ydcNZuoT1k/U6hvm8hnRWTOSOxkSfGxPizccRb6NMMWJhxKehGFkJmMESYCc2MYMvN3l9MEeoLTOsGXIoRV4m53fOpsyLMYgk6HXDJwn3MelsWP1wSOxfBxt+ViaKUxBr5c4O/pqiYjYT0U+4t2H6o+lWu/wt8Z8WY/w0AAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Menu for the Ten of Diamonds Card
+ten_of_diamonds_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      _________________________________________________________________________"
+    echo "     |                              Ten of Diamonds                            |"
+    echo "     |                      View and Manage Command History                    |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  1. View full command history                                           |"
+    echo "     |  2. Search history by keyword                                           |"
+    echo "     |  3. Execute a previous command                                          |"
+    echo "     |  4. Export history to a file                                            |"
+    echo "     |  5. Clear command history                                               |"
+    echo "     |  6. Exit                                                                |"
+    echo "     |_________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) view_full_history ;;
+        2) search_history ;;
+        3) execute_previous_command ;;
+        4) export_history ;;
+        5) clear_history ;;
+        6) exit 0 ;;
+        *) echo "Invalid choice. Try again."; sleep 1; ten_of_diamonds_menu ;;
+    esac
+}
+
+# View full command history
+view_full_history() {
+    clear
+    echo -e "${CYAN}Full Command History:${RESET}"
+    history
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    ten_of_diamonds_menu
+}
+
+# Search history by keyword
+search_history() {
+    clear
+    read -p "Enter a keyword to search in history: " keyword
+    echo -e "${CYAN}Matching Commands:${RESET}"
+    history | grep --color=always "$keyword"
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    ten_of_diamonds_menu
+}
+
+# Execute a previous command
+execute_previous_command() {
+    clear
+    echo -e "${CYAN}Select a command to re-execute:${RESET}"
+    mapfile -t commands < <(history | awk '{for (i=2; i<=NF; i++) printf $i " "; print ""}' | tail -n 20)
+    select cmd in "${commands[@]}" "Cancel"; do
+        if [[ $REPLY -gt 0 && $REPLY -le ${#commands[@]} ]]; then
+            echo "Executing: $cmd"
+            eval "$cmd"
+            break
+        elif [[ $REPLY -eq $((${#commands[@]} + 1)) ]]; then
+            echo "Cancelled."
+            break
+        else
+            echo "Invalid choice. Try again."
+        fi
+    done
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    ten_of_diamonds_menu
+}
+
+# Export history to a file
+export_history() {
+    clear
+    read -p "Enter the filename to save history (e.g., history.txt): " filename
+    history > "$filename"
+    echo "History saved to $filename."
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    ten_of_diamonds_menu
+}
+
+# Clear command history
+clear_history() {
+    clear
+    echo -e "${CYAN}Are you sure you want to clear the command history? This action cannot be undone.${RESET}"
+    read -p "Type 'yes' to confirm: " confirm
+    if [[ $confirm == "yes" ]]; then
+        history -c
+        echo "Command history cleared."
+    else
+        echo "Operation canceled."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    ten_of_diamonds_menu
+}
+
+ten_of_diamonds_menu

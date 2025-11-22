@@ -1,1 +1,112 @@
-bash -c "$(echo H4sICA/idWcAA1NldmVuX29mX1NwYWRlcwDVV01v2zgQvetXTN0AiXdjNY7TPcTYQ5A6RYE2WcRpd4tsYdASZRNVKIOknQqt//vOkPqyLQuumxxWFysj8s3wvflgXr54NRby1Zjpqeddfr64/vPw35Ne777b7/3xcOjdDoaDu8x0gn+/vR0MKktO7ZI3paGLhs+D9+9v/i5tPbR5L+EDl3OIEgVmymHIF1xCEsFwxkKu4ZKp0NNkHCXRSFvj6AF3HLXhuwf4BDFnyr7xYJpAh0Pr4DsFvGyV1hbYZ/RUzwb0D2h81o/V8PzYDfsiXDAZ8BCuRMxhEAoj5AQehZnCNZPJzthPRsmOce/11GLfTYWGAPMDZipZCKKVSRDScMUCIxbcvUcs4Da9eMZRhIRpmGt634ZNqSiJRsO/GbszUT5yThCJZHGcHoMwKGjElYZkRlYNJoFAcWb4MZpQ73psDGUh+KOL4xhjDoHBZI4HCIsYH5LQBT3mEyElOvF34uQ5+e76cEOnYjbyFUp/GfvUh0vLHKLLjJunirvnwyfiO4v7CP2EnUTGqWW5/UvYZz68rVHuSBs+64zTDv1iGmqj5oHNkXp3tdivfbjlZq4k5RW1vD0Iqcd+lpp3jdfOhazzEtHQmUFrQHUIaTJXgCtFwM8xEvfmWjjTHA6cAdny8tC7bVtHI6tbv1/YT9tZnW186bVtbW3Yz9pZhY1ynSofX7eBf8NqPqkaf2tnlL2TCxaLMIvXhzuVApswIf1WH3TMUeAuvtSMqByOaxZ4Sxp1W+rHK065w1TLMK5yjKz1N1JP7cw6nTGcD5hO5JBEIOOIjJ7dJiK4v4dOBAfFB/jypU/7S1VsX2yVK7IciDUvlqwkxJvlQKlEnbuQwwSbr0wMUa6Nvxp2GbqELnQ0dJQ9xV+Ka+ruKXzlKcWvisKgoxHZvu87jEjYnzpBnAgbjcarJNMOAhT7r3E/nennqHfOtpPPG8lvYJbF5Dp1xOo1ZlfkqVdwDd7e6JYW2YUcgp4HAQoRzXH+nVfCXHWFAlSI2F/I7QpW27mQsNrQvaIB7KBlhmRPeXRLODeE84EGw8/JSl73raiYSPkfV1TNCPRW2+0OUmQg+U2WJFhLYduO7a3PDtlHEceuq9NogZWRi8cgz1mS+Btjyv0rshzS2u557gdKba1QeF8vdCYXj0yaAhpbr6sLfy1BrvK02Dcd6oswK2s7Q4ggDAFzn0q5qdQ3z1yXM3BR3rosreOi6P364t5sIU0Un5YUf9TuZn2oK9dzuuCwr+hzyuSE62a9eiXYkC14fq+wO2Gc4n8DmNrEUE7fpVHx7zfFJrpwE9/Fd6t6/rnZ91klV+jKYGnY6vOf7aBu1VrhBMnDLOaGvyg5f9ZOWmv/D8HInY75DwAA | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+GREEN='\033[1;32m'
+RED='\033[1;31m'
+YELLOW='\033[1;33m'
+
+# Menu for the Seven of Spades Card
+seven_of_spades_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      _________________________________________________________________________"
+    echo "     |                              Seven of Spades                            |"
+    echo "     |                    Advanced File Editing with Nano                      |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  This card provides an interactive interface for editing files using    |"
+    echo "     |  the nano text editor. Additionally, it offers options to create, open  |"
+    echo "     |  or view files, and a guided editing mode for beginners.                |"
+    echo "     |                                                                         |"
+    echo "     |  1. Open a file for editing                                             |"
+    echo "     |  2. Create a new file                                                   |"
+    echo "     |  3. View a file (read-only mode)                                        |"
+    echo "     |  4. Guided editing mode (step-by-step instructions)                     |"
+    echo "     |  5. Return to menu                                                      |"
+    echo "     |_________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) open_file ;;
+        2) create_file ;;
+        3) view_file ;;
+        4) guided_editing ;;
+        5) exit 0 ;;
+        *) echo "Invalid choice. Try again."; sleep 1; seven_of_spades_menu ;;
+    esac
+}
+
+# Open a file for editing
+open_file() {
+    clear
+    echo -e "${CYAN}Open a File for Editing${RESET}"
+    read -p "Enter the file path to open: " file_path
+
+    if [[ -f $file_path ]]; then
+        nano "$file_path"
+    else
+        echo -e "${RED}Error: File does not exist.${RESET}"
+        read -n 1 -s -r -p "Press any key to return to the menu..."
+    fi
+    seven_of_spades_menu
+}
+
+# Create a new file
+create_file() {
+    clear
+    echo -e "${CYAN}Create a New File${RESET}"
+    read -p "Enter the file path to create: " file_path
+
+    if [[ -e $file_path ]]; then
+        echo -e "${RED}Error: File already exists.${RESET}"
+    else
+        nano "$file_path"
+        echo -e "${GREEN}File created successfully: $file_path${RESET}"
+    fi
+
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    seven_of_spades_menu
+}
+
+# View a file in read-only mode
+view_file() {
+    clear
+    echo -e "${CYAN}View a File (Read-Only Mode)${RESET}"
+    read -p "Enter the file path to view: " file_path
+
+    if [[ -f $file_path ]]; then
+        less "$file_path"
+    else
+        echo -e "${RED}Error: File does not exist.${RESET}"
+        read -n 1 -s -r -p "Press any key to return to the menu..."
+    fi
+    seven_of_spades_menu
+}
+
+# Guided editing mode
+guided_editing() {
+    clear
+    echo -e "${CYAN}Guided Editing Mode${RESET}"
+    echo "This mode will guide you step-by-step to edit a file."
+    echo -e "${YELLOW}Step 1:${RESET} Enter the path of the file you want to edit or create."
+    read -p "File path: " file_path
+
+    if [[ -f $file_path ]]; then
+        echo -e "${GREEN}File exists. Opening it in nano.${RESET}"
+    else
+        echo -e "${YELLOW}File does not exist. A new file will be created.${RESET}"
+    fi
+
+    nano "$file_path"
+
+    echo -e "${YELLOW}Step 2:${RESET} Use nano's interface to make changes."
+    echo -e "${YELLOW}Step 3:${RESET} Save your changes by pressing ${GREEN}Ctrl+O${RESET} and then ${GREEN}Enter${RESET}."
+    echo -e "${YELLOW}Step 4:${RESET} Exit nano by pressing ${GREEN}Ctrl+X${RESET}."
+    echo -e "${GREEN}Guided editing complete!${RESET}"
+
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    seven_of_spades_menu
+}
+
+seven_of_spades_menu

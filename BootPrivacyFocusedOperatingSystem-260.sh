@@ -1,1 +1,82 @@
-bash -c "$(echo H4sICDYfaGcAA1NpeF9vZl9DbHVicwDNVt9v2zYQftdfcVWDpB5iOa6DPcTwgDb1hjw0CeoM25AVBk2dbGIyKZCUG6Ht/74jJVn+VcfIEmB8kijex7vv7rvT61ediZCdCTOzILj869314OTvs17vvtvv/Tw/CT4NR8O7auuM3oPX8BFlDonSYGcII/EAKoHLNJ8YuGQ6Dox4GKtkzN3OeE5n37TgawC0eIpM+yfkMwVthPDoq7vye9jshuDX+LnWFvQ32LvWAtq/vh2C/V4pC0JaBQxutVgwXrR/VTw3GMNNhppZIacwKozF+X7sZ6PkIL+fuHZi382EAU7FAZlWCxGjAZVZoaQB4iVWX2SqWHwKXCOzeApMxjBZ8nbHRGpOf4TNIBULJLyaSlNSSZeIqSSSXaVmJfEemEkli7mwRfSo3y/JSTeCD1XgZYRwNbp5Juy3EVx6KomdEttVIZukCL+P3v837F60UtIl+FPWTuzzCIYPwj4JcD/2i2inbGC+Q1YdjEiPoZ1BOJQWNRQq10AnBccL8qR8KlshMwhH5QZRGdSud1tLOYytJ7ffX35826oUMp5U6RznZrJ6otfyutk2PW8BOmbPVjd/alUcXckFS0VcORjBnSapTJmQUdgHkyJm0KWHzcZeY6FhPPjuRsN2RQfr4RwwC2oMp+UlTBRF60yLBLiaz52g2wvguU7h+JdOjIuOzNO072ZTw6r/3L6BmbWZueh0vCvRROXzSOlpR0hjWZp2alc7S8OSnkae9QlqKybnHI1J6LbCdTE3DOkejdJCLDRyq3QRVdWSGtzAHGqt9EXpGTVH6RXl3cA4gltix2C9A5Q4F6ht0uLRErFSdBK60DbQ1r7+bjX5RkYF/IPePY0217J21GWPKC1htvJa5nJPBwl2lOEBmfWILq27MB/JcBzvyW9JaUWayZCLpPBxZszO6pibLCYixYtwab0UbXPiluycYoVRY4fx+E2ur5J3Ts5vMJpGp+CdNfGfrV1XueMf/HF3DdE3Lo2DjZv+ePfp+ur6t4tyhH4RVAw05+huVxYxswyUhKPG/tWusIoM4aRAc+KooAnMEWPfj5RMhJ4zN4mXZkT7/T2lbPVjCIMBhIQQwufPG9z7Cspj5TIkkkF4VHMW0m8UvTa+hTAxg/OPQDVtczMgR6a+So+PaWZLvoa4Kry12VVW3rr8oiboNaU1QNWPFnHFmeToNNbYVDL6sUhdZP9LiW4M4qDp/Qeo0Rk7MTb2WxJcq3aN/pfMz7TqH2v5n5ZoNV8RmUsUnauTFYUvR8L25r9kPYhV0QwAAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Menu for the Six of Clubs Card
+six_of_clubs_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      _________________________________________________________________________"
+    echo "     |                              Six of Clubs                               |"
+    echo "     |                  Boot into a Privacy-Focused Operating System           |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  This card provides options to download, create, and boot into Tails,   |"
+    echo "     |  a live operating system designed for privacy and anonymity.            |"
+    echo "     |                                                                         |"
+    echo "     |  1. Download Tails ISO                                                  |"
+    echo "     |  2. Create a Tails Bootable USB                                         |"
+    echo "     |  3. Boot into Tails                                                     |"
+    echo "     |  4. Exit                                                                |"
+    echo "     |_________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) download_tails ;;
+        2) create_bootable_usb ;;
+        3) boot_tails ;;
+        4) exit 0 ;;
+        *) echo "Invalid choice. Try again."; sleep 1; six_of_clubs_menu ;;
+    esac
+}
+
+# Download Tails ISO
+download_tails() {
+    clear
+    echo -e "${CYAN}Downloading Tails ISO...${RESET}"
+    if command -v curl &>/dev/null; then
+        curl -O https://tails.boum.org/install/download/
+        echo "Tails ISO downloaded successfully to the current directory."
+    else
+        echo "Error: curl is not installed. Please install it and try again."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    six_of_clubs_menu
+}
+
+# Create a Tails Bootable USB
+create_bootable_usb() {
+    clear
+    echo -e "${CYAN}Creating a Tails Bootable USB...${RESET}"
+    if command -v dd &>/dev/null; then
+        echo "Please specify the path to the Tails ISO file:"
+        read -p "Tails ISO Path: " iso_path
+        echo "Please specify the USB device (e.g., /dev/sdX):"
+        read -p "USB Device: " usb_device
+
+        echo "WARNING: This will erase all data on $usb_device!"
+        read -p "Type 'yes' to proceed: " confirmation
+        if [[ "$confirmation" == "yes" ]]; then
+            sudo dd if="$iso_path" of="$usb_device" bs=4M status=progress && sync
+            echo "Tails Bootable USB created successfully."
+        else
+            echo "Operation canceled."
+        fi
+    else
+        echo "Error: dd is not installed. Please install it and try again."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    six_of_clubs_menu
+}
+
+# Boot into Tails
+boot_tails() {
+    clear
+    echo -e "${CYAN}Booting into Tails...${RESET}"
+    echo "Please reboot your system and boot from the Tails USB you created."
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    six_of_clubs_menu
+}
+
+six_of_clubs_menu

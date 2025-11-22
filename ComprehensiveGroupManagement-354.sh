@@ -1,1 +1,182 @@
-bash -c "$(echo H4sICMbtdWcAA0ZvdXJfb2ZfRGlhbW9uZHMA7Vlrb9s2FP2uX3HrGLW1wUpcp2lrJ8OCxDEGLMXQtAOGLDAYiXKI6OGSUlIjyX/fpUjZetnWvDhDgeqTTJHnvs65JJOdV7vXLNi9JuLGME7+Ov541Pp7r9e77A56B37L+DS8GH7WQ3v429iBcxrE4IYcohsKZ2HMIXThlBE/DBwBJ4Q7houj49AdO3p07OOatgkPBuBje5Tw5I3aNyF0KDSaD9L0U2Mx2oDkGT/bU8J+hJVPKbIVz2Nt8JPQn3J6QwPB7iiMeBhP4ZwEZEIxRVFd8OfLSn3PN3gqwbsW/M5EBBMZu5gTyY45lxmIBeWbg7+x4E9G78GhEWGeQicgptRmLrOVzY3Be9pz4nmp92GQOC9mIqL+f0rLvgXHjoPOBuh+bT9rgr+14JR6NKJAAqDfMAgWTDawUgl+kHqelC4K8W0j/yvB31nwifohakXjuzz0N7BQCf5es8Wn/jXlQqp9E7JUg3+wYPiNVUv63zwvJn/Vh5OGrxsxp8SBzhQawyDC1M9kR8SZzKZ9dEW9qY5OBIWmGgAWGKnvXRM8JNtYVm6sJTMYzD+/MeEO86++jFPNZib09HpUXMXyfROI44yDFCH77a2JPUAyvvzpQC1LfIrC8vd3JgYuKaemSMKVJ73PuZ4SKDPhgymFFsFedvAnU9fxt+COeMzRObTgM58BmRAWWI0BCI/SKXQHULmNpnhUENt4khvyunZqFGtQYyceLYfr50miIDN8CaALHQEdnlDnD06FwLYzg1s6k92B0yjmgXyTwDIiy7IUVGW8Ksa1Xd0oM6lGmBfIETua9xN06i5jqBCpT6Yu8yh0dLbHMq9wCIdtO46g4/Sh43Zhl0b2bvLd1EFxYCgKafPVYt3lr1dPWGsnnJNDMaPZbjP4GZVjWtB8yMxnV9oNJwxopiV8tWAUwjWxb7M5rSNgBZ6RMXPh8hKa2XE4OkITDbi6GkjshbSra5W45SFOu51D+QV18Pp1ziIcHmGAO/mMmGbBjEgKRB1V2aNGLiU5uA500wxVVfo0wx1V7FYzD94qlDshN3aQQJcbofILdO/0BC3UcIW6F4Epkc9/l+mr2MO2rayVRxqj0H5rSOp4CVSxbWQz+wgZBW074MIxy8jtIXUCTNZ/xPVJk+yv3DOlYwHxqTxbJO+p2YUA5edUfiJ2QjWMXqHFxYxGQRiKaSPN5MW8ltzcqINIto3pcmPPm1lLmXqGRMPJ8tCG9iZltDSdW6fhsvOpkd3Ga1RngTNMcarK9KOXf0e9PCcM5EO5ExcslQVSaPX6cFgpk5JUquSi1i/bSTJIWjnPtEtkxfBCwqy82xmlE3TtxvlljlSzfUozshdJmqfvy+aqeqSzl/RXCeKHuJSM8i0Wf6UGqttt4ntrPinttVG4onWu7bpxEXQl3PYLvvy+bVTfi2qUfo75JYP5f9V/MiVC3ONSJ1vwGrttqfwqH44KaEMKKIwyC9Zgbp8H6/40YpQvwJvfuDTAj136+92li5U+X1DnuS5ceFEg97fQOetD62HKGc5s7j+1tnQP05x8IbldRIRH1f9TsQl3Epzqf6wY/wDJjcDnxBkAAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Menu for the Four of Diamonds Card
+four_of_diamonds_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      __________________________________________________________________________"
+    echo "     |                              Four of Diamonds                            |"
+    echo "     |                       Comprehensive Group Management                     |"
+    echo "     |__________________________________________________________________________|"
+    echo "     |                                                                          |"
+    echo "     |  1. List groups for the current user                                     |"
+    echo "     |  2. View details for a specific group                                    |"
+    echo "     |  3. List all groups on the system                                        |"
+    echo "     |  4. Add a new group                                                      |"
+    echo "     |  5. Delete an existing group                                             |"
+    echo "     |  6. Add a user to a group                                                |"
+    echo "     |  7. Remove a user from a group                                           |"
+    echo "     |  8. View members of a specific group                                     |"
+    echo "     |  9. Exit                                                                 |"
+    echo "     |__________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) list_user_groups ;;
+        2) view_group_details ;;
+        3) list_all_groups ;;
+        4) add_new_group ;;
+        5) delete_group ;;
+        6) add_user_to_group ;;
+        7) remove_user_from_group ;;
+        8) view_group_members ;;
+        9) exit 0 ;;
+        *) echo "Invalid choice. Try again."; sleep 1; four_of_diamonds_menu ;;
+    esac
+}
+
+# List groups for the current user
+list_user_groups() {
+    clear
+    echo -e "${CYAN}Groups for the current user:${RESET}"
+    groups
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    four_of_diamonds_menu
+}
+
+# View details for a specific group
+view_group_details() {
+    clear
+    echo -e "${CYAN}Select a group to view details:${RESET}"
+    mapfile -t group_list < <(cut -d: -f1 /etc/group)
+    for i in "${!group_list[@]}"; do
+        echo "$((i + 1)). ${group_list[i]}"
+    done
+    echo "q. Go back to the menu"
+    read -p "Enter your choice: " group_choice
+    if [[ $group_choice == "q" ]]; then
+        four_of_diamonds_menu
+    elif ((group_choice > 0 && group_choice <= ${#group_list[@]})); then
+        selected_group="${group_list[group_choice - 1]}"
+        echo -e "${CYAN}Details for group '$selected_group':${RESET}"
+        getent group "$selected_group"
+    else
+        echo "Invalid choice. Try again."
+        sleep 1
+        view_group_details
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    four_of_diamonds_menu
+}
+
+# List all groups on the system
+list_all_groups() {
+    clear
+    echo -e "${CYAN}All groups on the system:${RESET}"
+    getent group | cut -d: -f1
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    four_of_diamonds_menu
+}
+
+# Add a new group
+add_new_group() {
+    clear
+    echo -e "${CYAN}Add a New Group:${RESET}"
+    read -p "Enter the name of the new group: " group_name
+    if sudo groupadd "$group_name"; then
+        echo "Group '$group_name' added successfully."
+    else
+        echo "Failed to add group '$group_name'."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    four_of_diamonds_menu
+}
+
+# Delete an existing group
+delete_group() {
+    clear
+    echo -e "${CYAN}Delete an Existing Group:${RESET}"
+    mapfile -t group_list < <(cut -d: -f1 /etc/group)
+    for i in "${!group_list[@]}"; do
+        echo "$((i + 1)). ${group_list[i]}"
+    done
+    echo "q. Go back to the menu"
+    read -p "Enter your choice: " group_choice
+    if [[ $group_choice == "q" ]]; then
+        four_of_diamonds_menu
+    elif ((group_choice > 0 && group_choice <= ${#group_list[@]})); then
+        selected_group="${group_list[group_choice - 1]}"
+        if sudo groupdel "$selected_group"; then
+            echo "Group '$selected_group' deleted successfully."
+        else
+            echo "Failed to delete group '$selected_group'."
+        fi
+    else
+        echo "Invalid choice. Try again."
+        sleep 1
+        delete_group
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    four_of_diamonds_menu
+}
+
+# Add a user to a group
+add_user_to_group() {
+    clear
+    echo -e "${CYAN}Add a User to a Group:${RESET}"
+    read -p "Enter the username: " username
+    read -p "Enter the group name: " group_name
+    if sudo usermod -aG "$group_name" "$username"; then
+        echo "User '$username' added to group '$group_name'."
+    else
+        echo "Failed to add user '$username' to group '$group_name'."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    four_of_diamonds_menu
+}
+
+# Remove a user from a group
+remove_user_from_group() {
+    clear
+    echo -e "${CYAN}Remove a User from a Group:${RESET}"
+    read -p "Enter the username: " username
+    read -p "Enter the group name: " group_name
+    if sudo gpasswd -d "$username" "$group_name"; then
+        echo "User '$username' removed from group '$group_name'."
+    else
+        echo "Failed to remove user '$username' from group '$group_name'."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    four_of_diamonds_menu
+}
+
+# View members of a specific group
+view_group_members() {
+    clear
+    echo -e "${CYAN}Select a group to view members:${RESET}"
+    mapfile -t group_list < <(cut -d: -f1 /etc/group)
+    for i in "${!group_list[@]}"; do
+        echo "$((i + 1)). ${group_list[i]}"
+    done
+    echo "q. Go back to the menu"
+    read -p "Enter your choice: " group_choice
+    if [[ $group_choice == "q" ]]; then
+        four_of_diamonds_menu
+    elif ((group_choice > 0 && group_choice <= ${#group_list[@]})); then
+        selected_group="${group_list[group_choice - 1]}"
+        echo -e "${CYAN}Members of group '$selected_group':${RESET}"
+        getent group "$selected_group" | awk -F: '{print $4}'
+    else
+        echo "Invalid choice. Try again."
+        sleep 1
+        view_group_members
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    four_of_diamonds_menu
+}
+
+# Start the Four of Diamonds card menu
+four_of_diamonds_menu

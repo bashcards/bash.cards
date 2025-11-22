@@ -1,1 +1,91 @@
-bash -c "$(echo H4sICFtcd2cAA0ZvdXJfb2ZfQ2x1YnMA1Vddb9owFH3Pr7gN0JJOpKVUe4AxbWKtNmltpYI0VW0VmdhQa4nDYlN1ovz3+TohJHwUqDpN81Pi3Ht8z7kfhtLeUZ+Loz6RD5bVufl82T64O240buutxvvwwLo+65710q1j/W6V4IKJMQyiGNQDg/NoHEM0gE4w7kvokJhaA73lRQPPxy0v1NZVByYW6OUHjMTmifkPEdQY2OUJHjq157s2mOW92VrCfoYXV5HTi+t5F+wOsjeq9VgcckEC6PoxY2Jr7DeTZKe4d1wrsXsPXIKvyyOpAWlkUDMZZCIDERRGcfTIKZNAKOWKR/g5GuGDXIeNtRgSQYZcDGdQ0ViNxsogBtFQuq+L+//Vu+6m5bZVqe2GfeJClzwy6IzjmAk1P+IqEV1FQOCcB+wV2A0XvnA5Cshv+E6kMgfRGfBmzJfBT104e+JqRw22wf4rhZKMRzOBC/Ox6xPdK0k36dKXLGA+lnraJ83ENmaEQi0G7cJ9loxfIhmUkw3gwpoRqjtJV3pZQ7Za2ccTB6ROQvbNS1srZ9JwgCZJ89CUrjA5dYBp6T0TdG7/0ElJfROPJOA0DdeFa6bGscCO1uWEl4jrunYLZMDYCOotWL5lZrBMEt+a4k11ZfSAenP96LWKxLe4qXoLQ8tYMrq3NlM6/tiQwScMwbApJqkEP4guzNmtKtiT0vgkSdEy1QK9k+aW7WityuMKxkHka2/FQyYVCUdmL3trl6uUKAbvKjeVsEK9ytfKRaXr5BwH+ihBQta2F47yypMMZuqqJ5VooHXkIwW1X1DzwfaJsrXWM5CldijmIC00U3VINPNz/1k6Gs0NE8xa1Str04CEZHIuPrWrh4uqHqKUSQL4AKpVKE9Kxvb20/0U2m04BsdpIZF5xy8KehmlGqaCGn9kKuiCkjuoubWia1Q1RwWSrY16SVrZXA4Wj+R62qHXXqaLHiU0ymxwjWIu1ADsCnWgIu8EVmG1yuGdHo8OvkwS5zK/z6HTSLCVuiDJcdhn5pckvqE3ipRmH7QaOLxTEYcR9In/c4Vy6OflhniW59wH+KiTvL+ft4UP7UIhLJWAKTEmZY5ZEbOGxPNcC7mY8908uXPJ4JsSri3y3XTaTK5sVND8u8hukXWj2kZ7c/rS3xN0S4NJ7xE8a0UgfwCKU3QuFQ0AAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Menu for the Four of Clubs Card
+four_of_clubs_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      __________________________________________________________________________"
+    echo "     |                              Four of Clubs                              |"
+    echo "     |                          Clear the Terminal Screen                      |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  This card clears the terminal screen and provides additional options   |"
+    echo "     |  for managing screen output and logs.                                   |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  1. Clear Terminal Screen                                               |"
+    echo "     |  2. Save Current Terminal Output to a File                              |"
+    echo "     |  3. Display Last Saved Output File                                       |"
+    echo "     |  4. Exit                                                                |"
+    echo "     |_________________________________________________________________________|"
+    echo -e "${RESET}"
+    echo "Scan a card or select an option:"
+    read -r choice
+    case $choice in
+        1) clear_terminal ;;
+        2) save_terminal_output ;;
+        3) display_saved_output ;;
+        4) exit_card ;;
+        *) echo "Invalid choice. Returning to menu..."; sleep 1; four_of_clubs_menu ;;
+    esac
+}
+
+# Option 1: Clear the Terminal Screen
+clear_terminal() {
+    clear
+    echo -e "${CYAN}Terminal screen cleared!${RESET}"
+    echo "Scan to return to the menu."
+    read -r # Wait for the next scan
+    four_of_clubs_menu
+}
+
+# Option 2: Save Current Terminal Output to a File
+save_terminal_output() {
+    clear
+    local timestamp
+    timestamp=$(date +%Y%m%d_%H%M%S)
+    local filename="terminal_output_${timestamp}.txt"
+    script -q -c "cat" "$filename"
+    echo -e "${CYAN}Terminal output saved to $filename.${RESET}"
+    echo "Scan to return to the menu."
+    read -r # Wait for the next scan
+    four_of_clubs_menu
+}
+
+# Option 3: Display Last Saved Output File
+display_saved_output() {
+    clear
+    local files
+    files=(*terminal_output_*.txt)
+    if (( ${#files[@]} == 0 )); then
+        echo -e "${CYAN}No saved output files found.${RESET}"
+        echo "Scan to return to the menu."
+        read -r # Wait for the next scan
+        four_of_clubs_menu
+    else
+        echo -e "${CYAN}Saved Output Files:${RESET}"
+        for i in "${!files[@]}"; do
+            printf "%d) %s\n" "$((i + 1))" "${files[$i]}"
+        done
+        echo "Scan the number of the file to display it or scan to go back."
+        read -r file_choice
+        if ((file_choice > 0 && file_choice <= ${#files[@]})); then
+            less "${files[$((file_choice - 1))]}"
+        else
+            echo "Invalid choice. Returning to menu."
+        fi
+        four_of_clubs_menu
+    fi
+}
+
+# Option 4: Exit the Card
+exit_card() {
+    clear
+    echo "Exiting the Four of Clubs card."
+    sleep 1
+}
+
+four_of_clubs_menu

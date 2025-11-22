@@ -1,1 +1,85 @@
-bash -c "$(echo H4sICPHXcGcAA1F1ZWVuX29mX0RpYW1vbmRzAL1VUU/bMBB+z6+4BSTWackohT1Q7WGCDE1jiA1eJoYik1xaa6nT2Q4sA/777MRJmzSUdGvnh8q9iz/ffd/5buvFmxvK3twQMbaso2/vz97tfN8dDK76w8HbyY711bvwLo1pV/23tuAzshSihIMcI3xJERkkERxTMklYKOCI8ND6qc1+EvmhMfsTdeplD+4tUCuIkfB8h8E4AQfB3r7Xlz/aM6sN+fLXthawH2DZWkzt6fXQGfsCg5RjnIHHAp5NpTIwQSW9RTgmknTDXhsl3eNefbViX46pgECVCKSSxvQ3Cjg5PwGZABZ8vIYQzYawECaEkRGCqEgKFUnuCnyvKe6+WwlG4AONcY3Yey4c44awBy6cIENOJCrwM7zL6f6EGZwTyv8Ne9+FUyokeL/UL2WjEnrZQ+mKfeBqWLkaUifsjbydooPlzdK0MI4kBGcKtsckcsiSlIP6kgZ4qCIpdkUvJAJhuzAAZVYZer9XPgn/jsqxP5qOYDis3Hu98qG0ugc9GBndtcv/oRSfc+/3IFailS4x7ztQF2vqd+eNr3qGxI/slsQ0NBm4cMkzICNCmWsPQcSIU+gPob3/l4AoSGA96llSf1NWM+EOA8Mg6PIrQFzXXaqEnlqRfmRTIsdzjUfLou3anJ+jEVxdgRPBdmmG6+uhPj8TqQWbY0CnFJncKVqbZh4nhMb6gspZIWjdHMfEoHbVFyrDam+rP2UQdnW0SUXeOgwShiDSIEAhojSOswYlGAusw9ge5wk/LNoPS6Qa8Klqv0TOsneLsxGdY5VBHxwBDs9JOOfqPtW2szxpRS1HmXKmd5oZXQJKnQKmvUKKqqh3Q6tZ5x2qwiCsVhW5xGre6/2MRp2+lq6y+NrSqJC6c7FOCpVNIirK+vfPSGqO/a2kXi2Vhrj1QP6fxEuGktVsXB30NnCF3k3ABe0LNTSLTnmXo+5pRzZPeKrHZaAoeUaHTZLWPm2tWifvQNapAVhAeoIoja/5ERtO8AnPH71k5h+iDAAA | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Menu for the Queen of Diamonds Card
+queen_of_diamonds_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      __________________________________________________________________________"
+    echo "     |                             Queen of Diamonds                           |"
+    echo "     |                       Securely Encrypt Sensitive Data                   |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  This card utilizes GPG to encrypt, decrypt, and manage sensitive data. |"
+    echo "     |                                                                         |"
+    echo "     |  1. Encrypt a File                                                      |"
+    echo "     |  2. Decrypt a File                                                      |"
+    echo "     |  3. Generate a New GPG Key Pair                                         |"
+    echo "     |  4. List Existing GPG Keys                                              |"
+    echo "     |  5. Exit                                                                |"
+    echo "     |_________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) encrypt_with_gpg ;;
+        2) decrypt_with_gpg ;;
+        3) generate_gpg_key ;;
+        4) list_gpg_keys ;;
+        5) exit 0 ;;
+        *) echo "Invalid choice. Try again."; sleep 1; queen_of_diamonds_menu ;;
+    esac
+}
+
+# Encrypt a File
+encrypt_with_gpg() {
+    clear
+    echo -e "${CYAN}Encrypting a File...${RESET}"
+    read -p "Enter the file path to encrypt: " filepath
+    if [[ -f $filepath ]]; then
+        read -p "Enter the recipient's GPG key email: " recipient
+        gpg --encrypt --recipient "$recipient" "$filepath"
+        echo -e "${CYAN}File encrypted successfully.${RESET}"
+    else
+        echo "Error: File not found at $filepath."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    queen_of_diamonds_menu
+}
+
+# Decrypt a File
+decrypt_with_gpg() {
+    clear
+    echo -e "${CYAN}Decrypting a File...${RESET}"
+    read -p "Enter the path of the encrypted file: " encrypted_file
+    if [[ -f $encrypted_file ]]; then
+        gpg --decrypt "$encrypted_file"
+        echo -e "${CYAN}File decrypted successfully.${RESET}"
+    else
+        echo "Error: Encrypted file not found at $encrypted_file."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    queen_of_diamonds_menu
+}
+
+# Generate a New GPG Key Pair
+generate_gpg_key() {
+    clear
+    echo -e "${CYAN}Generating a New GPG Key Pair...${RESET}"
+    gpg --full-generate-key
+    echo -e "${CYAN}GPG key pair created successfully.${RESET}"
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    queen_of_diamonds_menu
+}
+
+# List Existing GPG Keys
+list_gpg_keys() {
+    clear
+    echo -e "${CYAN}Listing Existing GPG Keys...${RESET}"
+    gpg --list-keys
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    queen_of_diamonds_menu
+}
+
+queen_of_diamonds_menu

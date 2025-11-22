@@ -1,1 +1,73 @@
-bash -c "$(echo H4sICKX0W2cAA05pbmVfb2ZfSGVhcnRzANVX0U7bMBR9z1fcdUilk5pSCntotQeEKsELQ8AmTTAhk942Fq1d2U5LRPn3XTtpIEvaLoU+zE+2E597fM71dfL5U+uBi9YD06Hnnf46ufhWvzvodG7bvc7XSd276l/3b9KpAxp7XOgpBuZe6/CeBYbPuIn3G/DsAbV5yMcIRkXYg4F0U7YFY2QqG2EQSmgi1PaebbyXWv5JzXXvP6yVwS9gfbvgAkEO4Yx4G7321UUV/PNEPLjCAIWB6+szOEk1rIb/cfJU4r9FW4X/fWq4FLq7K/y2D6chBo/QmjHVGstRi0Um9KkDQ6mc9IEUgtywNKrjHxbwNQaRwmroq/E7PvzQCGOmjeVsJMw4zkG9Zg5N8/XY6/CPlvzdIUaHqFFrx3fOTUiHWQLtZb4d/rEP/SduLPEJ4wImKKJNXP8df3f5nxQmV/aoMmXPFLIBNKdQ6wuDCmIZKaDXeYBdopT0XusdI+f2kkngIpu3rd3IDd3rufJYwsaVybR2cDFakdJvUmNZmLuvO/kbng/hFprDEqzfPTAhisIK20YKSQOq/YNaycrFIvXoQuZoEL1IDEiJ4hq/yAzHGkuDJ9jFsEKaJIIPNyHX9mBQzsVuHp+4NiBF4piOtcFJScwhL0wljgtoQ1NDUznzLxWdEGAihkeMbWorNJEStkeSuRz3/RL4Xi83dfiROfCm7LwzA1Kkyv6n6yq4n6x4h/dpyP/O+c62zv+k4m9tL9Z/V6vTa2KN28uLpBnB3j6VdjbhjZxlReRE2SLUDvU52lYfd5dZgdZeZ4zycL5GpESM00ippRQZxn6kLXydYOqNbnGphV+k52NqdC2nbRmpVepmO7sTSyLZScpIlFMoi7kx3g7dPC66mdCzXwZ2I28/DkoBH4jd46YwX1aFORczNuaD9Hr24ZJSSdv/kxjYiOJuqwZ92hH9CDdpgJoFbjCQAr2X8p8n7w9vTkEEgg0AAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+inspect_ssh_activity() {
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "     __________________________________________________________________________"
+        echo "    |                               Nine of Hearts                             |"
+        echo "    |                       Inspect Recent SSH Activity                        |"
+        echo "    |__________________________________________________________________________|"
+        echo "    |                                                                          |"
+        echo "    |  Options:                                                                |"
+        echo "    |  1. Check /var/log/auth.log for SSH connections                          |"
+        echo "    |  2. Check /var/log/secure for SSH connections                            |"
+        echo "    |  3. Use lastlog to view recent SSH logins                                |"
+        echo "    |  4. Check active SSH sessions with who or w                              |"
+        echo "    |  5. Exit to main menu                                                    |"
+        echo "    |__________________________________________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Enter your choice: " choice
+        case $choice in
+            1)
+                clear
+                echo -e "${CYAN}Inspecting /var/log/auth.log for recent SSH activity:${RESET}"
+                if [ -f /var/log/auth.log ]; then
+                    grep "sshd" /var/log/auth.log || echo "No SSH activity found in /var/log/auth.log."
+                else
+                    echo "/var/log/auth.log not found. This log may not exist on your system."
+                fi
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            2)
+                clear
+                echo -e "${CYAN}Inspecting /var/log/secure for recent SSH activity:${RESET}"
+                if [ -f /var/log/secure ]; then
+                    grep "sshd" /var/log/secure || echo "No SSH activity found in /var/log/secure."
+                else
+                    echo "/var/log/secure not found. This log may not exist on your system."
+                fi
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            3)
+                clear
+                echo -e "${CYAN}Viewing recent SSH logins with lastlog:${RESET}"
+                lastlog -u $(whoami) || echo "No recent SSH logins found."
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            4)
+                clear
+                echo -e "${CYAN}Checking active SSH sessions with who and w:${RESET}"
+                echo "Current SSH sessions (using 'who'):"
+                who | grep "pts" || echo "No active SSH sessions found."
+                echo -e "\nCurrent activity (using 'w'):"
+                w || echo "No active sessions found."
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            5)
+                echo "Exiting to main menu..."
+                break
+                ;;
+            *)
+                echo "Invalid choice. Please try again."
+                read -n 1 -s -r -p "Press any key to continue..."
+                ;;
+        esac
+    done
+}
+
+inspect_ssh_activity

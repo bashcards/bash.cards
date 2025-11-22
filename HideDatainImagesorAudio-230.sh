@@ -1,1 +1,79 @@
-bash -c "$(echo H4sICBPQcGcAA1RocmVlX29mX0RpYW1vbmRzAO1WTU/bQBC9+1dMAyqkUhxCpB6I2gpBUHtohQqXiqJoscfxCmc33V0DEfDfO7P+SAATAoKeupfYs943M2/mzWbtXfdMqu6ZsGkQ7P3a/fFp4/dWv3/SG/Q/TjaCn8Oj4XFp2qL3YA2+o8oh0QZcinCcGkTQCexLMdEqtrAnTBw4No90MopL82hCpzbbcB0ArShDYfwTRqmGDkJr/Zqd37bm1hb4NXq19QD7Bpath6ktWTdPg3+VMcK+cAKkgm8TMUYLxOJuHksNBzKj180jh2Oh9NiIaTprLwF/PVZWiPzlqxH8OJUWImoTmBp9QaxYEIpIcWgSEaHvrdxKNQa7SAc4DZFWEYpsCXjMBF9KlxLJkklmjoXnOPEcF8hO68xCJs/RO0kpivDpyN+UljcF74V3+0/4jnsl8O0QhlfOiMixkxhV4SYxevIsR43gfQaX7vmhPg3+NiIqppkfnOU4Myhi6EyhNeQeh5nODdCXMsIdCqV4KuaisAjrhYGqFFSx99rAHTryzT0Y1PbtNmBB/IOtPm8RbVuLxg/tMv9v6kJkMi59h3BsZiDGQqqwNQCbIU6hN4DmKV4BohVRcMs3gu+suOqsRt0FdfwrXAKExxq926thGN5lVSY0DiYToYjbi1rF8P5zN8aLrsqzjDPAOYv3ysDX11S4lOcKP3OYsOlj7/rA27yDkzOMq+S4XD6bFSH9MY9LBo6OAdj4GICg49ZeapqNPAVRRWY2dVJ7zx1b79bnmbr6peagCLqDCVHK7uhsxM8cSsu7W6+QWvVp4vPkBNa/0Lk/1Danp/foa6qUL5HNowitTYjxGWfJA4DK5r3dq5nHyCwuBR0ao80OHAg6H1fMedoa0BIZPAB9BLCmh64fpR3FaJ3IyEdTkF4mh9SiFqsP5wDFHeJ1PBXROXc79SH9mLCAKKMqqqugx7XrGM/8oSGuSCUzOEd/pxl0uVFVy7DCqNULmGYBFqKrJm5JeDyfuM0CXBwUK2iwhOc8H5np/0aQdOM7mkscx0KmqwhR526auwKl+rtaklAqmlGKr5aHtKDIGF+oyLJaHbugwyt+LgJ4Y1XO8yZuS5evIs0qr//qXFTnIzt/AdOTonhsDQAA | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Menu for the Three of Diamonds Card
+three_of_diamonds_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      __________________________________________________________________________"
+    echo "     |                             Three of Diamonds                            |"
+    echo "     |                Hide Data in Images or Audio Files (Steganography)        |"
+    echo "     |__________________________________________________________________________|"
+    echo "     |                                                                          |"
+    echo "     |  This card provides an interface for using steganography to conceal      |"
+    echo "     |  data within image or audio files using tools like steghide.             |"
+    echo "     |                                                                          |"
+    echo "     |                                                                          |"
+    echo "     |  1. Hide Data in a File                                                  |"
+    echo "     |  2. Extract Hidden Data from a File                                      |"
+    echo "     |  3. Exit                                                                 |"
+    echo "     |__________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) hide_data ;;
+        2) extract_data ;;
+        3) exit 0 ;;
+        *) echo "Invalid choice. Try again."; sleep 1; three_of_diamonds_menu ;;
+    esac
+}
+
+# Hide data in an image or audio file
+hide_data() {
+    clear
+    echo -e "${CYAN}Hiding Data in a File...${RESET}"
+    if command -v steghide &>/dev/null; then
+        read -p "Enter the path to the file (image/audio) to embed data in: " file
+        read -p "Enter the path to the data file to hide: " data
+        read -p "Enter a password for encryption: " -s password
+        echo
+        steghide embed -ef "$data" -cf "$file" -p "$password"
+        if [[ $? -eq 0 ]]; then
+            echo -e "${CYAN}Data successfully hidden in $file.${RESET}"
+        else
+            echo -e "${CYAN}Error: Failed to hide data.${RESET}"
+        fi
+    else
+        echo -e "${CYAN}Error: steghide is not installed.${RESET}"
+        echo "Please install steghide using your package manager."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    three_of_diamonds_menu
+}
+
+# Extract hidden data from an image or audio file
+extract_data() {
+    clear
+    echo -e "${CYAN}Extracting Hidden Data from a File...${RESET}"
+    if command -v steghide &>/dev/null; then
+        read -p "Enter the path to the file containing hidden data: " file
+        read -p "Enter the output file for the extracted data: " output
+        read -p "Enter the password for decryption: " -s password
+        echo
+        steghide extract -sf "$file" -xf "$output" -p "$password"
+        if [[ $? -eq 0 ]]; then
+            echo -e "${CYAN}Data successfully extracted to $output.${RESET}"
+        else
+            echo -e "${CYAN}Error: Failed to extract data.${RESET}"
+        fi
+    else
+        echo -e "${CYAN}Error: steghide is not installed.${RESET}"
+        echo "Please install steghide using your package manager."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    three_of_diamonds_menu
+}
+
+three_of_diamonds_menu

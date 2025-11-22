@@ -1,1 +1,66 @@
-bash -c "$(echo H4sICIgSXGcAA0ZvdXJfb2ZfRGlhbW9uZHMA1VZbT9swFH7PrziUistEU0rRHlptUjWChAQMAS+7SMh1TqlVx45spyVj/Pf5NC3pJWwqYtLmJ8fH+c4537l5e6vZF6rZZ3YYBJ++9C4/7H4/bLe/tbrt98lucB3dRLezo0P/HWzDaaa4E1qB02CQ6zEakNo6SJlxgiQWJsINwaF1sbCjYHbrrrywtw+PAfjFJTIz3SEfamgg1OqPZMZTrTyt0Q7u3m6tYv+ElXWqMwN6ACeCJVrFtgNXc9vhuvAmh1ut5eqPHmsN/A0NXwdfN+DVqwL81ofwxIcQhAUGqZ6gGWTSR957PtBmHn+h7tdSgKnYi1MmptIq8L7RI1QwEBLB5tZhYkO4QYnc+b9Bp/MsS43miHFnA8v/Y86hFcI580U2LOknrlk8ZopjPCc9fxX4kaeYe3YJcTVknm0GNkUuBoIDle6G4O0QeorJ/AeuAS1kSz4Lrd0M/DiE6EG4P3O6OS1/KVuKbjZtob6dTc8NshgaKdQi5XzfzKnP+KuCY8fbUuyKxsgsQr04AKGCufGt/WDRl8KJIl2ozuYZE4ahb2JS6gm4IQF4bcy37TFSNSWps2FtCchmsS479qKk233+PKpS3hszIVnfFzH9ajvLuNL25Qga3mkNl72L6ODm7Gt0cPH5JDpfurdCDBk9zRvFEoQ9DO/DA7Ax2yeaSHBHggprKLkVMVF/vlWV656f3/gPzRjHzXq1ngU+2v8+H0U9VhCyWoxvw8hxFSNUtmTBCzN0Ra9Blxn1koJ3VQrO1JhJEc/qJ/TwBEEq/fRIUGVrzs0Q0TIeLHSDK4OWRlcOI8yLBw4h0Y4isARVREhBCxo2eKKXUaRsZrDkzA9NoaxjUmIciAFsAddJQoOxMS5v7XwsyFWZlF1SoxYMWhzASrsSL4SzYkteKj15NmsaNpa6xj06yNKYOYSdneXjGQo08rLkB4JcuGBCgeVGpA7wAXlG4ap4wAXFw+0X1ptrUj4KAAA= | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Function to recover lost partitions with testdisk
+recover_partitions() {
+    clear
+    echo -e "${CYAN}"
+    echo "     ___________________________________________________________________________"
+    echo "    |                Four of Diamonds: Partition Recovery Tool                  |"
+    echo "    |___________________________________________________________________________|"
+    echo "    |                                                                           |"
+    echo "    | TestDisk is a powerful tool for recovering lost partitions and repairing  |"
+    echo "    | broken file systems. Select an option to proceed:                         |"
+    echo "    |___________________________________________________________________________|"
+    echo "    |                                                                           |"
+    echo "    |  1. Launch TestDisk for advanced recovery                                 |"
+    echo "    |  2. Scan for lost partitions on a specific disk                           |"
+    echo "    |  3. Analyze a specific disk for recovery options                          |"
+    echo "    |  4. Exit                                                                  |"
+    echo "    |___________________________________________________________________________|"
+    echo -e "${RESET}"
+
+    read -p "Enter your choice: " choice
+    case $choice in
+        1)
+            echo "Launching TestDisk... Follow the interactive prompts."
+            sudo testdisk
+            ;;
+        2)
+            echo "Available disks:"
+            lsblk -d -o NAME,SIZE,MODEL
+            read -p "Enter the disk name (e.g., sda): " disk_name
+            echo "Scanning $disk_name for lost partitions..."
+            sudo testdisk /dev/$disk_name
+            ;;
+        3)
+            echo "Available disks:"
+            lsblk -d -o NAME,SIZE,MODEL
+            read -p "Enter the disk name (e.g., sda): " disk_name
+            echo "Analyzing $disk_name for recovery options..."
+            sudo testdisk /dev/$disk_name
+            ;;
+        4)
+            echo "Exiting Partition Recovery Tool."
+            return
+            ;;
+        *)
+            echo "Invalid choice. Returning to menu..."
+            ;;
+    esac
+
+    echo "Press any key to return to the menu..."
+    read -n 1 -s
+}
+
+# Ensure testdisk is installed
+if ! command -v testdisk &> /dev/null; then
+    echo "TestDisk is not installed. Installing now..."
+    sudo apt-get update && sudo apt-get install -y testdisk
+fi
+
+# Main script execution
+recover_partitions
+clear

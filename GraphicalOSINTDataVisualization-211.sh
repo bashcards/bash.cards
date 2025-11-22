@@ -1,1 +1,135 @@
-bash -c "$(echo H4sICNWFcGcAA0ZvdXJfb2ZfSGVhcnRzAM1X227jNhB991dMnaCpi1qO47RoY7SA4Ti7KTYXxMEWi3QhMBIVsSuRBik5dbN5aN/7Df3FfkKHlKhI8iXOxUAJBJGH4nAuZ86Mtr7oXDPeuSYqbDSGHwanP+78utvrXXX7ve/incbFaDy6zEW7+PvsYnD6ZpQLet/3v+3vdffNe4dlYfcHfbixBYM0SWPeTkIaUx986glJEiZ4Q1LuU+kGJIrca8I5lV+14K4BuKgXCmhTaG7fZdfd//vP33/i31/1/9t32uJ7OBKpBBHAW0pkomCNc8av+2bjXht5QnkKgZCAZtZ1DYn0GwHKXBG4oZG5Mb5fWOtFKDRP8y7V3THWNh+kTTDLfbU1p/szrFw1Z1etz2voHvhTwj1M9BtJJiHzSARn4+PTSzgkCYH3TKUkYn8YADym+/Viso7hz14LlV+GTIGHwAHKQx0QBSckSuiN2FEQpNzTAcBIJDO4ZUkIjOMe1oWuEB0oFk+ETJYoFxN9Wn0Dg/Nj8ATCzMsFhPtA0kTEWYBvhfwUROJWGWhneSB47Uwx5ayVzteNSteBdwSdD20wXlH3ngPHWdAM0rTDg9zVF+vuOZrFdFQpDEUcY2h/KUL7Qt37Dox+Z8lTbFxT92bqJ6MxS55aLCnxoT2B5ghBLGGmCQXfZB49QFOyp4wniaKwnQkQ8Q1re7cFkYGFG+ew6PeLzb1WXgyuKYzSTq9lsU7dB6SXXthvAdWh3S0Lv27lQTrmUyxAPzfQgUs5A3JDGHeafVARpRPo9mEB71ttVBEv6x5HeUFDInJPLMAbVcee3zKyumH8xmp2HKeaBhYgF8SxpoD2FGwkv/yp49Nph6dR1NfN7SHqxRuFpH6nLdLMB+o78EGkmEUOXNzCNOdymhOLSc+NZf1oVjOPRoouugnHhvuRlEIeFKSAFctFgghRCSrCe6uaHnB+jlFESPnilkcCQah9z08B5j2QIj6AMEkm6qDTyf11MEgde0J1MpUBKyGZQxfaCtrSgPpcUqVQ8ww+0ZlOsKRJKk2q9aygAYGpyNXMg2UeIDm1ZzTPUWChUoL583EyDIXAkJBMv0KDsNaKWw9qOTFRRFYejt/DEYtoWYyE+vP47HROrskQ+86w6DvlTWSziyI+eqhahyJyx3OmKFFFZaPKGMXjoiBkjUAXi4mCxoFxMUBX5urGrpqNOrkTgq05T7Q9bzhNTV29VzmP9Xd1Be0ArbD7Tfj4sVZ1VQC/QwxqM4sTFUQUuCqvLTiPiEdDESEcTJvTluWgisQN86qhKZfd6vLTiTaFhzDmi4quVCl2VYj6yTkx+HpJUgoFOiu/KcFXpqV4Yf28FEeekxhj3f8gM73VmbGVjP6ii8juWN5PSYhmAySnicAQ6TyQCXPt73XOIq/aY/g4b2qzauB2WX82PRtYSDFlPs7PqGMuP/O5qY7OC9JTnSNWjAF6LR0qMjLMLbe9ojReLBhtzFjxEK4NdyM7QZnZofzJ0JifrV6hK1ld5auXNaVD3GXGyBE+RMU4X2tSY+Ex/Mo8oT4jpa6kaj3rlCb6cjjmgSQqkamHgaNY0ZMJpufFPcw6tqCL1bae0MfGCckoc1kolpbpPOBLn4Urwf4IjRcmLQt78WW0AdseIbLCttW53oBhG2SI5Z84myaKReL/APonPRAsFAAA | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+ORANGE='\033[38;5;214m'
+RED='\033[38;5;196m'
+
+# Autumn-themed decoration
+render_fall_banner() {
+    echo -e "${ORANGE}🍁🍂🍁🍂🍁🍂${CYAN} Four of Hearts ${ORANGE}🍁🍂🍁🍂🍁🍂${RESET}"
+}
+
+# Menu for the Four of Hearts Card
+four_of_hearts_menu() {
+    clear
+    render_fall_banner
+    echo -e "${CYAN}"
+    echo "      __________________________________________________________________________"
+    echo "     |                              Four of Hearts                             |"
+    echo "     |                 Advanced Graphical OSINT Data Visualization             |"
+    echo "     |__________________________________________________________________________|"
+    echo "     |                                                                          |"
+    echo "     |  This card enhances Maltego's functionality with integrated data import  |"
+    echo "     |  options, API connections, and automation workflows for OSINT analysis. |"
+    echo "     |                                                                          |"
+    echo "     |  1. Launch Maltego                                                      |"
+    echo "     |  2. Import Data for Analysis                                            |"
+    echo "     |  3. Automate Common Workflows                                           |"
+    echo "     |  4. Exit                                                                |"
+    echo "     |__________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) launch_maltego ;;
+        2) import_data ;;
+        3) automate_workflows ;;
+        4) exit 0 ;;
+        *) echo "Invalid choice. Try again."; sleep 1; four_of_hearts_menu ;;
+    esac
+}
+
+# Function to launch Maltego
+launch_maltego() {
+    clear
+    render_fall_banner
+    echo -e "${CYAN}Launching Maltego...${RESET}"
+    if command -v maltego &>/dev/null; then
+        maltego &
+        echo -e "${CYAN}Maltego launched. You can now visualize OSINT data graphically.${RESET}"
+    else
+        echo -e "${RED}Error: Maltego is not installed.${RESET}"
+        echo "Please download and install it from: https://maltego.com/downloads/"
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    four_of_hearts_menu
+}
+
+# Function to import data into Maltego
+import_data() {
+    clear
+    render_fall_banner
+    echo -e "${CYAN}Choose a data source to import:${RESET}"
+    echo "1. CSV File"
+    echo "2. JSON File"
+    echo "3. API Connection"
+    echo "4. Return to Menu"
+    read -p "Enter your choice: " import_choice
+
+    case $import_choice in
+        1)
+            echo -e "${CYAN}Importing data from CSV file...${RESET}"
+            read -p "Enter the path to the CSV file: " csv_path
+            if [[ -f "$csv_path" ]]; then
+                echo "Loading $csv_path into Maltego..."
+                # Placeholder for CSV import logic
+            else
+                echo -e "${RED}Error: File not found.${RESET}"
+            fi
+            ;;
+        2)
+            echo -e "${CYAN}Importing data from JSON file...${RESET}"
+            read -p "Enter the path to the JSON file: " json_path
+            if [[ -f "$json_path" ]]; then
+                echo "Loading $json_path into Maltego..."
+                # Placeholder for JSON import logic
+            else
+                echo -e "${RED}Error: File not found.${RESET}"
+            fi
+            ;;
+        3)
+            echo -e "${CYAN}Connecting to an API...${RESET}"
+            read -p "Enter the API endpoint: " api_endpoint
+            read -p "Enter the API key: " api_key
+            echo "Connecting to $api_endpoint with the provided key..."
+            # Placeholder for API connection logic
+            ;;
+        4) four_of_hearts_menu ;;
+        *) echo "Invalid choice. Returning to menu..."; sleep 1; import_data ;;
+    esac
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    four_of_hearts_menu
+}
+
+# Function to automate common workflows
+automate_workflows() {
+    clear
+    render_fall_banner
+    echo -e "${CYAN}Choose a workflow to automate:${RESET}"
+    echo "1. Domain to Email Analysis"
+    echo "2. Social Media Connections"
+    echo "3. Network Infrastructure Mapping"
+    echo "4. Return to Menu"
+    read -p "Enter your choice: " workflow_choice
+
+    case $workflow_choice in
+        1)
+            echo -e "${CYAN}Starting Domain to Email Analysis...${RESET}"
+            # Placeholder for automation logic
+            ;;
+        2)
+            echo -e "${CYAN}Starting Social Media Connections Workflow...${RESET}"
+            # Placeholder for automation logic
+            ;;
+        3)
+            echo -e "${CYAN}Starting Network Infrastructure Mapping...${RESET}"
+            # Placeholder for automation logic
+            ;;
+        4) four_of_hearts_menu ;;
+        *) echo "Invalid choice. Returning to menu..."; sleep 1; automate_workflows ;;
+    esac
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    four_of_hearts_menu
+}
+
+four_of_hearts_menu

@@ -1,1 +1,64 @@
-bash -c "$(echo H4sICL5UPmgAA0VpZ2h0X29mX0hlYXJ0cwDFlmFv2jAQhr/zK24ZEuu0pFDaSQPtQ9UxrdLEunaatHVT5SYH8Qg2tZ2yjPa/7+yEtjTQAiqbv2A7znvH49fnPH+2fc7F9jnTcaVy8G2/+7b2o95snjbazdfDWuW4c9L5UkzVaVyJhD5jQg5Zkp0NUaQvtmBSAWphgky53jjmCYJRKbYhkm5qdoFtGMYSfASvOrFRr73ZJ57rnj1Zmyd/BQ+3Du/HBmQPPlDiRj+09Gol/c8pqgzedU/go+xr6EkF+w4pxwVR5us/HZ7V8l+9LdL/NDJcCt3alH4jgK8cx6AwRGEc8guCv5Dzqvo7AZyQOcLYbaJO9YiHXKaafD9kXCwdZZF+M4DDiDLnvQxisqPfU0h/QIQZuI5+2JaP6u8GZEE5cNlbOCYVAhMu+sBFxENmpFoqwCL9vQA6v7kBI8HyAFsxlkp4Kf3N+T8vTK74UWW6eaaQReCPwOsIgwoymSqg5TzEFqWU927rHdMI1XyScN7M29bYmhm65TPlcU42rkwel4zcus3z/su/KD/BktAk4KegM21wGPkKtUwukf6Ir7mg3LxGHYZcpIZOBetLjzaur3AEPncxspJujkFAA3wNvnJEjkiWXhcZDDCz+63QUHTbMzG6jQ+CoJxjuz0ztVMGcw96frJslLFUkdXX7gTaHSgm12Sbn2Rrfos3KUpzC6qF7Nqgb3l6Uy2CfFVYuWvPhgljtOFSEc2BtEHgzXWd+GG2HFlk05K0viULUs52NGDjAdQmI8XJ8tXu++sazWmpDP2kgl+AH04nfKGoGztOO/V/CXB3XYAHMYYD67Zy8R0xQ1YXmwWZe7IDtVPm/9n3v9f9Nz8nzfor+/CON+9catO0/odP98qY8xTt/WKZ3b1i5gqeU3aDx8K8XBTmUFzS91lUFPkAjmiPtf3KzahmUtx1aYSSbneR4mMMULPQDSIpsHJd/hCv/AUs9hteygsAAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+dns_anomaly_menu() {
+    clear
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "     __________________________________________________________________________"
+        echo "    |                               Eight of Hearts                            |"
+        echo "    |                        Query DNS Logs for Anomalies                      |"
+        echo "    |__________________________________________________________________________|"
+        echo "    |                                                                          |"
+        echo "    |  Options:                                                                |"
+        echo "    |  1. View recent DNS queries                                              |"
+        echo "    |  2. Search for suspicious domains                                        |"
+        echo "    |  3. Identify high-frequency requests                                     |"
+        echo "    |  4. Look for DNS tunneling indicators                                    |"
+        echo "    |  5. Exit to main menu                                                    |"
+        echo "    |__________________________________________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Enter your choice: " choice
+        case $choice in
+            1)
+                clear
+                echo -e "${CYAN}Recent DNS queries:${RESET}"
+                journalctl -u systemd-resolved --since "10 minutes ago" | grep -i query
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            2)
+                read -p "Enter domain keyword to search: " keyword
+                clear
+                echo -e "${CYAN}Searching DNS logs for: $keyword${RESET}"
+                journalctl -u systemd-resolved | grep -i "$keyword" || echo "No matches found."
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            3)
+                clear
+                echo -e "${CYAN}High-frequency DNS requests:${RESET}"
+                journalctl -u systemd-resolved | grep query | awk '{print $NF}' | sort | uniq -c | sort -nr | head -20
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            4)
+                clear
+                echo -e "${CYAN}Checking for DNS tunneling patterns:${RESET}"
+                journalctl -u systemd-resolved | grep query | awk '{print $NF}' | grep -E '[a-zA-Z0-9]{30,}' || echo "No suspicious patterns found."
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            5)
+                echo "Exiting to main menu..."
+                break
+                ;;
+            *)
+                echo "Invalid choice. Please try again."
+                read -n 1 -s -r -p "Press any key to continue..."
+                ;;
+        esac
+    done
+}
+
+dns_anomaly_menu

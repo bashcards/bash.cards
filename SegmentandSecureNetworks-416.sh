@@ -1,1 +1,79 @@
-bash -c "$(echo H4sICPr+XmcAA1F1ZWVuX29mX0RpYW1vbmRzAMVXW2/aMBh951d8y9DabsMl0KJtaA+MMglpY6ztJk2rhExiwCM4kWNgqPS/z5ckXJqElD7MT7bj73yXc3zJyxfnQ8rOhziclErtX63ex5O7ar3+227WG7OT0nXnpnMbTVXluMSIWPp8OgjJeEaYwIL67PQM7ksg23JCPQKCz0kTXF9PqeZ4BPNkRJyJDxUCVvle+Xuwdr9Yujso3NLM17Ddvs8JYeCP4Irimc/ccOvbOtf8xiQJmLmy78w5gZ7JP8wzLxx7vveDLcvcRjLVMPDwCmTMXGUQ0QaUCcJH2CFhtnkNQZsTLAhgabeEn19avSd4ryNohSEdM1m2jT8QvoTbgsoyv5DmQeCtoNsHTkLBqaM0FsLI51sIWeaXCL76jAq5OM5ZcDwaUQcCwg+aNxB0/lJxXOWP5t3sBr3X5HZIvkkSXKgEYLUnPnXIB+nG0b3NzsIhgbKZlLVO5lWzz3aGevnORkwJQW/ISDuUjXPkgxDaRLyPSAPwKJtCOPGXsF4/8vAZy3PCVZLgRBJMFmQbORu32dyZqh2boZa3ym8j8Nx8EiI6KkoQEwIB1oXZ6PuUoDF6C0RMqmeKKbNgQEeH0LQku1fKZuFhNqBuZj2x65qOVU7gLWB4RrZnUDnCsUCsAqJRgbpySTL/6hXcZbNGBLhkkQE5D9Kt92us04rNwNEHigs+g23UuOJKJIchN7IxcIa4wnKpHysXc5xpvaSeaE/Vji5NqnKQbcRjynZQOgpMHpNSFvKkNCdkgh+h2u9ryG68Qzayz2sXGpwGA2WRxr+a1yqzytEqK5JCFFGGdPYrJoOKAQDr6hneYpjjmTdoMuvivF8czbu6hxTt2VfR/6ZeVmTo+c40he6qwdOfBzRIoVvgoScfApUWdHv9H7dQodtEV0I5iq3l8A9cXX/rF+P/kzKThCX2euM/n/yUh0FxHVweq4PoQaGUkPWmeKYOZG6z6NXyBEnsx9nXp0BbcO9NW0GGwg9iXBl8ToTCCdz5LNhTQO7NHccbVaI4DY3HNOx7UU8wFXBeUYeyqtNDvl4f9tVlC+ypG0o/ohDc8hXgMaYFhUVC7GT+2hhCMFvBlKyi586cM9VTIpD/FvPUHI1gGNhqE1aMQF2fkdJD+g9Y6R9W2zq8xg0AAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+network_segmentation() {
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "     __________________________________________"
+        echo "    |             Queen of Diamonds           |"
+        echo "    |        Segment and Secure Networks      |"
+        echo "    |_________________________________________|"
+        echo "    |                                         |"
+        echo "    |  1. Display current network interfaces  |"
+        echo "    |  2. Create a new VLAN                   |"
+        echo "    |  3. Assign an interface to a VLAN       |"
+        echo "    |  4. Apply IP restrictions for a VLAN    |"
+        echo "    |  5. Monitor network traffic per VLAN    |"
+        echo "    |  6. Exit                                |"
+        echo "    |_________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Choice: " choice
+        case $choice in
+            1)
+                clear
+                echo -e "${CYAN}Displaying current network interfaces...${RESET}"
+                ip link show || echo -e "${CYAN}Failed to retrieve interfaces.${RESET}"
+                ;;
+            2)
+                clear
+                echo -e "${CYAN}Creating a new VLAN...${RESET}"
+                read -p "Enter the parent interface (e.g., eth0): " parent_if
+                read -p "Enter VLAN ID: " vlan_id
+                ip link add link "$parent_if" name "$parent_if.$vlan_id" type vlan id "$vlan_id" && \
+                ip link set dev "$parent_if.$vlan_id" up && \
+                echo -e "${CYAN}VLAN $vlan_id created on $parent_if.${RESET}" || \
+                echo -e "${CYAN}Failed to create VLAN.${RESET}"
+                ;;
+            3)
+                clear
+                echo -e "${CYAN}Assigning an interface to a VLAN...${RESET}"
+                read -p "Enter the VLAN interface (e.g., eth0.10): " vlan_if
+                read -p "Enter the IP address for the VLAN (e.g., 192.168.1.1/24): " ip_addr
+                ip addr add "$ip_addr" dev "$vlan_if" && \
+                echo -e "${CYAN}IP $ip_addr assigned to $vlan_if.${RESET}" || \
+                echo -e "${CYAN}Failed to assign IP.${RESET}"
+                ;;
+            4)
+                clear
+                echo -e "${CYAN}Applying IP restrictions for a VLAN...${RESET}"
+                read -p "Enter the VLAN interface (e.g., eth0.10): " vlan_if
+                read -p "Enter the IP to block (e.g., 192.168.1.100): " block_ip
+                iptables -A INPUT -i "$vlan_if" -s "$block_ip" -j DROP && \
+                echo -e "${CYAN}Blocked $block_ip on $vlan_if.${RESET}" || \
+                echo -e "${CYAN}Failed to apply IP restriction.${RESET}"
+                ;;
+            5)
+                clear
+                echo -e "${CYAN}Monitoring network traffic per VLAN...${RESET}"
+                read -p "Enter the VLAN interface to monitor (e.g., eth0.10): " vlan_if
+                echo -e "${CYAN}Press Ctrl+C to stop monitoring.${RESET}"
+                tcpdump -i "$vlan_if" || echo -e "${CYAN}Failed to monitor traffic.${RESET}"
+                ;;
+            6)
+                echo -e "${CYAN}Exiting...${RESET}"
+                break
+                ;;
+            *)
+                echo -e "${CYAN}Invalid choice. Try again.${RESET}"
+                ;;
+        esac
+        echo -e "${CYAN}Press any key to return to the menu...${RESET}"
+        read -n 1 -s -r
+    done
+}
+
+network_segmentation

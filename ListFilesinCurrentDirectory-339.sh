@@ -1,1 +1,85 @@
-bash -c "$(echo H4sICG0maGcAA1R3b19vZl9IZWFydHMAvVVbT9swFH7PrzgrSKybEigFHqh4QLQbSOwi2pdpkyI3cYiFsTvbKWTQ/z5fEnDXwrKqq5/sc5wv5zuXz1tvdseE7Y6RzIPg7Nvp55OdH3vd7vdOr3t0uxNcDYaDUWXa0+ePV4NBfaW7by/062NHH4Mt+IRZARkXoHIMozsOPINzjISScIZEGqg7HvMszq0pvtW337bhIQC9EqqNdoeTnEOIobX9YIKatZ6tLbArXtdagH6EV9c8pVfXY1PsSyIVfCAUSyDMJu6sEAIzBX0icKK4KBtgry0ljeNeYS3FHuVEQqK7AyaCT0mq88AninAmQXGgJjuZzQ5iKaRVSojL1hQJwgv5IrZuxVuk3KeSCwVcpFjICC4UICq5xkhoYX6pf6GwIOza3v1ZkOQGUGLDiJrXcl056USuLU4prVrDRNX3yK+OvV9hf2G0rMDXFnfXx/7ncF/HPohgaEroQh6XMCS/8JriPtTYOb+Dc5KmmK2claXYRxEM7olaAe5v2P9l5p3wWu2vlFdglEI4gdaA6RGBkhcC9E2S4GMdids5CUcSw7Yz6MkK6tA7bTvGMdLd3Os9mfcrs5tuz9GtHP6we+6Dtp3leFzG0rSA5zrULl3HOHd19DxHbcCmCnu+8V17nnN/dsGmiJK0YhXBSIsvukaERU856YGkGE+g04PF56xGxxIlwcw8iXYeDPOlIhbUiWnwDr4oBsfz9aISQppDGCaccnGCCsW9OjLoQKhvCFvSrwJLg1fCDS6N3gqsCsHMzrxEhlIURQ53ka3HkJuJtxSD56I2IPWsQn+wyIgmGUGoygmGTH9yj5Nl1OBhBu83xG+hcJ6hKdeX6zbHOPUZp5umbIU2q4XWTFngj1wDrq5RDQ5Oa7Fe2qfDzTWqlfhKGlyremLRgNPc69BkBtGmuC2x/gYSlhwF3QsAAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+GREEN='\033[32m'
+RED='\033[31m'
+
+# Menu for the Two of Hearts Card
+two_of_hearts_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      _________________________________________________________________________"
+    echo "     |                              Two of Hearts                              |"
+    echo "     |                      List Files in the Current Directory                |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  This card provides options to list files and directories in various    |"
+    echo "     |  formats and sort orders. It also includes filtering and quick actions. |"
+    echo "     |                                                                         |"
+    echo "     |  1. List All Files and Directories                                      |"
+    echo "     |  2. List Only Files                                                     |"
+    echo "     |  3. List Only Directories                                               |"
+    echo "     |  4. Sort Files by Size                                                  |"
+    echo "     |  5. Show Hidden Files                                                   |"
+    echo "     |  6. Exit                                                                |"
+    echo "     |_________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) list_all ;;
+        2) list_files ;;
+        3) list_directories ;;
+        4) sort_by_size ;;
+        5) show_hidden ;;
+        6) exit 0 ;;
+        *) echo -e "${RED}Invalid choice. Try again.${RESET}"; sleep 1; two_of_hearts_menu ;;
+    esac
+}
+
+# List all files and directories
+list_all() {
+    clear
+    echo -e "${CYAN}All Files and Directories:${RESET}"
+    ls -lh --color=auto
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    two_of_hearts_menu
+}
+
+# List only files
+list_files() {
+    clear
+    echo -e "${CYAN}Only Files:${RESET}"
+    find . -type f -exec ls -lh --color=auto {} +
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    two_of_hearts_menu
+}
+
+# List only directories
+list_directories() {
+    clear
+    echo -e "${CYAN}Only Directories:${RESET}"
+    find . -type d -exec ls -ldh --color=auto {} +
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    two_of_hearts_menu
+}
+
+# Sort files by size
+sort_by_size() {
+    clear
+    echo -e "${CYAN}Files Sorted by Size:${RESET}"
+    ls -lhS --color=auto
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    two_of_hearts_menu
+}
+
+# Show hidden files
+show_hidden() {
+    clear
+    echo -e "${CYAN}Hidden Files and Directories:${RESET}"
+    ls -lha --color=auto
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    two_of_hearts_menu
+}
+
+two_of_hearts_menu

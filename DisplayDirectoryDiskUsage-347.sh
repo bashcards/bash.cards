@@ -1,1 +1,90 @@
-bash -c "$(echo H4sICHWSdGcAA1Rlbl9vZl9IZWFydHMAvVZRT9swEH7Pr7gVpJJNyWgLPKTiAZVqmwRjgm4TYqgyyZVYuHFkO0AH/e+zk7RN2qxLJ1Q/JM7F+Xz33Xfn7Lz7eEejj3dEhpbVuz75etz8td/p3LS6naNx07rsX/UHuWk/fT5dLGhpw6fLfr/wTVubrvtnZxc/F7aOtlk7cI5RAiMuQIUIA4yAj+AzEqEk9IgILIXRkI+GYWoajvXqPRteLNDDZ9qYztAPOTgIjd0X4+y0sbA2IB3Dtxor0K+wdpRDWjte62OfUhkzMtF3gb7iwszkA3yX5B7rYr8ZJRv4vfGoxB6EVIKv1QGx4I80QAmKc2auQCLCJr8RAsNHkvJBVCquYM4Vw0dk7iZ8v43fLRd+UHyCAVeE5cky0u8lQmCkCtncHLudY5+iIpRhUIC/Su5msVP8Hw12XOiF6D/AGRH3KBeOGjga1fW/EvvAhZM8ZQSuYvTpiPoLpKZcI+p/YR+6cM4jqnGqC0W7fomEOQM6XrdBJfaRq79ViYiM6M6Jhko72aZjW3WZNce0b+fdUSAJwImh0Y8UCpjwRIBeSX30tCfZLGuzRCLsZgZNmTVzvWXr0LWQh1mVdbvzN20bglyGqy87NrBMRsOiKgsrDmyQuRCGi6ItLDi0YZzltfr9kQ34TFXR9N7OOf4SPRJGgzxAFwb6U3Kv8+c2uiAZYgytLqyeOjMwlMS3pubkuogV5RG0vJpFbRXYqnGGZXgFtVaCeuWkBgk4MgS3kGHtobaBI9JkfxMopW6SE3jAiZGumIvY9EgTqeu6GdgqCaXA217NjmOVxVAj9jnkUvhl3IrYQ3CcMXl2AoxVeNzShSq5UNoutsFIx9uwT1oVlVCDnrrwGxGkp+GMnv1tsHXg1er81movqKBoqZuVz/vCb8FegCOSMOWBn7M1X2abvqefMq6oON590VfPcaephY7g5gacQGdBmxtwe9s12yz64YqIy9pN0aZLKflbWvI9luSLTGLVdvr3e9oXgguvcM4ZBAi4lkbElemHUrnlzUd0G2k+9OofwtZKW69RDTk6je5rnPJ7WWQ9JdiHnglHKh7bS1l5IsoPDSVtaK4vmuYaBiqsfwCd7i9MVw0AAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+RED='\033[1;31m'
+GREEN='\033[1;32m'
+YELLOW='\033[1;33m'
+
+# Menu for the Ten of Hearts Card
+ten_of_hearts_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      _________________________________________________________________________"
+    echo "     |                              Ten of Hearts                              |"
+    echo "     |                        Display Directory Disk Usage                     |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  This card provides tools to analyze disk usage at the directory level. |"
+    echo "     |                                                                         |"
+    echo "     |  1. View Total Usage for Current Directory                              |"
+    echo "     |  2. View Detailed Usage for Subdirectories                              |"
+    echo "     |  3. Check Largest Directories in Current Directory                      |"
+    echo "     |  4. Analyze a Specific Directory's Usage                                |"
+    echo "     |  5. Monitor Directory Disk Usage in Real-Time                           |"
+    echo "     |  6. Return to Main Menu                                                 |"
+    echo "     |_________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) total_usage ;;
+        2) detailed_usage ;;
+        3) largest_directories ;;
+        4) specific_directory ;;
+        5) monitor_directory ;;
+        6) exit ;;
+        *) echo "Invalid choice. Try again."; sleep 1; ten_of_hearts_menu ;;
+    esac
+}
+
+# Option 1: View Total Usage for Current Directory
+total_usage() {
+    clear
+    echo -e "${CYAN}Total Disk Usage for Current Directory:${RESET}"
+    du -sh .
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    ten_of_hearts_menu
+}
+
+# Option 2: View Detailed Usage for Subdirectories
+detailed_usage() {
+    clear
+    echo -e "${CYAN}Detailed Disk Usage for Subdirectories:${RESET}"
+    du -h --max-depth=1 | sort -hr
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    ten_of_hearts_menu
+}
+
+# Option 3: Check Largest Directories in Current Directory
+largest_directories() {
+    clear
+    echo -e "${CYAN}Largest Directories in Current Directory:${RESET}"
+    du -h --max-depth=1 | sort -hr | head -n 10
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    ten_of_hearts_menu
+}
+
+# Option 4: Analyze a Specific Directory's Usage
+specific_directory() {
+    clear
+    read -p "Enter the directory to analyze (default: current directory): " dir
+    dir=${dir:-.}
+    if [[ -d "$dir" ]]; then
+        echo -e "${CYAN}Disk Usage for ${dir}:${RESET}"
+        du -h --max-depth=1 "$dir" | sort -hr
+    else
+        echo -e "${RED}Error: Directory $dir does not exist.${RESET}"
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    ten_of_hearts_menu
+}
+
+# Option 5: Monitor Directory Disk Usage in Real-Time
+monitor_directory() {
+    clear
+    echo -e "${CYAN}Monitoring Directory Disk Usage in Real-Time (Press Ctrl+C to stop):${RESET}"
+    watch -n 2 'du -h --max-depth=1 | sort -hr'
+    ten_of_hearts_menu
+}
+
+ten_of_hearts_menu

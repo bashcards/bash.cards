@@ -1,1 +1,88 @@
-bash -c "$(echo H4sICPyjcGcAA1NpeF9vZl9IZWFydHMAzVVNb9s4EL3rV8y6wbYuYimuix5itEDRerF76CJoggUW2cJgpJFNlBIFkpJttP3vO9S3ZMVx0xooD4lMUW+Gb968efKbd8dj747pteO8+/ft36+f/ncxm91O57NX0VPn4+J6cVNuXdBv5wl8wDiFUCowa4RrvgUZwp/IlNHwjqnA0Xy7lOFynW8tIzr9bAxfHKDlC9rMn9BfS5ggjM6+2KDfRs3uCPK1/FlrD/orHFzdKx1cX4/BXmyNYr4h3gwLmGEQKhnBVXonuA/vpZ8SRQOBBrB/GiVH5f3INYh9s+YafFIHJEpmPEANDARfrc0G7V/gsUEVMh9zZWFBGY9XEFWs3Yud05nkdIodsIxxwe4EQlBTm+oKaSVlyIV7dN6n5OSU2FO3ll3UkR0jWiLG4x/AfuHCPxw3VZEw6Nboh/KeuXDNMmwQFepUUAmNpNSpdPh47JeWE26+K8njsE/Sl4U55v5buqNCFsAkgdHCNgvsZKqATnIfLymT4qmwWaYRzooN6iynSn06roq2rAmez+vXL8aQUWEH383GoKkwg+9eWlgi9qK9+XxcUvRXnDHBgzI/F24UNemKJOiO5qAFYgJTetgbGhUYauY73+zgOaxop3+1I6bOtaFwHZepnEfGrut26ech+DKKWExFyFpuAr+/8QLMvDgVYm6HYkN4r2J2YFLEFZqqC5+hu3LPKSqLEoEu4Y9tLcsbHYCRqUlSguEKfSOJ0hLJ9ZrElsWhHLF4XNL5GrV1g0lAlBRBRzChop0152nDQBKE5+Sn51uhz5PE1Bh9Qj/s82hJo7uRT7jwsexmK6WAlAmtOD22UWi8N8xCKaku2zeg8RJLO0a0YUJQrC5a07FXJAaN1cE2RDEl8q5KmP+ZrciGWEz/FNBIyrgmia+NSfSl5202GxeDFU40+qniZmdL16LeTdaJW4QOeat5Y5jCRMNE5eW8InejQRjv4DPurMUpNKmK7ZOtse0CUmEBs98gRVPcY8VOp5OPaAWLY++/D7XXCANybHToy9iQjCxUcYeqV8m7tVVitVNrkfrq9raQYPvdCD596rWT0P0zh1rERoxZhJZOy4YNXu3V35XBwx6wd1adHEgjT8VW7t5vGs21VXxAyX/YyVZ/n0s5lGlc9Eg7yICuS4Ed0zDv6zJ1QJt4PfgTa/eBUe90Js4xds6yjpmXiKcW8APas7eoL1fadI1RpWi2HZ/Or/99zeEz0z/kPYc3jZdbzNHDzq06Hk35t79/hEn/Upob2P0fFnxCLgEPAAA= | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Menu for the Six of Hearts Card
+six_of_hearts_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      _________________________________________________________________________"
+    echo "     |                              Six of Hearts                              |"
+    echo "     |                  Extract Metadata from Public Documents                 |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  This card provides a lightweight interface for extracting metadata     |"
+    echo "     |  from publicly available documents using metagoofil.                    |"
+    echo "     |                                                                         |"
+    echo "     |                                                                         |"
+    echo "     |  1. Extract metadata from a domain                                      |"
+    echo "     |  2. View extracted metadata                                             |"
+    echo "     |  3. Save metadata results to a file                                     |"
+    echo "     |  4. Exit                                                                |"
+    echo "     |_________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) extract_metadata ;;
+        2) view_metadata ;;
+        3) save_metadata ;;
+        4) exit 0 ;;
+        *) echo "Invalid choice. Try again."; sleep 1; six_of_hearts_menu ;;
+    esac
+}
+
+# Extract metadata from a domain
+extract_metadata() {
+    clear
+    echo -e "${CYAN}Starting metadata extraction...${RESET}"
+    if command -v metagoofil &>/dev/null; then
+        read -p "Enter the target domain (e.g., example.com): " domain
+        read -p "Enter the output directory (e.g., ./metagoofil_output): " output_dir
+        metagoofil -d "$domain" -o "$output_dir" -t pdf,doc,xls,ppt
+        echo -e "${CYAN}Metadata extraction completed. Results saved in $output_dir.${RESET}"
+    else
+        echo -e "${CYAN}Error: metagoofil is not installed.${RESET}"
+        echo "Please install metagoofil using your package manager or visit https://www.edge-security.com/metagoofil.php."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    six_of_hearts_menu
+}
+
+# View extracted metadata
+view_metadata() {
+    clear
+    echo -e "${CYAN}Viewing extracted metadata...${RESET}"
+    read -p "Enter the directory containing the metadata files: " metadata_dir
+    if [[ -d "$metadata_dir" ]]; then
+        ls "$metadata_dir"
+        read -p "Enter the filename to view: " filename
+        if [[ -f "$metadata_dir/$filename" ]]; then
+            less "$metadata_dir/$filename"
+        else
+            echo -e "${CYAN}Error: File $filename not found in $metadata_dir.${RESET}"
+        fi
+    else
+        echo -e "${CYAN}Error: Directory $metadata_dir not found.${RESET}"
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    six_of_hearts_menu
+}
+
+# Save metadata results to a file
+save_metadata() {
+    clear
+    echo -e "${CYAN}Saving metadata results...${RESET}"
+    read -p "Enter the directory containing the metadata files: " metadata_dir
+    read -p "Enter the filename to save results (e.g., metadata_results.txt): " output_file
+    if [[ -d "$metadata_dir" ]]; then
+        cat "$metadata_dir"/* > "$output_file"
+        echo -e "${CYAN}Metadata results saved to $output_file.${RESET}"
+    else
+        echo -e "${CYAN}Error: Directory $metadata_dir not found.${RESET}"
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    six_of_hearts_menu
+}
+
+six_of_hearts_menu

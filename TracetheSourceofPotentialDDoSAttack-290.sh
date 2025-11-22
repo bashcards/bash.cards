@@ -1,1 +1,69 @@
-bash -c "$(echo H4sICEj1W2cAA1Rlbl9vZl9IZWFydHMAvVffT9swEH7vX3HrkBiTklIKe6DaAwKk8bJV/JiE2ISMc22tJnZmO1Qd5X/f2WnTtQktywC/pL445+++++7svn/XuhOydcfMsNE4vj76+nn7x26nc9Pudj4l243z04vTy5lpl+YNqxnH2yhS5taoTHM0H3bgoQE0xkMRI1idYRci5U1u8BiZLmbIhwoChObWg9vtsbn8pul/3r7UqPI+hQ3jEiWoPnwh2NasWzh9lvtLxxjYIcKFJ8z57imL0goWw8mJuoAjaxkfre5V7f7FuHke+trjKfffUiuUNIev5L4dwpFk8eQ3QizuESTasdIjkiXr9wWHsbBDZzSW2Rru90I4HiIfQV9pMJlJBRcqM4X7zAg5ALNWNmvcd0K4MiQWnkZZkoJVwFlqM43AZARCmhS5hZTEguuk+ZT7/RC+CxyDRk7yg1gNDPS1SqB1z3SLpi0zMfQACq4wJWgMG6DZ7P4ghHMktNIBT5iQkKDMNlDxXPSvpvu8GflGR92oeKeRRRCk0DyVFjVMqHaBlguOh4Qo/7XocYyytpUbKU2F3Y32ztLUL19qiRVofGvMdez0tFHJh4sAVr3OtR5Im1GS2HgE2w+pFpT/rYPHbTLxjN5GhxD02zQzSlt6ZFL8goDPDYHU9HPoOZHQ3oXpdJacU61JLazAugIzLCPScy8QGAi0J7mnSWXkZQIjnDj56EJIrnM6HYVhha9ud8m0V5drX9QO/oa6XkM04Q+sBEc2AtLjLhZmiFE16fVo5nOYZYhvS3SnLtFXnsjnNbg1ZOekHPtvvUOVwlkPWBS5+HDW1nzdzFPoMkuMGuRKRqYySJNFRINIUFFJ0No5TOIwEJ60lVx2/iqg0BVQsF8/t0Uws/DfNqP7dTPqThSHunSoLM6S+RGyJqGiDzdEYOkk+tl1UcjSejcGGil+d4Nqlr6bgmUiXmX6q/IXrkBjTFUaAQHWwqlFZV5+q24qaMO4BLU4If8ZbPHl/8KdO6oEbLASUbFHOVEui/kuIVy7k4+WWEzoUJ+AVD7JFKkwhIHKKmHuSlexdV+8pYIPygrOQ8wvJXmbWNxLKl3eEb7Rpo0+PrXRmbxnsYhmt4MQelRA7jqnJ8AGtG/diqaOZYXMcBMLaBj3k0hJbDxW/Vtr/AHeYVZj8Q0AAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+trace_ddos_sources() {
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "     _________________________________________________________________________"
+        echo "    |                                Ten of Hearts                            |"
+        echo "    |                Trace the Source of Potential DDoS Attacks               |"
+        echo "    |_________________________________________________________________________|"
+        echo "    |                                                                         |"
+        echo "    |  Options:                                                               |"
+        echo "    |  1. Analyze live network traffic with netstat                           |"
+        echo "    |  2. Check for suspicious traffic using ss                               |"
+        echo "    |  3. Use tcpdump to capture and inspect packets                          |"
+        echo "    |  4. View recent logs from /var/log/syslog or /var/log/messages          |"
+        echo "    |  5. Return to main menu                                                 |"
+        echo "    |_________________________________________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Enter your choice: " choice
+        case $choice in
+            1)
+                clear
+                echo -e "${CYAN}Analyzing live network traffic with netstat:${RESET}"
+                netstat -ntu | awk '{print $5}' | cut -d: -f1 | sort | uniq -c | sort -nr | head -n 10 || echo "Error analyzing network traffic."
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            2)
+                clear
+                echo -e "${CYAN}Checking for suspicious traffic using ss:${RESET}"
+                ss -tn state established | awk '{print $5}' | sort | uniq -c | sort -nr | head -n 10 || echo "Error checking suspicious traffic."
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            3)
+                clear
+                echo -e "${CYAN}Using tcpdump to capture and inspect packets:${RESET}"
+                echo "Capturing top IP addresses from live traffic for 10 seconds..."
+                sudo timeout 10 tcpdump -n -i any | awk '{print $3}' | cut -d. -f1-4 | sort | uniq -c | sort -nr | head -n 10 || echo "Error capturing packets."
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            4)
+                clear
+                echo -e "${CYAN}Viewing recent logs from syslog or messages:${RESET}"
+                if [ -f /var/log/syslog ]; then
+                    grep "DDoS" /var/log/syslog | tail -n 10 || echo "No DDoS-related entries found in /var/log/syslog."
+                elif [ -f /var/log/messages ]; then
+                    grep "DDoS" /var/log/messages | tail -n 10 || echo "No DDoS-related entries found in /var/log/messages."
+                else
+                    echo "No syslog or messages log found. Your system may not log this information."
+                fi
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            5)
+                echo "Returning to main menu..."
+                break
+                ;;
+            *)
+                echo "Invalid choice. Please try again."
+                read -n 1 -s -r -p "Press any key to continue..."
+                ;;
+        esac
+    done
+}
+
+trace_ddos_sources

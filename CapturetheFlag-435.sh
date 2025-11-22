@@ -1,1 +1,70 @@
-bash -c "$(echo H4sICBADX2cAA0ZpdmVfb2ZfQ2x1YnMAxZZtb9MwEMff51McY1I7pAZGES828WJ0nTQJ8bAODQTSdHGuialrR7bTrmz77pzTjj6m5UECv0ou8fn8///OyeNHTxOpnybo8ijqfD55+6rx9Vm7/eXwuP1y2Iguur3u5Sz0jO8jgYUvLV37nK77CrPmAdxGwEMoQltdkcgNtAj29m9Dwvu9eXQvXMH1r4/VuXewNM7kiMD0oaPKxMHKuNswuaszzAikhkvCYes1OkqhR6K00k+gk6NSpDNyGyb/RtWLk6dCVDqyElV8nEtF4G1Jx5Ca6KHeuYKbVLwiJcyQpxnoTD0A9gDO2ANodi7PDhaqfzRfcCndXic3xhGgBhRejnjPR6uvHMZwRQmcFIWSAr00epM+q7Oex3BBI7KcnCWWmshKnW2Z0I7hzFjSTgq35bUXMXRvpJ+HLWEKraLaihR0xOaI6iqa68imwv40yk7/jIdxeLB0uy57vfw7NVkXfXkvPaOYVjFnzOfowZPzMDGlBTeQSrnA5pgXc7MF4rp074pQiDuqe85G9j68gXP9jURVcrN7UygjPSCMSqXJYqKCQEXpoS9JpQd1qdjdjjXOtXrSE/SElbw229s8T0l72Z8wUSnQDZfsK7o+9XpQ4EQZrE/KBJxKy7UZO4FLi4EeVNA8EYKcY6Odt1J47s909pokV5ctOPVVv7dhJuoJDGgSOsUSN4oOV6FXhqTLDXJOkdJwCC239vD4eCn0/E/52d4du9A50agm3wn4qEZWq8/nhwu7KnXKWX1QnzcoLfRLXZmN6i/ROZUOnaNhQAQX14Wx9Dk0TPItLYdFo3YNZuYj77cRXNSZa4Ry6cZbPngqxSv4PEdqMwRAKCmzyrvCmsziEEoXlGtkaVK79L9iof2nLGw6+HYRcK5H3BAyQ26wVGbSc6vQSHL/CZqSIAwTBrlMOQYpevwb+yvr2PUxqsGSdbP8FYHbvH8gFlnpYejwQMuMnZFRfIgGQuvxYfMXt4ygyY+NHcDsB+QBhCs+G1yOdvDfcXixjsOq8eFTVjX+6gd8zkEcx/UoJFzPYFcdT3bXwcryAZHOvpwxvGdsXfgj4YM8Q6m3lLCwGDkU1U1qNEX36/+G0Q+FK5I8XQoAAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+capture_the_flag() {
+    clear
+    echo -e "${CYAN}"
+    echo "     ___________________________________________"
+    echo "    |              Five of Clubs                |"
+    echo "    |  Engage in Team-Based Security Challenges |"
+    echo "    |___________________________________________|"
+    echo -e "${RESET}"
+
+    while true; do
+        clear
+        echo -e "${CYAN}Welcome to Capture the Flag (CTF) Challenges!${RESET}"
+        echo "Choose an activity:"
+        echo "1. Web Application Security Challenges"
+        echo "2. Reverse Engineering Challenges"
+        echo "3. Forensics Challenges"
+        echo "4. Exit"
+        read -p "Choice: " choice
+
+        case $choice in
+            1)
+                clear
+                echo -e "${CYAN}Web Application Security Challenges${RESET}"
+                echo "Solve challenges that test your skills in web security."
+                echo "Options:"
+                echo "1. SQL Injection (Exploit a vulnerable input field)"
+                echo "2. Cross-Site Scripting (Identify and execute an XSS payload)"
+                echo "3. Directory Traversal (Access restricted directories)"
+                echo -e "\nPress any key to return to the menu."
+                read -n 1 -s
+                ;;
+            2)
+                clear
+                echo -e "${CYAN}Reverse Engineering Challenges${RESET}"
+                echo "Analyze binary files to understand their functionality."
+                echo "Options:"
+                echo "1. Disassemble a binary file with 'objdump'."
+                echo "2. Use 'strings' to extract readable text."
+                echo "3. Debug the program using 'gdb'."
+                echo -e "\nPress any key to return to the menu."
+                read -n 1 -s
+                ;;
+            3)
+                clear
+                echo -e "${CYAN}Forensics Challenges${RESET}"
+                echo "Investigate digital evidence to uncover hidden data."
+                echo "Options:"
+                echo "1. Use 'binwalk' to extract hidden files."
+                echo "2. Analyze a memory dump with 'volatility'."
+                echo "3. Investigate a network capture using 'Wireshark'."
+                echo -e "\nPress any key to return to the menu."
+                read -n 1 -s
+                ;;
+            4)
+                echo -e "${CYAN}Exiting Capture the Flag Challenges...${RESET}"
+                break
+                ;;
+            *)
+                echo -e "${CYAN}Invalid choice. Please try again.${RESET}"
+                ;;
+        esac
+    done
+}
+
+capture_the_flag

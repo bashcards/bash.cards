@@ -1,1 +1,65 @@
-bash -c "$(echo H4sICIsfXGcAA05pbmVfb2ZfQ2x1YnMAtVbLThsxFN37Ky4DaqDSTAiBLohaqUJZdAFFPBZVKwVn5oax8NipH4EIkPob/b1+Se155R2gBa88vuNz7vt6c6PZZ6LZpzol5Ojb55OPjR+77fb3Vqf9IWuQs+5596I82nXfJJOCGal6eqwNZj1tqLF6ewfuCbgVc6Qq32GcSggRgq17j/oYTE4Dv4Pe66157AdYWCdMIMgBHHHb14dwhpSHFyxDOM/tgOPCrMWLDwvgr6j4IviiAv+8loBfpExDTFUClHN5q2EsLRgJZVDhBsdQBBYyNIrFGpgA5Z1lnLOiteCXGsGk6G4KC310+B7a/SCd4DalxrP9+fU7Ac5ucIo2epbub+qYr0PDpHCJ8Rbg0Irq/EqYvgGr6TXCdjKAMN35X/C9CfjR6WWFbeQQYpllVCTPZVgG3p6AZ5hJNa7wBwrxJdovA9+fgFOIrTYyq3R+gU9WgB9E0L1j5mVAzwN/owZQNMu84bpumZ+7yksgHELQFQaVrx/lC4rFeOh0KXZF36WuxraKA1eypFK+tUOmbSmMKJ3OxPVUOkZRFMz8e0tNnEIooAV5os4IO536c+8Jijop1zEEPl/Dvmi50KW50e50N1jF2X6CczpX19GWWbyKZn+WZi4avtfNZe2kp+XxyYW9Urhe4zkgac3QmrUe25qFX+mrg2W+8qXhaVfNwTlehcYqsYrh/TKGL2JEOUvKJI0ck4fwnN5JbkQsGFcioqYxmSq5U4VaAxXjfDq5y4UyfldNmxpKVakDoSaPhGxCV2irEK5yz13V/nVjkI4o47TPkbABbNSScFR6+d0naCY4agrLecdTiSmlukr5GJ/hT8sUJvXtRn634fGFNBOOqFIkL+FyxKbUjVfjytU9ojjHpDQCfdtqkQHz+h9TN4B1rNjQOAHG1s+p5Y8wUjy+/gJt4ucy0QkAAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+monitor_system_status() {
+    clear
+    echo -e "${CYAN}"
+    echo "     ___________________________________________________________________________"
+    echo "    |                  Nine of Clubs: Real-Time System Monitor                  |"
+    echo "    |___________________________________________________________________________|"
+    echo "    |                                                                           |"
+    echo "    | This card allows you to monitor key system metrics in real-time.          |"
+    echo "    | Use the menu below to choose what you’d like to monitor.                  |"
+    echo "    |                                                                           |"
+    echo "    | Options:                                                                  |"
+    echo "    |  1. Monitor disk usage (df -h)                                            |"
+    echo "    |  2. Monitor CPU usage (top command)                                       |"
+    echo "    |  3. Monitor memory usage (free -h)                                        |"
+    echo "    |  4. Monitor a custom command                                              |"
+    echo "    |  5. Exit                                                                  |"
+    echo "    |___________________________________________________________________________|"
+    echo -e "${RESET}"
+
+    read -p "Enter your choice: " choice
+    case $choice in
+        1)
+            echo "Monitoring disk usage..."
+            watch -n 1 df -h
+            ;;
+        2)
+            echo "Monitoring CPU usage..."
+            watch -n 1 "top -bn1 | head -n 10"
+            ;;
+        3)
+            echo "Monitoring memory usage..."
+            watch -n 1 free -h
+            ;;
+        4)
+            read -p "Enter the custom command to monitor: " custom_command
+            echo "Monitoring custom command output..."
+            watch -n 1 "$custom_command"
+            ;;
+        5)
+            echo "Exiting Real-Time System Monitor."
+            return
+            ;;
+        *)
+            echo "Invalid choice. Returning to menu..."
+            ;;
+    esac
+
+    echo "Press any key to return to the menu..."
+    read -n 1 -s
+}
+
+# Ensure `watch` command is available
+if ! command -v watch &> /dev/null; then
+    echo "Error: Required command 'watch' is not available. Ensure your system has it installed."
+    exit 1
+fi
+
+# Main script execution
+monitor_system_status
+clear

@@ -1,1 +1,69 @@
-bash -c "$(echo H4sICAqEcGcAA1RocmVlX29mX0hlYXJ0cwC1VV1P2zAUfc+vuAvVoFObUirtgWpIE+rEHoYQ8DIxVLnJTWPh2pHtdFTAf991nH5B2hUEfklyYx/7nnvO9d6nzojLzoiZLAhOf38//7b/57DXu+n2e18n+8Hl4GpwXYUO6TvYg18oC0iVBpshXGcaEVQKZ8i0NXDKdBJYFxyqdJiVweGEVhw04SEAGrGgYPmGcaagjRA2HtzGT+EyGkI5hu81XkA/wtbxPK0t43Fn7DOmp2gsDCaMCwNMJnCqMUFpORO1e9Rgvxslu5/79aMW+zrjBmLSB+RaTXmCjgLg0qJOWYxgFRTGPRSR4fQ1ZqQwzeUY0DG2DZsliUZj0LQgXlLaKjlWDgXyYiR4LGbApoTFRgJpa9plwixXMtqC/ZGcfCR2N4ILopZSnCvPUfmX28w5twoRM2/BPorgik0RLtEUgvxBtfvBidL3OHcvgsE9t6/F2gH7Q7zjG1jZJ6sOppEl0M4hHDhtw0wVGmgmj/GYTuLffCtkpPeGD5Aag/nRu03IfeWG2bJy/f5iwlETDNE/1BX9K796TUDH3uFq8Euz4uGnnDLBk+oQEVxrMsSYcRmFfTACMYduH+r69xwODYuDJ3cP7CKu4GUeO1wEFbJD3AYeRdE68TyFWE0mzvTtqZuaLUT++aST4LQjCyFcfrgk2xPjS+VutERRs5FO0ZbpMVo4wGgctYhVNskFRrRD8zhcLF8U+4Rq69duhDakBKp0BThWaiywBXT9jlsguLzDhMuN2H7xOvYKZ5eFlI6lNWu7Llrl06iehXGzqpM0/PMFkW6s0ddOaCOPEEJ7RB9+ZUiGtXRTLmbOJRnZe7v5rJVsnYYTx3Tt8mdnQmE2Zz/QWunj9eTptpHKkq+MZUJgUpOjL9AFCdHgfCKQeZzUjsEUiQKWLyDWKIk8SspXLC+hC20DbV0W7cLdSHQDzeAOZy5LjbbQXlkkBmcqIt7D1DnOu6yuzQar5t/BT3UYL5xzcwPtFMLaUoRwe/sf2+TMuVOVNS0D896U0mYbNe3ycCsXv+O8XgxOcfPJ4e7CWi56g5rO1VoS5KZCJnSpernoQsJKd065Ns8l+8HiqI3/A3IFNFHQCwAA | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Menu for the Three of Hearts Card
+three_of_hearts_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      _________________________________________________________________________"
+    echo "     |                              Three of Hearts                            |"
+    echo "     |                       Harvest Emails and Credentials                    |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  This card provides an interface to use tools for gathering email       |"
+    echo "     |  addresses, credentials, and other publicly available information.      |"
+    echo "     |                                                                         |"
+    echo "     |                                                                         |"
+    echo "     |  1. Perform Harvesting with theHarvester                                |"
+    echo "     |  2. Save Results to File                                                |"
+    echo "     |  3. Exit                                                                |"
+    echo "     |_________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) perform_harvesting ;;
+        2) save_results ;;
+        3) exit 0 ;;
+        *) echo "Invalid choice. Try again."; sleep 1; three_of_hearts_menu ;;
+    esac
+}
+
+# Perform Harvesting with theHarvester
+perform_harvesting() {
+    clear
+    echo -e "${CYAN}Performing Harvesting with theHarvester...${RESET}"
+    if command -v theharvester &>/dev/null; then
+        echo "Enter the domain to target (e.g., example.com):"
+        read -p "> " domain
+        echo "Enter the source (e.g., google, bing, linkedin):"
+        read -p "> " source
+        echo -e "${CYAN}Running theHarvester for domain $domain using source $source...${RESET}"
+        theharvester -d "$domain" -b "$source" | tee harvester_results.txt
+        echo -e "${CYAN}Results saved to harvester_results.txt.${RESET}"
+    else
+        echo -e "${CYAN}Error: theHarvester is not installed.${RESET}"
+        echo "Please install it with: sudo apt install theharvester."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    three_of_hearts_menu
+}
+
+# Save Results to File
+save_results() {
+    clear
+    echo -e "${CYAN}Save Results to File${RESET}"
+    if [[ -f "harvester_results.txt" ]]; then
+        echo "Enter the path to save the results file:"
+        read -p "> " save_path
+        cp harvester_results.txt "$save_path"
+        echo -e "${CYAN}Results saved to $save_path.${RESET}"
+    else
+        echo -e "${CYAN}Error: No results file found. Please run harvesting first.${RESET}"
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    three_of_hearts_menu
+}
+
+three_of_hearts_menu

@@ -1,1 +1,82 @@
-bash -c "$(echo H4sICLwMXGcAA05pbmVfb2ZfU3BhZGVzAM1XbW/aMBD+zq+4MaSuk5JCafuhaJpQy6ZKVVeVadPUTcjEB7FIbGY7Zajrf5/tAAHCe2k1f4ovzuPnzs/dOW/fHLUZP2oTFRYKFz/qNx8Ofpar1ftKrXoWHxTuGpeZoWIMn+8ajak1x25Ns/F1ZCqbeQE5aUfYIglluhUIrqWI1LtDeCyAGYOQRQhaJlgDKpzJjiBCIiczDEIBHkKx9GhJPRVn3xTdY2tvYxH8X1g1bhhHEB1o9glFtXKpgdoUv+EiB82h0hhD3QYQLkYBhAHTIbigBjraAH9/4dmY/45jGf6XvmaCq/OXwq/4cBFi0APWSQNLgSmQCeeMd/eAf+xDnVIgBtJKXkAsONNCGovqY8A6LICOzYYd8as+XDOlgUQRBImUyHXqh9twnSrX45/4cIkRapwmnG3wbPxTH74xHIDEIKMeie7mzFfjn/lwhzqR3MWeMA4x8mRL8KX4L5dfaeFzddVUvsk7iYSC14dig2uUMBSJBLOcBXhuKKVPWT0lCqGUGoHxid2OyuHM1C2fKb8L2Lgy7LLF5saihPF9PyM9j6QSKkC5umarl9JEJ2qM4XlceH3SxTwDs9E9lD4aEr+hDL9qoEPkuVVzXF2TesoTXE4PI4XrUE0vnMLkQk9woamJ1C4u2rwYrIzE4mjIkfzpVr65D5Gu2K3DcqZURhwq4CnwpFPUrURljoMPoYdDmy1ykjcm4C5tjFN5+FptxnScF9acaC1an5hGZnqnfXblL6uMVsjWZJfsqFFTce1JTJWpjqm4pTHqepVOWqw3MKDj74rWCTn4Q8DrOYqtEeVVhNLDqmdUCKVI5wgtp/OCJ1XdtQTYhuPiu7jnbBPe6DUdPtlZmhJj8WCmUsRjmZoA7EGprrfuS6vfp7W6lSZT//4LVZ7uqkp7jbCRzN0kNgmhMjsEIXgxfLq6boDHzN1BExZZJ0/Lr+n/Wd7/9MKRXmOsh9M3mYWQbcOvt26j90s2yjrdFX8gEaOja4UPt+YclP1vGwLpGgLPFYj9L2Q8wXVhQUUCN6GCY+Fpyd9l4R8PstbnyA4AAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RED='\033[1;31m'
+GREEN='\033[1;32m'
+RESET='\033[0m'
+
+enable_audit_controls() {
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "     __________________________________________________________________________"
+        echo "    |                             Nine of Spades                               |"
+        echo "    |                   Enable System Audit Controls with auditctl             |"
+        echo "    |__________________________________________________________________________|"
+        echo "    |                                                                          |"
+        echo "    |  Options:                                                                |"
+        echo "    |  1. Check if auditd is running                                           |"
+        echo "    |  2. Add a rule to monitor a specific file                                |"
+        echo "    |  3. List all current audit rules                                         |"
+        echo "    |  4. Delete a specific audit rule                                         |"
+        echo "    |  5. View recent audit logs                                               |"
+        echo "    |  6. Return to main menu                                                  |"
+        echo "    |__________________________________________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Enter your choice: " choice
+        case $choice in
+            1)
+                clear
+                echo -e "${CYAN}Checking if auditd is running...${RESET}"
+                sudo systemctl status auditd --no-pager
+                if [ $? -eq 0 ]; then
+                    echo -e "${GREEN}auditd is running.${RESET}"
+                else
+                    echo -e "${RED}auditd is not running. Starting it now...${RESET}"
+                    sudo systemctl start auditd
+                    echo -e "${GREEN}auditd started.${RESET}"
+                fi
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            2)
+                read -p "Enter the path of the file to monitor: " filepath
+                clear
+                echo -e "${CYAN}Adding audit rule for $filepath...${RESET}"
+                sudo auditctl -w "$filepath" -p rwxa -k file_monitor
+                echo -e "${GREEN}Audit rule added for $filepath.${RESET}"
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            3)
+                clear
+                echo -e "${CYAN}Listing all current audit rules...${RESET}"
+                sudo auditctl -l
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            4)
+                read -p "Enter the path of the file to remove from monitoring: " filepath
+                clear
+                echo -e "${CYAN}Deleting audit rule for $filepath...${RESET}"
+                sudo auditctl -W "$filepath"
+                echo -e "${GREEN}Audit rule removed for $filepath.${RESET}"
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            5)
+                clear
+                echo -e "${CYAN}Viewing recent audit logs...${RESET}"
+                sudo ausearch -m FILE -i | tail -n 50
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            6)
+                echo "Returning to main menu..."
+                break
+                ;;
+            *)
+                echo -e "${RED}Invalid choice. Please try again.${RESET}"
+                read -n 1 -s -r -p "Press any key to continue..."
+                ;;
+        esac
+    done
+}
+
+enable_audit_controls

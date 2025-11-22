@@ -1,1 +1,76 @@
-bash -c "$(echo H4sICJwIXGcAA1RocmVlX29mX1NwYWRlcwDdV99v2jAQfuevuLKqlGmEUqo9gFZp2jqpL1tVOmlTNyGTXMAiOJntUKHS/31nhyaEhB9lrSbVT/Hl+O7z3XcX8+agOeCiOWBqVKl8+vnx64far5N2+7bVbb+f1CrXF72Lm4XphPYViW44Rdn3MECNXt/nAarjOtxXgNbdiLagZYxd8EJrMssNkMl0h+4ohAZC9fDeBHyo5t9U7WP/uVYZ+hw2rpuRRITQh17EPFSbXOc7w18niYPPSeLgi0kc3HE9gl6AsR6Nud4R/tlyszv7vdY6+G+R5qFQnReCbznQI725I/BDCQuhghUqcAEMPK7GwCdsiPvAnzppLRmoCF3uczcX5p/Ytx24FEqzIACJf2IuCVSHYaDgmPsgQk1nsK/Rq+8Bf2bY61gKAoUJo3xMUMQ7Md4O/2LCTKaFHUY0LtJ3EpkHjQiqF0JTOWZhLIHcuYsdYpQ8ZUOIKYTDxEg5TO1mteq5rXXPzawSNnZ2JULjYljUmuM4GeVVnBXmeoQQMRoFVBTzvKRQCzs1nI/RGTrvoEnbpvJ+1M0ZjWPfOhZCkFpuoeET1cypCr9hPjf2waq9awKLAkpW4e/KHLPmB6pmaAZc6fyBO8VjmkU/gIZcCTeHocQIGhyqC4zijzFQxVNlfC7FlAXcK81VB5ajFUB8vqYgAlrQsHRNba4kKgVMzGCMM3NmmXaOKZJpHCpyEb7bzZlO9xXXYsyYtK+ZNK9HYyVkJ6iZxzQD5nm2EvRFNnY7Ym01bHoMRePaN267YoexjmLSL41XV4dyZkASW59spSiTMb2xMIeZZ7nkE4EulS+lHSdNxF2ma6XasVmltyupqx6mR6zCeY5Cc5GHxWVsEyNz54DU3eTwKTivpR/b+/bj4rtsKpj/NG9sQ+qRA3DDyYQJOtHUzsOj86TFREyfeWqWnIMt/7LH1tGcXSCTmwKTmL8ppHcKw109eq8VoIq9EFikG0PUEEfUhAhHR3nzAhsaswzwqZIp480CU/rZEvf/rZezol4eG9zA2f5eukuVQg6I33hboLfrAj22VnJ5ceCK5KrM/6wZsCHFLQm4Uz7cUGguYtyWBVTMtRsvFFh5WPMvsPIX+sgXU0wOAAA= | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+recover_deleted_files() {
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "     _________________________________________________________________________"
+        echo "    |                              Three of Spades                            |"
+        echo "    |                    Recover Deleted Files with Sleuthkit                 |"
+        echo "    |_________________________________________________________________________|"
+        echo "    |                                                                         |"
+        echo "    |  Options:                                                               |"
+        echo "    |  1. Search for deleted files in a disk image                            |"
+        echo "    |  2. Recover a specific deleted file                                     |"
+        echo "    |  3. Install required tools (if not installed)                           |"
+        echo "    |  4. Return to main menu                                                 |"
+        echo "    |_________________________________________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Enter your choice: " choice
+        case $choice in
+            1)
+                clear
+                echo -e "${CYAN}Searching for deleted files...${RESET}"
+                read -p "Enter the path to the disk image or device (e.g., /dev/sdX): " disk_image
+                if [ -f "$disk_image" ] || [ -b "$disk_image" ]; then
+                    echo "Using 'fls' to list deleted files:"
+                    fls -r "$disk_image" | grep -i "deleted"
+                else
+                    echo "Invalid disk image or device: $disk_image"
+                fi
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            2)
+                clear
+                echo -e "${CYAN}Recovering a specific deleted file...${RESET}"
+                read -p "Enter the path to the disk image or device (e.g., /dev/sdX): " disk_image
+                if [ -f "$disk_image" ] || [ -b "$disk_image" ]; then
+                    read -p "Enter the metadata address of the file to recover: " meta_addr
+                    read -p "Enter the output directory: " output_dir
+                    mkdir -p "$output_dir"
+                    echo "Recovering the file using 'icat'..."
+                    icat "$disk_image" "$meta_addr" > "$output_dir/recovered_file"
+                    echo "File recovered to $output_dir/recovered_file"
+                else
+                    echo "Invalid disk image or device: $disk_image"
+                fi
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            3)
+                clear
+                echo -e "${CYAN}Installing required tools...${RESET}"
+                if ! command -v fls &> /dev/null || ! command -v icat &> /dev/null; then
+                    echo "Sleuthkit tools are not installed. Installing sleuthkit..."
+                    sudo apt-get update && sudo apt-get install -y sleuthkit
+                else
+                    echo "Sleuthkit tools are already installed."
+                fi
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            4)
+                echo "Returning to main menu..."
+                break
+                ;;
+            *)
+                echo "Invalid choice. Please try again."
+                read -n 1 -s -r -p "Press any key to continue..."
+                ;;
+        esac
+    done
+}
+
+recover_deleted_files

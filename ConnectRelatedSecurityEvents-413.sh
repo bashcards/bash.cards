@@ -1,1 +1,85 @@
-bash -c "$(echo H4sICMr8XmcAA05pbmVfb2ZfRGlhbW9uZHMArVddb+I4FH3nV9zNoul0V4FSpitt0axUMexupRVTlb6suiNkkpvGanAY26GDSv/7XDuBJCQE2lm/QBz7+H6ce67z80/dGRfdGVNhqzX892r88eS/s37/vjfo/zY/ad2OJqO7bOqMnlteLCVGTONUoZdIrldTXKLQ6v0pPLeAxlPIIwQtExyAH9spM7wImdw+oRfG4CI47Wdz6ItTfuPYv9PjR93+NZTGmAuEOIBPnM1j4avSy3UDwDAWAj0Nt9ZvHyaZ4zCyjjcBvMKDJguOGvsAeh34kwsfvNQNHgsFM9RPiAKi+IELYPS2OQbM81Aps7wctuMsOO/AnWQegkrUgns8ThRc3xCo5ksTx4MA/Q4lIeMdBIZe89jnAfdY6s4T12EjAI1EoQRFXtgdr3XhA1kgY6VciQFKFOTMp/HERu7vu7ubPDL7AC46MPrGdUP0Gi34ASKlVWYLmcps+04i88FdgDMMY+7hJR3k2X95xTKF0E4ngYvtvBm909KjXV4q8BoTbKEbKnLxcICNBb51Op3c+l30fz7/dT2efHS6Sya7tLrLEh126E916dVwOJqUltoz6hfzAO7vwQ3I7PQIB969S59THAe+fBmADlFU9tZ5vWGv8VyiR7KxcVZrnC90RuGC25f7nTbjQSKl7orWL0iSnIKda2BPj3DyvJCcTmn3ei8nNJeKcppzaWthyhclfT7sQp6wIJamgNsZzgFbc3s3G5xCHNegGY/AFdA7q93uxwKrtIpUdbLO7Fv8mnBJqm0rVMSajE+ET9UoVCIRDGF2KQfMvFiSWWwWYQP9Al6ZGgxKU+dvrRMjmIYt9ZLZWBTbyh4JTZrHhNmpY2rJLK3zHJNycbQlNjJp5i+hXcLYb4vNOzHOKW9wYFuGcP5H18dlVyRRRGSITBLW64oV4zjvFzaDWxKWgBvCspOZ/lszU6zlfb2o1Gwak1Xlq1WHKnBDkQWmvXdRe+Dq1YI6JLhzzecIbo+gv6EHkQI3CuH5BX7dFYjfa/TBnL5XHCrxCNF7NMEo5EdC22AcJWLt93T5RMHmBtLsck4L9NgIepkmGT8cYkW5r6fUkNlNjUhvETvV82tVZYciH95MkdJVwcSmclloJAWtnpKeF5qVL/Z0KgO4szbUeuEf296yo/L+tgE80OHS3H1NUK6cIswOuy5q2OXHc8bF65rPhmM2fplUG5qlWNBOf49vROl6p+Rv3okuSgyzZ0rqI6i0KohPBlJDLjN+rG0ZvtAR+d2y2rlmselc/1unuqiSfdcoc4GlJDRSd0ZZfjx01i+Hz7oWSxZxP7uTmg+IFbAHE+6jFB4V8/Z+bN5IQx8mVvCIKyMSEnUihe2RIckuiqTWx5TAdFEBl/Q0lQGb5peG7+LWdzyaKz1iDwAA | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+correlate_security_events() {
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "     ___________________________________________"
+        echo "    |              Nine of Diamonds             |"
+        echo "    |      Connect Related Security Events      |"
+        echo "    |___________________________________________|"
+        echo "    |                                           |"
+        echo "    |  1. Find connections between login and    |"
+        echo "    |     access logs                           |"
+        echo "    |  2. Trace suspicious IP activity          |"
+        echo "    |  3. Correlate file modifications with     |"
+        echo "    |     user sessions                         |"
+        echo "    |  4. Cross-reference DNS and HTTP logs     |"
+        echo "    |  5. Exit                                  |"
+        echo "    |___________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Choice: " choice
+        case $choice in
+            1)
+                clear
+                echo -e "${CYAN}Finding connections between login and access logs...${RESET}"
+                LOGINS="/var/log/auth.log"
+                ACCESS="/var/log/access.log"
+                if [[ -f "$LOGINS" && -f "$ACCESS" ]]; then
+                    echo -e "${CYAN}Correlating recent login attempts with access logs:${RESET}"
+                    grep "Accepted" "$LOGINS" | awk '{print $11}' | while read -r user_ip; do
+                        echo -e "${CYAN}Connections for IP $user_ip:${RESET}"
+                        grep "$user_ip" "$ACCESS" | tail -n 10
+                    done
+                else
+                    echo -e "${CYAN}Required logs not found. Ensure auth and access logs are available.${RESET}"
+                fi
+                ;;
+            2)
+                clear
+                echo -e "${CYAN}Tracing suspicious IP activity...${RESET}"
+                read -p "Enter an IP to trace: " suspicious_ip
+                echo -e "${CYAN}Tracing logs for IP: $suspicious_ip${RESET}"
+                grep -r "$suspicious_ip" /var/log/ 2>/dev/null | less || echo -e "${CYAN}No activity found for IP $suspicious_ip.${RESET}"
+                ;;
+            3)
+                clear
+                echo -e "${CYAN}Correlating file modifications with user sessions...${RESET}"
+                echo -e "${CYAN}Recent file modifications:${RESET}"
+                find /etc -type f -mtime -1 -exec ls -lh {} + | awk '{print $9}' | while read -r file; do
+                    echo -e "${CYAN}Checking activity for $file:${RESET}"
+                    grep "$(basename "$file")" /var/log/auth.log 2>/dev/null || echo "No user sessions found related to $file."
+                done
+                ;;
+            4)
+                clear
+                echo -e "${CYAN}Cross-referencing DNS and HTTP logs...${RESET}"
+                DNS_LOG="/var/log/dns.log"
+                HTTP_LOG="/var/log/httpd/access.log"
+                if [[ -f "$DNS_LOG" && -f "$HTTP_LOG" ]]; then
+                    grep "query" "$DNS_LOG" | awk '{print $5}' | while read -r domain; do
+                        echo -e "${CYAN}Checking HTTP access for domain $domain:${RESET}"
+                        grep "$domain" "$HTTP_LOG" | tail -n 5 || echo "No HTTP requests found for $domain."
+                    done
+                else
+                    echo -e "${CYAN}DNS or HTTP logs not found. Ensure both are available.${RESET}"
+                fi
+                ;;
+            5)
+                echo -e "${CYAN}Exiting...${RESET}"
+                break
+                ;;
+            *)
+                echo -e "${CYAN}Invalid choice. Try again.${RESET}"
+                ;;
+        esac
+        echo -e "${CYAN}Press any key to return to the menu...${RESET}"
+        read -n 1 -s -r
+    done
+}
+
+correlate_security_events

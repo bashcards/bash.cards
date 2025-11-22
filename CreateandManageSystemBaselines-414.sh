@@ -1,1 +1,85 @@
-bash -c "$(echo H4sICNP9XmcAA1Rlbl9vZl9EaWFtb25kcwDFV99v2jAQfuevuGWgtpuSlNLuoYhK/cFUJGCo8FK1FXITBywSh9kOFJX+77MTCIQQCJ203QNKHN939t33nc3XL+YroeYr4sNC4fbxul07ej6tVJ7K1coP76jwUO/We4uhU/le8BBFA9yX87FLKObHJ/BeAGk31916s9Gu9+8aDzXNnCBmLif1LZ86ZMC1cKI3sgkDfQxacd1HK4Rfp0PiYhAswFWw/XBImeVixOI3bA190LFEeFdL/tCSX7TwsZ/ftvnPIWE9TMF34I4gz6c2T36cZwPcMowEBkRtaIWpg+6MC+zBzTKD2QAH7GDHCvJZFkDZiLcAFE9hWVPgFI350Bf7AM4kgO+NEcNgBYxhKoALhSf8FdgugIoBTcIF4Df5S+gg9tooQibAuQF32MXhFhIR8+bgwoD6GxFbfXIA/EUZI46HIvxYCESZLIgdKuh26BMLX8pAVvi00ovcJxSjQSA0HldWPkm8htMT8lpar9Gqd3vXrU6teGyrkn3XSo8lr2T3S/elVqmrpYG67etO9/5Xr/+z0azXkgpf9YNijGyIN6GlUDb1HTJQlT7iII8UlKKiYRirZGViLoUH3SWDdVgt6JlqcCUDJzayA22h5gZ1/EvpmcM1oMjDoKNck+M4z7RBpW5cF9vQQdZIdhKeM6A9Hg1Ad7fNhbMr08YTkwauC/M5sLEH+u+Dl9bGYuqzkRS66vMBk8Xyac7VESc6HfIsj4wB2TYDWbXpoWuMy87RROZQdp+kczZzqtXE0Fle+aRYHLZBReNUI0Q03d52stnlqeNzc0rcJOpUYAZiiFeKceQhG9JQxrai7qyaSCxQ9X1LpeDpCXRnI7JZTLhp8PJSVdFoCuCQpEyJGEIS+TI7HcpimoMpvLG5gOuPF2JRnSaT7tku20MRxwE92JeI7HXMwcWcpxnj8nTat2XtZr2QQGUPc/yA2jsI45B9vK58ltfNBXHTB/SBFFYl2QRv+2vn/b5Nbuzo/LM7Cq8L0Xnzr9VohzcVJcbo6UAprjntESLzdjofRsN118XCd9Xpv/L8Is2KzbDqtifLv7Pmr7Kio32xvu2P1aAT5BJ7cYEzoMdmgAaI0Hw8xxxZmf+LOkx2GXm4zGCEZ4pdDIuAUfWkCOhhGmzdY0RWCmXQOeiRXmyf4sJH+g9g4Q9I/K2QQg4AAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+manage_baselines() {
+    BASELINE_DIR="/var/baseline_configs"
+    mkdir -p "$BASELINE_DIR"
+
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "     ___________________________________________"
+        echo "    |              Ten of Diamonds              |"
+        echo "    |     Create and Manage System Baselines    |"
+        echo "    |___________________________________________|"
+        echo "    |                                           |"
+        echo "    |  1. Create a new baseline snapshot        |"
+        echo "    |  2. Compare current state to baseline     |"
+        echo "    |  3. List existing baselines               |"
+        echo "    |  4. Delete a baseline                     |"
+        echo "    |  5. Exit                                  |"
+        echo "    |___________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Choice: " choice
+        case $choice in
+            1)
+                clear
+                TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+                SNAPSHOT_FILE="$BASELINE_DIR/baseline_$TIMESTAMP.txt"
+                echo -e "${CYAN}Creating a new system baseline snapshot...${RESET}"
+                echo -e "Baseline Snapshot - $TIMESTAMP\n" > "$SNAPSHOT_FILE"
+                echo -e "System Info:" >> "$SNAPSHOT_FILE"
+                uname -a >> "$SNAPSHOT_FILE"
+                echo -e "\nInstalled Packages:" >> "$SNAPSHOT_FILE"
+                dpkg -l >> "$SNAPSHOT_FILE" 2>/dev/null || rpm -qa >> "$SNAPSHOT_FILE"
+                echo -e "\nNetwork Configuration:" >> "$SNAPSHOT_FILE"
+                ifconfig >> "$SNAPSHOT_FILE" 2>/dev/null || ip addr show >> "$SNAPSHOT_FILE"
+                echo -e "\nBaseline saved to $SNAPSHOT_FILE${RESET}"
+                ;;
+            2)
+                clear
+                echo -e "${CYAN}Comparing current state to an existing baseline...${RESET}"
+                ls "$BASELINE_DIR"
+                read -p "Enter the baseline filename to compare: " baseline_file
+                if [[ -f "$BASELINE_DIR/$baseline_file" ]]; then
+                    echo -e "${CYAN}Comparing current state with $baseline_file:${RESET}"
+                    dpkg -l > /tmp/current_packages.txt 2>/dev/null || rpm -qa > /tmp/current_packages.txt
+                    diff -u "$BASELINE_DIR/$baseline_file" /tmp/current_packages.txt | less
+                else
+                    echo -e "${CYAN}Baseline file not found.${RESET}"
+                fi
+                ;;
+            3)
+                clear
+                echo -e "${CYAN}Listing existing baselines...${RESET}"
+                ls "$BASELINE_DIR" || echo -e "${CYAN}No baselines found.${RESET}"
+                ;;
+            4)
+                clear
+                echo -e "${CYAN}Deleting a baseline...${RESET}"
+                ls "$BASELINE_DIR"
+                read -p "Enter the baseline filename to delete: " delete_file
+                if [[ -f "$BASELINE_DIR/$delete_file" ]]; then
+                    rm "$BASELINE_DIR/$delete_file"
+                    echo -e "${CYAN}Baseline $delete_file deleted.${RESET}"
+                else
+                    echo -e "${CYAN}Baseline file not found.${RESET}"
+                fi
+                ;;
+            5)
+                echo -e "${CYAN}Exiting...${RESET}"
+                break
+                ;;
+            *)
+                echo -e "${CYAN}Invalid choice. Try again.${RESET}"
+                ;;
+        esac
+        echo -e "${CYAN}Press any key to return to the menu...${RESET}"
+        read -n 1 -s -r
+    done
+}
+
+manage_baselines

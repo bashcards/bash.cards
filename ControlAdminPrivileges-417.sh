@@ -1,1 +1,76 @@
-bash -c "$(echo H4sICG3/XmcAA0tpbmdfb2ZfRGlhbW9uZHMApVfbjtMwEH3vVwwFEW5JWLrsw1YgrcoiIS5CwAtiYeXGk9ZqYle201Jt+XfG9m7vaUPxU+x4Zs6c8Rkn9++lfSHTPjPDVqv3/eLTq+jqeafz46TbOSuj1pfLr5ffbpee07zFeCnk9ViLiShwgNfloLSPHsNNC2hMh7QIVlfYBa78khtZgUwvZpgNFcQI7Qc3Lt6f9vqbtn+8bjp2Wc9hdbwXcgAqhzeClUpys/puXmfeU9JqVQCTHD4qKazScOFSh893qZs688bYa6M3G3XmJwl8EMZCVmmN0oKpuILKoDaNzF8ki4wXZQY0GSuYFUoCTsipqTXvJPAFJwKnIW6mytKRWKhBI+ZPvbkaIfiTtoTQDPzLBL6ihWoMrEBNMPO1NEphiIh687MELn8LexzzR9c9iMFLjdSweKeRcYjH0O4NlcjwnMJk/mkpLEbJPAiLIORi3Y2Tx2tTv31NhzsgeD26s+Mks318kiRZwtx0M9A4huiX230eQYo2SwdaUSHm5MlCzM8hzk9pZjVEzyKIrmQE8zlcHQT0llHxOFhFjFgt6PytYqpH1O2uLb04lpBbNThO9giCyKHegMZAz+riac/hNVaN9wC0lBiRAumE6ZQEkrLKDhN6IJY8nXFcCIlxv8pz1ERB5PJuyNrnXVDLZSpSWWATQsD6BTZnsXMsi6EpuMhbfWHvuRI5/FgjyZl7kn52wQ5Rbll4TMzusJhDQQXahloY3OllM4dPKoD3zSxXleR7gOfiEJen/8GlGjkqN3vkXiYX/eRSWtSOOy8hyUoM4ioVSSvXqgxZevm6rnO3a8uj38axcBsI3N2+dnjx8GGDY3qx2eW17/7cN+6Fx2VW/94y/GWyEqDG8aFivTy2WHQf+X66/07aW7lwybCKC5tZahnT0F8dy+5Wp5pOGcQjT/t1NmSS8iSmQhksIsQsWHgXqa5IBgkPs8TP4HXKcZLKqih21827MjNjsXQQqNFZpqmDOBe8YalD9ibcz6bKMhJjThFnyfKr6u6KngpC0kcntQHy4+tvVr8Gmlf7bLvamzHchwLVdW/h+qS50aFYTw7HeicnrBD89v5P4JueARswIZtlhIZltd/f4dJicgYjnN3espWW7sm1iBJltTPH0E4knEBMRzDogCuJrT+7/xJafwFwLrDUawwAAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+admin_privilege_mgmt() {
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "     _________________________________________"
+        echo "    |             King of Diamonds            |"
+        echo "    |   Control and Monitor Admin Privileges  |"
+        echo "    |_________________________________________|"
+        echo "    |                                         |"
+        echo "    |  1. List current sudo users             |"
+        echo "    |  2. Monitor privilege escalation events |"
+        echo "    |  3. Review sudo command logs            |"
+        echo "    |  4. Revoke admin privileges             |"
+        echo "    |  5. Set up alerts for privilege misuse  |"
+        echo "    |  6. Exit                                |"
+        echo "    |_________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Choice: " choice
+        case $choice in
+            1)
+                clear
+                echo -e "${CYAN}Listing current sudo users...${RESET}"
+                grep '^sudo:' /etc/group | cut -d: -f4 | tr ',' '\n' || \
+                echo -e "${CYAN}Failed to retrieve sudo users.${RESET}"
+                ;;
+            2)
+                clear
+                echo -e "${CYAN}Monitoring privilege escalation events... Press Ctrl+C to stop.${RESET}"
+                tail -f /var/log/auth.log | grep --line-buffered 'sudo' || \
+                echo -e "${CYAN}Privilege escalation monitoring not available.${RESET}"
+                ;;
+            3)
+                clear
+                echo -e "${CYAN}Reviewing sudo command logs...${RESET}"
+                if [ -f /var/log/sudo.log ]; then
+                    cat /var/log/sudo.log | less
+                else
+                    echo -e "${CYAN}No sudo logs found.${RESET}"
+                fi
+                ;;
+            4)
+                clear
+                echo -e "${CYAN}Revoking admin privileges...${RESET}"
+                read -p "Enter the username to remove from sudo group: " username
+                sudo deluser "$username" sudo && \
+                echo -e "${CYAN}Admin privileges revoked for $username.${RESET}" || \
+                echo -e "${CYAN}Failed to revoke privileges for $username.${RESET}"
+                ;;
+            5)
+                clear
+                echo -e "${CYAN}Setting up alerts for privilege misuse...${RESET}"
+                echo "auditctl -w /etc/sudoers -p wa -k sudo_changes" | sudo tee -a /etc/audit/rules.d/audit.rules >/dev/null && \
+                sudo systemctl restart auditd && \
+                echo -e "${CYAN}Alerts set up successfully. Privilege misuse will be logged.${RESET}" || \
+                echo -e "${CYAN}Failed to set up alerts.${RESET}"
+                ;;
+            6)
+                echo -e "${CYAN}Exiting...${RESET}"
+                break
+                ;;
+            *)
+                echo -e "${CYAN}Invalid choice. Try again.${RESET}"
+                ;;
+        esac
+        echo -e "${CYAN}Press any key to return to the menu...${RESET}"
+        read -n 1 -s -r
+    done
+}
+
+admin_privilege_mgmt

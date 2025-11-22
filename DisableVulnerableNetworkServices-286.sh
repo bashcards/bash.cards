@@ -1,1 +1,82 @@
-bash -c "$(echo H4sICEMGW2cAA1NpeF9vZl9IZWFydHMA1Vffb9owEH5e/oobrVqYBC3Q8jC0h44VtQ9DiLBJ0yZVTnI0EWAj26FFXf/32U4gUDC/hDbmJ+Kzvzt/Z9/Hnby/8CJ64REROk7jx03r0/mvy2r1Z7lerQ3Pnc6te9tNpy7Vt3MCzZj6MmIUJIMgEsQbIIzjAUVuflKUT4z3QSAfRz4KJ13zMJ3IF+DFATWewkitlzzGOgTMTOnhD5Bw5x36IYMiQq4bRgIahAfQiakAohyHCG48Qg7fFGhexAEr5Gb7ZxtPX/R5Xt9Ycubnw6HGKvTfsG640TOwHtypU0qxdqVC2g7+S5qG71kaWmka3JT1HeAPxs2W0e87LPCNkDGBQKY3cO6efjwAfLk0o7vZbUN+LHpyFBQOFX0lg++iyqbcGXgtfDWDd8nQI5B3v37ePXgb/FUG32q6kJ/ewqZ+6e5ESBxu5cwCf53B33U1+Tcj4od40XqM6PMOp7DA10rQQRlzU9qGJKIwRBpvD7se/j9/VmvGLZWqFk9YzEFtUE9u3Tv7y+QkQmBkTCnBzMaRBFAcQa6RBpxLQ89kiKgicppMQkRn83qUCwuf2VmS2xnRR1Mb0gJUKpVyS+u1aIEwL8KXg0xITTWBs7O3C4Rko9Rq8T3nEUIiwEOkU9xgRQTJrjZHoUV1An2c6HvPZy9Ay6x+ACvjTwikUIaigCJfstfrC1OVzYyl5W4P0mSy00JaYrW4X3R6fLxVN/OW1PE9aBNDz3rTtM3iecHf8TF2tZkxLU178EV7oqi3qVpnYS1bYYlhzvPxMXe9mTmjutM/8rtwR4xQV2zEpeatM6H13poEbbScZCF+lYExHlcKassp8BREf9O+D7bU3dMxGURBKm4laKvmSumawAH6Uv1HTqxspBu6f3l4FMQ3HwGjiQYnbeCr7jhV32cc9aadZ49xM+GrrnCpv3T+AM4xFoDTDgAA | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Function to disable vulnerable network services
+disable_services() {
+    while true; do
+        clear
+	echo -e "This Card Runs an the Super User(sudo)"
+        echo -e "${CYAN}"
+        echo "     _________________________________________________________________________"
+        echo "    |                             Six of Hearts                               |"
+        echo "    |                 Disable Vulnerable Network Services                     |"
+        echo "    |_________________________________________________________________________|"
+        echo "    |                                                                         |"
+        echo "    | Choose a service to disable:                                            |"
+        echo "    | 1. Disable FTP (vsftpd)                                                 |"
+        echo "    | 2. Disable Telnet                                                       |"
+        echo "    | 3. Disable Samba (SMB)                                                  |"
+        echo "    | 4. Disable NFS (Network File System)                                    |"
+        echo "    | 5. Disable HTTP (Apache/Nginx)                                          |"
+        echo "    | 6. Return to main menu                                                  |"
+        echo "    |_________________________________________________________________________|"
+        echo "    |                                                                         |"
+        echo "    |                            Enter your choice:                           |"
+        echo "    |_________________________________________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Choice: " choice
+        case $choice in
+            1)
+                echo "Disabling FTP service..."
+                sudo systemctl disable vsftpd && sudo systemctl stop vsftpd
+                echo "FTP service has been disabled."
+                echo "Press any key to return to the menu..."
+                read -n 1 -s -r
+                ;;
+            2)
+                echo "Disabling Telnet service..."
+                sudo systemctl disable telnet && sudo systemctl stop telnet
+                echo "Telnet service has been disabled."
+                echo "Press any key to return to the menu..."
+                read -n 1 -s -r
+                ;;
+            3)
+                echo "Disabling Samba service..."
+                sudo systemctl disable smbd && sudo systemctl stop smbd
+                echo "Samba service has been disabled."
+                echo "Press any key to return to the menu..."
+                read -n 1 -s -r
+                ;;
+            4)
+                echo "Disabling NFS service..."
+                sudo systemctl disable nfs-server && sudo systemctl stop nfs-server
+                echo "NFS service has been disabled."
+                echo "Press any key to return to the menu..."
+                read -n 1 -s -r
+                ;;
+            5)
+                echo "Disabling HTTP services..."
+                sudo systemctl disable apache2 && sudo systemctl stop apache2
+                sudo systemctl disable nginx && sudo systemctl stop nginx
+                echo "HTTP services have been disabled."
+                echo "Press any key to return to the menu..."
+                read -n 1 -s -r
+                ;;
+            6)
+                break
+                ;;
+            *)
+                echo "Invalid choice. Please select a valid option."
+                echo "Press any key to return to the menu..."
+                read -n 1 -s -r
+                ;;
+        esac
+    done
+    clear
+}
+
+# Run the function for the card
+disable_services

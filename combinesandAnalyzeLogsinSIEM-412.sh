@@ -1,1 +1,82 @@
-bash -c "$(echo H4sICJv7XmcAA0VpZ2h0X29mX0RpYW1vbmRzAM1XbW/bNhD+7l9xVQMkWSE5tpN8qNGhgesWAdIXLNuAISsChjpZRCRSICmnbp3/3qMk27UtK5rRAuMXSScd7+157qjnz7p3QnbvmIk7ndE/Fx9eHf57Mhjc9IaD8/Sw88f4evxnJTqh544RmN5apRJzm6LMj47hWwdoPcQiQbA6xyGEqhC5xRNkevmEPFbgI3gH35ypR2/9jVfc3rZedepzWK2xmMQWVARvBEuVDA2srfku/YvJROOEWQQmQ7iQLJl9RbhSEwNCwvXl+H2Dfnv3d9pvuXbp9wL4W+ADsEUYISTO97b6/QCuqWo8hkhpMBlyEQkOOEVpTQv9QbDMWcQIFYV5ShyzFtNstcUu/dMARjHy+9J8bjLBhcoNRA5hPGZygqZJ/yyA90oKS9qJmKKzDoxbMRV21ib+8wDGX4TdM//7178kRsE4YsbynUYWgp+BN4qV4PiS7PDibkUyZhAOSiEhdCl3q3e89lh8vsbJGhcKbl5soCfSKgWuUiISCTizQknzcuXv5n5XH9/dvr28Gl+/OvK6U6a7tEvXzAxdPFhJUjSGUUF/lLHcxsHGd/eoZSHbjsfBhKw5bpLzS7s3rz8/emvN6MclIrgBPyINUvDg8xBsjLL207rsvBEmS9hMyAkkzFg4OyGsScIldRu3Y0NiFssSN8CXTrVyYg4JZaNWARODrZ2jTlWSxW0LUllKUS7DoNmnSGyJQyW3rQ6Ha6J+W4AtcTyWFjXc4+xB6RCsAlN2G8a1MqZAmwN59cGTQC17lauEA8LhQaV36PDg9gqChsAJ4xn4WtBulZ4HS8xB//duiNOuzJOkKg7M51sOfFCQMstjqv5Ted7I3WBvchb9tYi5rsP+V1rWEc4gzzX+T+j2tnaO0H1LrpVlpiqX6fJWjFuwsH/y0+hHeHAJpWkpyjZZNVCHjYXPv4aLp/viqZi3CwrtGrlHRadLVUjHASrGg7DEOuifQqxybY4byhAJiryLloNvZxkdC8BPrUgR/F57jq35EqJFTrOpPdfO9s1NdZYoWv3mcaIh5s1tPmkX2sjq5MWoaHpWZQ3el7iMYGN0whZn1xO4nbm/JLtzJ3NqUotDkUOjC6V98s63k7dpxx2ZKEeN3faOZsD9U7Z+e9rWpZyyRITVOSiAT1RIOgIZTAgUwKB8qzJHvnZBomF8529KWTomZ24muUxqtLmW7o5oDu4/qDbscuJJ6IFvaMgU8oLGj1v/UZ3vzIGimYgNAAA= | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+siem_tools_menu() {
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "     __________________________________________"
+        echo "    |           Eight of Diamonds              |"
+        echo "    |   Aggregate and Analyze Logs in SIEM     |"
+        echo "    |__________________________________________|"
+        echo "    |                                          |"
+        echo "    |  1. View aggregated logs                 |"
+        echo "    |  2. Search for specific events           |"
+        echo "    |  3. Analyze failed login attempts        |"
+        echo "    |  4. Check for suspicious file changes    |"
+        echo "    |  5. Monitor live log activity            |"
+        echo "    |  6. Exit                                 |"
+        echo "    |__________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Choice: " choice
+        case $choice in
+            1)
+                clear
+                echo -e "${CYAN}Aggregated logs from common locations:${RESET}"
+                LOG_FILES=("/var/log/syslog" "/var/log/messages" "/var/log/auth.log" "/var/log/kern.log")
+                for LOG in "${LOG_FILES[@]}"; do
+                    if [ -f "$LOG" ]; then
+                        echo -e "${CYAN}Displaying last 50 lines of $LOG:${RESET}"
+                        tail -n 50 "$LOG" | less
+                    else
+                        echo -e "${CYAN}Log file $LOG not found.${RESET}"
+                    fi
+                done
+                ;;
+            2)
+                clear
+                read -p "Enter keyword to search across logs: " keyword
+                echo -e "${CYAN}Searching for '$keyword' in logs...${RESET}"
+                grep -ri "$keyword" /var/log/ 2>/dev/null | less || echo -e "${CYAN}No matches found.${RESET}"
+                ;;
+            3)
+                clear
+                echo -e "${CYAN}Analyzing failed login attempts:${RESET}"
+                LOG_FILES=("/var/log/auth.log" "/var/log/secure")
+                for LOG in "${LOG_FILES[@]}"; do
+                    if [ -f "$LOG" ]; then
+                        echo -e "${CYAN}Failed login attempts in $LOG:${RESET}"
+                        grep -i "failed" "$LOG" | tail -n 20 | less
+                    else
+                        echo -e "${CYAN}No authentication logs found in $LOG.${RESET}"
+                    fi
+                done
+                ;;
+            4)
+                clear
+                echo -e "${CYAN}Checking for suspicious file changes (last modified within 24 hours):${RESET}"
+                find /etc -type f -mtime -1 2>/dev/null | less || echo -e "${CYAN}No file changes detected.${RESET}"
+                ;;
+            5)
+                clear
+                echo -e "${CYAN}Monitoring live log activity:${RESET}"
+                echo -e "${CYAN}Press Ctrl+C to stop.${RESET}"
+                tail -f /var/log/syslog /var/log/auth.log 2>/dev/null || echo -e "${CYAN}Unable to monitor logs live.${RESET}"
+                ;;
+            6)
+                echo -e "${CYAN}Exiting...${RESET}"
+                break
+                ;;
+            *)
+                echo -e "${CYAN}Invalid choice. Please select a valid option.${RESET}"
+                ;;
+        esac
+        echo -e "${CYAN}Press any key to return to the menu...${RESET}"
+        read -n 1 -s -r
+    done
+}
+
+siem_tools_menu

@@ -1,1 +1,98 @@
-bash -c "$(echo H4sICIjNdGcAA0FjZV9vZl9TcGFkZXMA3VZRT9swEH7Pr7gVJNZJCbSFPbTaAyrZtAfGBGjSxFBlkgu1SO3ITmEd9L/v7KRtQkJpO7Zp81N7uft8/r7znbde7V5xsXvF9NBx+l8PP73b+bbX6Vy0ep23ox3n1D/zz3PTHv3/cOr7BZe2dTlaGFpkcLbgGMUYIqkgHSIcBggygrOEhaihz1TosAAHMhpoaxqMyPt1E+4doBXEyJT9hcFQgovQ2L43iU0bC2sD7Bq81KpAP8DSVT7S0vWwHnZfIUsRmAjhmAl2jfCex0/tUYP9YpSsmfdaqxb7fMg1BFQdkCh5yw2xDHRKfIxiLjAELlJUEZUOpBKCBU+jjKfI8OTVY/eHUmrjDTJJuRRwhbG8MzgJQUo1stGuwphAQ0iZviGo1fL+nZy0vEVBgD9K0okthxfBbnvwheNdBniEKePxM6W8OnbHAz/kaYbdlyScSDcAr8Xe9yjbGA0nG5GxDPuA8v5Oef/i+lP3MmuOtkfn3ZGKJQQ3gYZvLgtM5FgBefIAu5RJ9itrs4zuw3ZmoJvlzFJvNfOrNTA3Anq9+Zd2E26pXqx9EOb1UvjeaQKS5pW4/SaEVq/KlwOKMGzvFY1vmjlvH8Uti3mYJ+3BuZoAu2ZceI0e6BgxgVYPqpNkBoaaBc7UTKOT7M63urWXySmct2YKPWLUDDTjKdio0IcMuTOrjeIRXFyA+wO2586Xlz0TvaC6JOHR1FdKqq5NyfoHTAiZUqcCNLl6ZaExzrfAzbYoRLHYnHFitNCpruyjcQ6XynEwJLBZaKNuI/tEmD7aI6MpBD0OAtQ6Gsfx4xNFvMA3qQWuBldZ6j8riiHVJnCDE8O6wnSshPll9DCqe56XwVQLolQE7W616zmVul6/DgwE5NFPVcOqUtnXzqwj0zNjHtUtM2YWebjxc5JYwFIvrkEKWFrBKam/UjGFkua2qVtbTX9F4k63Zvg48960vrYm9EU0PUlQcHFdCDFvZANPVjpeVRTBhPw/VNnvlse2UxgK60uSBW8kCj32XL5RE8s2XdrE/iVpaqw/AYTGIEIODgAA | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+GREEN='\033[1;32m'
+RED='\033[1;31m'
+
+# Menu for the Ace of Spades Card
+ace_of_spades_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      _________________________________________________________________________"
+    echo "     |                              Ace of Spades                              |"
+    echo "     |                            Create and Manage Files                      |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  This card provides a streamlined interface to create and manage files. |"
+    echo "     |  Choose an option below to perform file-related tasks.                  |"
+    echo "     |                                                                         |"
+    echo "     |  1. Create an Empty File                                                |"
+    echo "     |  2. View File Details                                                   |"
+    echo "     |  3. Edit File Contents                                                  |"
+    echo "     |  4. Delete a File                                                       |"
+    echo "     |  5. Exit                                                                |"
+    echo "     |_________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) create_file ;;
+        2) view_file_details ;;
+        3) edit_file ;;
+        4) delete_file ;;
+        5) exit 0 ;;
+        *) echo "Invalid choice. Try again."; sleep 1; ace_of_spades_menu ;;
+    esac
+}
+
+# Option 1: Create an Empty File
+create_file() {
+    clear
+    read -p "Enter the filename to create: " filename
+    if [[ -z $filename ]]; then
+        echo -e "${RED}Error: Filename cannot be empty.${RESET}"
+    elif [[ -e $filename ]]; then
+        echo -e "${RED}Error: File $filename already exists.${RESET}"
+    else
+        touch "$filename"
+        echo -e "${GREEN}File $filename created successfully.${RESET}"
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    ace_of_spades_menu
+}
+
+# Option 2: View File Details
+view_file_details() {
+    clear
+    read -p "Enter the filename to view details: " filename
+    if [[ -e $filename ]]; then
+        echo -e "${CYAN}Details of $filename:${RESET}"
+        ls -l "$filename"
+        echo -e "${CYAN}File Contents:${RESET}"
+        cat "$filename"
+    else
+        echo -e "${RED}Error: File $filename does not exist.${RESET}"
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    ace_of_spades_menu
+}
+
+# Option 3: Edit File Contents
+edit_file() {
+    clear
+    read -p "Enter the filename to edit: " filename
+    if [[ -e $filename ]]; then
+        echo -e "${CYAN}Opening $filename for editing...${RESET}"
+        nano "$filename"
+    else
+        echo -e "${RED}Error: File $filename does not exist.${RESET}"
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    ace_of_spades_menu
+}
+
+# Option 4: Delete a File
+delete_file() {
+    clear
+    read -p "Enter the filename to delete: " filename
+    if [[ -e $filename ]]; then
+        rm -i "$filename"
+        echo -e "${GREEN}File $filename deleted successfully.${RESET}"
+    else
+        echo -e "${RED}Error: File $filename does not exist.${RESET}"
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    ace_of_spades_menu
+}
+
+ace_of_spades_menu

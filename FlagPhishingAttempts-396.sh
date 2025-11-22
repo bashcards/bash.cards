@@ -1,1 +1,62 @@
-bash -c "$(echo H4sICNnlXmcAA1NldmVuX29mX0hlYXJ0cwClVttu2kAQfecrpm6kQBrbISR9CGqlKE3VSm0UhfShClW02GO8wt51vWscGuffO2sI5g6l+8Je2Jk5Z87M+u0bt8eF22MqrNWufl7efDjsnrRaD8126318WLu77lzfT7ZOaF0LItZ/TEKuQi76j0xrjBOt6g14rgGNPOQRgk4zbIMvyy0zvAhZOl2hF0qwEayDZ+PxxZo/scrp4+5j1f0CFkYHhyhABvCFQtFq9qjYZuAzgYbbCWi4nIDeZuAfEGyNYNtYZ6DpQMdjAjBmPIJI9hUEMgWVqYR7XGYKIi4Gar2BUzJAhHkhqJEi3JWNVxGA4n2h1hpoOXAVojco7wRsgMYCF5CwPu6UhTMHvkvBNV3/dNOp/DMhYxbxysg6A+cOXD9xvS+J/5HGscbLGiKRT89SZD7YCVhXoeQeXpAjr5xV9cIUwsF4E7iY7pvRbMwty7/PldeKEMoyM0IQJmHbxFBHp+8cgwplqlGgDz/uvqljyAQ+Jehp2vCJei5Uw3GcCt+i/36KCdjXHKx6qHVy4bqF+VVmorkYZWnUdYoe110nGhUyL39o4cmGBe6QpS6F6JpYHZrA6UfXx6ErsiiirEaoSHPFEsgbuYwnkJnwicYZ4BvCbrfntk73prssm7JA1lSOnWLEDJ2mNWm1I5nl7YKkn7MUiwpskQmWacoZ/4P+DIFHuzO3HJjQqamwKYMzUHansLUvhWXjMAyu7B008WQcSwE59sDnKWlTmnA3EhlwQlKSk+e5G+o4AluPEoQAunWwuWAxBXDkmBMLbDmzlYSJBd0GRfiE3qy8y6iKhCmVy9QvTEOktckGEcg9prkUpOnnF3i3ezKW8Pqoy+rbnfizfYmfNFxD/ZqeO+kRmchUxiL4naFhfnND4AE8gB1U0vSFKkv7VxsMVUsXzNCmZG0B5yfL94qZJLwWxLg8qrKwNrNcIZpq/BXxBiQYKVwZ7aKHKXtC6okH0qumGCeltFGp2/J7vpzfxQDMy0dp3JiXHj1Ig22+jrb7+iqGRKU/ecwcuE9HwPr0UOymWFTMW/uNeJuaHDIxggGOQEt6RHWWCjMj6UCMIluJcfzWCmiCrcAeK9+XAmsv675la38BJC5JjBMLAAA= | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+flag_phishing_attempts() {
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "     ___________________________________________"
+        echo "    |                Seven of Hearts            |"
+        echo "    |           Flag Phishing Attempts          |"
+        echo "    |___________________________________________|"
+        echo "    |                                           |"
+        echo "    |  1. Scan email logs for suspicious links  |"
+        echo "    |  2. Search system logs for phishing signs |"
+        echo "    |  3. Check for fake login pages            |"
+        echo "    |  4. Monitor DNS logs for anomalies        |"
+        echo "    |  5. Exit                                  |"
+        echo "    |___________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Choice: " choice
+        case $choice in
+            1)
+                clear
+                echo -e "${CYAN}Scanning email logs for suspicious links (e.g., shortened URLs, unexpected domains)...${RESET}"
+                grep -Ei "(http://|https://|tinyurl\.|bit\.ly|ow\.ly|t\.co)" /var/log/mail.log 2>/dev/null | less || echo -e "${CYAN}No suspicious links found in email logs.${RESET}"
+                ;;
+            2)
+                clear
+                echo -e "${CYAN}Searching system logs for phishing-related events...${RESET}"
+                grep -Ei "phish|malware|suspicious|unauthorized" /var/log/* 2>/dev/null | less || echo -e "${CYAN}No phishing-related entries found in system logs.${RESET}"
+                ;;
+            3)
+                clear
+                echo -e "${CYAN}Checking for fake login pages in common web directories...${RESET}"
+                find /var/www/html -type f \( -iname "*.html" -o -iname "*.php" \) -exec grep -Ei "(login|password|signin|authentication)" {} + 2>/dev/null | less || echo -e "${CYAN}No fake login pages detected.${RESET}"
+                ;;
+            4)
+                clear
+                echo -e "${CYAN}Monitoring DNS logs for anomalies (e.g., unusual queries)...${RESET}"
+                if [ -f /var/log/dns.log ]; then
+                    tail -n 50 /var/log/dns.log | grep -Ei "malware|phish|suspicious" | less || echo -e "${CYAN}No anomalies found in DNS logs.${RESET}"
+                else
+                    echo -e "${CYAN}DNS logs not found on this system.${RESET}"
+                fi
+                ;;
+            5)
+                echo -e "${CYAN}Exiting...${RESET}"
+                break
+                ;;
+            *)
+                echo -e "${CYAN}Invalid choice. Try again.${RESET}"
+                ;;
+        esac
+        echo -e "${CYAN}Press any key to return to the menu...${RESET}"
+        read -n 1 -s -r
+    done
+}
+
+flag_phishing_attempts

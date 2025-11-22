@@ -1,1 +1,124 @@
-bash -c "$(echo H4sICFPndWcAA1F1ZWVuX29mX1NwYWRlcwDVVm1v2zYQ/q5fcVMMNO4ixY6bFoiRD0PiDUObrk0MFEUSGIxFxcRkMiXldl6a/767k21RrufYmTPA/KCXI+/h8eFzR+78tH+j9P6NcIMgOPn8y/vjF1eNVuuy2W69Hr4IzjsXne7E1MD/3847HW/IAQ85LQ1NNHzuvHv3x6fS1kJbsANnUo8gNRbygYSPIyk1mBQu7kQiHZwImwRfyNgzac+xsTdEj9063AeArZ9JYflL9gcGIglh7Z4CfghLawjceptqP0B/h6VtfllL2vdVsS9w3f0BM/eryhBU6AROlZX93Fi1cJIF2BujZOW4n9AWYncHykEf9QEiy8w3B2MzgtyAK3lJZ7wkHi+oaZmA0UuwvwqrzAjhrcqlVWIP3AgxhQMthnIP8vEdPp36G584z9AkKlUImquhjB+J+zk5acZTWdyMOdQNYh/42EQA7BK/+1Nqx/WnY7d8bKJ1g3G/8rErO/XfsQ9j6Pyl8qdFuxT7WfKyKI5cuyfV0UqRQHQHYUej0CmFLOBI1ZdHGEnxVZRZTBqoFQZQOpiG3qxPEq53M+6x4trtWeeB38mS8Tpbfifvudf5quKpqrCHdZDEesM3vqxP+PtdfxWZSibBx9C1YxC3Quk4bIPLpLyDZhsWnSlTOOlEP3igs6maTEF1pSscQaX/e3RYSj2dfpRPVE9mKVXkcKWo0b5wMP+CUfqWbkrDbiJTMcryI+iPrJU6LwfWCRL/GBHfx7V7fB5FMVJAJpXC5SVECdTQDNfXbZqnVIC3Zr4FTBat9C3X4KuwRuFehRQF/iDGVRjHcZUMaqnCQs0DQoh44YXrRMCZk4vmxGvGQ8daIuZ0tvTEYJ3XJieduHxurlQFHnkamhA5iCzz+MFKRyfGGP6UzKCV+chq+iJySSUYe4GzSELzsiHRB9UcWEs2XXSoRl+I/GRgDCYk51RVHv4oPA74auDbsIx7l4Q5KZ7MUp+Qe17+/y9KK4qMN/VcpaGe4zAN52pMYU7ClcrBOW8oqROj5v1cqyxsICN40zAT6L1uWrBv4brNaUHlPqhW/7XS4gIdHq2mfKZMb3CwK+PbeA9+bp7tQXTYaLxlMXIgW1JJi9vsUOSFiZeHyqH3ujJi38J1m2VUuc0F1QvDWno6mwJ11QrHNN9H5oUVNXmTMuFyXHMixqi1N2wyWcKOQsMb6nAsEw55u5Q3JYlql+IjnVaDlyuznvqGTGABsm3yW2j/B9tslastEQAA | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+GREEN='\033[1;32m'
+RED='\033[1;31m'
+YELLOW='\033[1;33m'
+
+# Menu for the Queen of Spades Card
+queen_of_spades_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      _________________________________________________________________________"
+    echo "     |                              Queen of Spades                            |"
+    echo "     |                      Search for Files and Directories                   |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  This card allows you to search for files and directories based on      |"
+    echo "     |  various criteria, such as name, type, size, or modified time.          |"
+    echo "     |                                                                         |"
+    echo "     |  1. Search by name                                                      |"
+    echo "     |  2. Search by type (file/directory)                                     |"
+    echo "     |  3. Search by size                                                      |"
+    echo "     |  4. Search by modified time                                             |"
+    echo "     |  5. Exit                                                                |"
+    echo "     |_________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) search_by_name ;;
+        2) search_by_type ;;
+        3) search_by_size ;;
+        4) search_by_time ;;
+        5) exit 0 ;;
+        *) echo "Invalid choice. Try again."; sleep 1; queen_of_spades_menu ;;
+    esac
+}
+
+# Search by name
+search_by_name() {
+    clear
+    echo -e "${CYAN}Search by Name${RESET}"
+    read -p "Enter the file or directory name to search for: " name
+    read -p "Enter the directory to search in (default: current directory): " dir
+    dir=${dir:-.}
+
+    if [[ -d $dir ]]; then
+        echo -e "${GREEN}Searching for \"$name\" in \"$dir\"...${RESET}"
+        find "$dir" -name "$name"
+    else
+        echo -e "${RED}Error: Directory does not exist.${RESET}"
+    fi
+
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    queen_of_spades_menu
+}
+
+# Search by type
+search_by_type() {
+    clear
+    echo -e "${CYAN}Search by Type${RESET}"
+    echo "Choose type to search for:"
+    echo "1. Files"
+    echo "2. Directories"
+    read -p "Choice: " type_choice
+    read -p "Enter the directory to search in (default: current directory): " dir
+    dir=${dir:-.}
+
+    case $type_choice in
+        1) type="f" ;;
+        2) type="d" ;;
+        *) echo "Invalid choice. Returning to menu."; sleep 1; queen_of_spades_menu ;;
+    esac
+
+    if [[ -d $dir ]]; then
+        echo -e "${GREEN}Searching for type \"$type\" in \"$dir\"...${RESET}"
+        find "$dir" -type "$type"
+    else
+        echo -e "${RED}Error: Directory does not exist.${RESET}"
+    fi
+
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    queen_of_spades_menu
+}
+
+# Search by size
+search_by_size() {
+    clear
+    echo -e "${CYAN}Search by Size${RESET}"
+    read -p "Enter the size criteria (e.g., +1M, -500K): " size
+    read -p "Enter the directory to search in (default: current directory): " dir
+    dir=${dir:-.}
+
+    if [[ -d $dir ]]; then
+        echo -e "${GREEN}Searching for files matching size \"$size\" in \"$dir\"...${RESET}"
+        find "$dir" -size "$size"
+    else
+        echo -e "${RED}Error: Directory does not exist.${RESET}"
+    fi
+
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    queen_of_spades_menu
+}
+
+# Search by modified time
+search_by_time() {
+    clear
+    echo -e "${CYAN}Search by Modified Time${RESET}"
+    read -p "Enter the time criteria (e.g., -1 for last 1 day, +7 for older than 7 days): " time
+    read -p "Enter the directory to search in (default: current directory): " dir
+    dir=${dir:-.}
+
+    if [[ -d $dir ]]; then
+        echo -e "${GREEN}Searching for files modified \"$time\" days ago in \"$dir\"...${RESET}"
+        find "$dir" -mtime "$time"
+    else
+        echo -e "${RED}Error: Directory does not exist.${RESET}"
+    fi
+
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    queen_of_spades_menu
+}
+
+queen_of_spades_menu

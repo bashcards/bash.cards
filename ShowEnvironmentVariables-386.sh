@@ -1,1 +1,84 @@
-bash -c "$(echo H4sICFxgd2cAA1Rlbl9vZl9DbHVicwDdVt9P2zAQfs9fcQuVIBMNtIU9pOIBoU7aA2yi1aRpkyI3uVJrqV05bqEq/O87xwn9ldJQAQ/zk2OfP999n+8uB59O+lyc9Fk6dJyrX5c3F4d/Tlut341268vo0LntdDu9fOmUvp0DuEYxgYFUoIcIPRQgB3CVTPopXDEVOxpFKAdhZFbCEdkeeTB3gEaUIFPZDKOhhDqCW5ubK5/cxaoL2QjfamxAP8KLYyWgl8djZezuUN5DR0y5koIo0fCTKc76CW69ogT7zSip7vfrRyl2b8hTiOhxQII6hZmcwJTj/TEMeKJRHQMTMYxkzAczwCWWpgVL/v/HScO3r+IySV73MipgN334mjG7Bbk/gxs2wr2wWz5cxjFQ+l9bwZgovWUf7DMfbnEkp7gn6EvY5z50HriuhvAq7Hd5g7Y4ZtV3pTp2I6KG2WQiDVJMMNKGLjnWXIrA2ipkMdQV0BEeoS2+LEWo2QXgwikCaniQ0jsMWZKElHvQbj9vNb08Qdc3Wh6wOA5txq5vnnl0vRFxfePcAyQFwjRSfKyXdz57eXTfxJQlPM79Nq9BT5Tg4g60BNNLfN9325AmiGNotGGj1xSomLLIeTLd6nvGCzSCHenmLLNQoWVtBQrWZCMSHqnupemSMuQP1FOjUH0M7g9Fu6ThDP7izESqsrDNzLTYIu7s/EbEK1E2g0qJ7yxkLYnUukh+dYRBYsare0nvjfyxB8uLdEAJkZvu4M76iPEWL49q8xznyStl806R/G4tN3I/gNhWUK3qOat5sZtd44cwtZj+Ocy8jFlDLM1DY7cNg/JmgtlfWa0wLY5lW5a9h7FUmpgrTC5qzwYbtSdTqlPizuIGKj/akLlA8Vflel9RzoId7cJZFKK3UcK6azA3NJkIQ8aC2r34tNjxh7J4HtjG2M3KsrNUosuqoLE8Nec3Qf8BbCVRDEoMAAA= | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Menu for the Ten of Clubs Card
+ten_of_clubs_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      _________________________________________________________________________"
+    echo "     |                              Ten of Clubs                               |"
+    echo "     |                       Show Environment Variables                        |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  This card lets you view, filter, and modify environment variables.     |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  1. Show All Environment Variables                                      |"
+    echo "     |  2. Filter Environment Variables by Name                                |"
+    echo "     |  3. Add or Modify an Environment Variable                               |"
+    echo "     |  4. Remove an Environment Variable                                      |"
+    echo "     |  5. Exit                                                                |"
+    echo "     |_________________________________________________________________________|"
+    echo -e "${RESET}"
+    echo "Scan a card or select an option:"
+    read -r choice
+    case $choice in
+        1) show_all_env ;;
+        2) filter_env ;;
+        3) add_modify_env ;;
+        4) remove_env ;;
+        5) exit_script ;;
+        *) echo "Invalid choice. Returning to menu..."; sleep 1; ten_of_clubs_menu ;;
+    esac
+}
+
+# Option 1: Show All Environment Variables
+show_all_env() {
+    clear
+    echo -e "${CYAN}All Environment Variables:${RESET}"
+    env | less
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    ten_of_clubs_menu
+}
+
+# Option 2: Filter Environment Variables by Name
+filter_env() {
+    clear
+    read -p "Enter a keyword to filter environment variables: " keyword
+    clear
+    echo -e "${CYAN}Filtered Environment Variables (${keyword}):${RESET}"
+    env | grep "$keyword"
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    ten_of_clubs_menu
+}
+
+# Option 3: Add or Modify an Environment Variable
+add_modify_env() {
+    clear
+    read -p "Enter the name of the environment variable: " var_name
+    read -p "Enter the value for $var_name: " var_value
+    export "$var_name=$var_value"
+    echo -e "${CYAN}Environment variable $var_name set to $var_value.${RESET}"
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    ten_of_clubs_menu
+}
+
+# Option 4: Remove an Environment Variable
+remove_env() {
+    clear
+    read -p "Enter the name of the environment variable to remove: " var_name
+    unset "$var_name"
+    echo -e "${CYAN}Environment variable $var_name removed.${RESET}"
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    ten_of_clubs_menu
+}
+
+# Option 5: Exit Script
+exit_script() {
+    clear
+    exit 0
+}
+
+ten_of_clubs_menu

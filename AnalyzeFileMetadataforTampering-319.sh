@@ -1,1 +1,94 @@
-bash -c "$(echo H4sICBIOXGcAA0phY2tfb2ZfU3BhZGVzAN1Y0W7aMBR95ytuGSowjbRA2wdYH6qWrZu0toJq0tRNlUlMY0HsKDFFWcu/79oJCRAggbZSNT8lF/vc6+PjY4cPewd9xg/6xLcLhfNfZ1en5d+HzeZdvd08ccqFbuciCdQx8LXb6cz1aeg+vc5tFDrE9wLhZBT8pfcOlcQiklSq8FQAbBObjShIb0zbYAkdUs0cUeLFb9S0BdQoFEtPqp5pcfGXon68f7W2Cv4ZNrXvxByCGEDPJRb1N3ZFqJz4ZyFn8EUx9CMiDgbCg1viuNRj/GEL/NejJ2/9u7Z1+NeuZIL7rbfCrxvwk9EJWEg1Um7BQBE/U+zL8RsGnAvHJR5dQiYPhHFfAgHcc3TEON0Jv2lAD3eNaWuNeNSkXI4CcITFBiyaTpY2N+EfYf02RaHr6m20B4RTqeRGOebGPzagS+XY4yAFOEgJMsTH+TCz8d9O/6ExactDZ4p/8yixoOZCscMl9SAQYw+wOzNpC0sKnxK/w4WHUhgExuO4avXqwusKbGlTcIm0lQWpZ71ASGLkuiqfCqkuKahFp501NoC7cGKzgUX401bgPNV3iQjt0GnPioFaCVerkHxJ5HzaVCc68mlWDXhGhSVwITH7mFutpID1+QdsDdMc6lDzoeZp0m886vtIbgBDGiievVi2in2lWsMw0vDt9kKosfO6mqGNbFzXDKjYaRSAApoFXiIQ2N+fRWdw28km9EflJLE59qmcUMqT5UPiLYjxM9SE1jeAz5VlUVWTWFxoejXyKu0aaUSF9wUWF5psLDvjvYitmUtsFsNjQwpPJ/L1YaK0geG8GpPMQaHhaSAsqFDjwfgE5VrdIkFZPTRsdMFyVWGqjmG/rRRnIelROdtJq7vmPMRjZgaYoaUB4wvZazJwcf9AzdGTLpaSKe3uWhfxCsxbV5TzvYjpaGfnUreGbW1ryMWE65H6IAnNj/mCQwWF8oheNiJ8qBU7ZK4Wlx5yr4a80Xmnemn801LFt0nj+MQfOwujn4FMhlB+ctHOJJTq03KaNNWWddq7PKshHFyq+SJ76XMzDOnsq4UaToYjZMLD5unEo4pz2HB6uiXE0nz0h+H0MrwoOkSa9h5cibnrIt60Uex0k0vGsOv2z4q8ah9FWS2h91GUXF8JHBLgoRJVgTYwYdLOUcCKHbYm/N9cUI5XHIn6Qh1e09UKzt/UV0L2sb5hVqKPaxIlXH3jj2TErOjabMAN7mJf/W8QhF9PGxYwF0Gm4JLxMc2ihfrE1C+WwKvSNP3HRuEf/vtwKD4RAAA= | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RED='\033[1;31m'
+GREEN='\033[1;32m'
+RESET='\033[0m'
+
+analyze_metadata() {
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "     __________________________________________________________________________"
+        echo "    |                             Jack of Spades                               |"
+        echo "    |                  Analyze File Metadata for Tampering                     |"
+        echo "    |__________________________________________________________________________|"
+        echo "    |                                                                          |"
+        echo "    |  Options:                                                                |"
+        echo "    |  1. View detailed file metadata                                          |"
+        echo "    |  2. Compare file metadata against a baseline                             |"
+        echo "    |  3. Search for recently modified files                                   |"
+        echo "    |  4. Check file hashes for tampering                                      |"
+        echo "    |  5. Return to main menu                                                  |"
+        echo "    |__________________________________________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Enter your choice: " choice
+        case $choice in
+            1)
+                read -p "Enter the path of the file to analyze: " filepath
+                clear
+                if [ -e "$filepath" ]; then
+                    echo -e "${CYAN}File Metadata for $filepath:${RESET}"
+                    stat "$filepath"
+                else
+                    echo -e "${RED}File not found: $filepath${RESET}"
+                fi
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            2)
+                read -p "Enter the path of the file to compare: " filepath
+                read -p "Enter the path of the baseline file: " baseline
+                clear
+                if [ -e "$filepath" ] && [ -e "$baseline" ]; then
+                    echo -e "${CYAN}Comparing metadata between $filepath and $baseline:${RESET}"
+                    diff <(stat "$filepath") <(stat "$baseline")
+                else
+                    echo -e "${RED}One or both files not found.${RESET}"
+                fi
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            3)
+                read -p "Enter the directory to search: " dirpath
+                read -p "Enter the time period (e.g., '-1day', '-2hour'): " timeperiod
+                clear
+                if [ -d "$dirpath" ]; then
+                    echo -e "${CYAN}Recently modified files in $dirpath:${RESET}"
+                    find "$dirpath" -type f -mtime "$timeperiod"
+                else
+                    echo -e "${RED}Directory not found: $dirpath${RESET}"
+                fi
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            4)
+                read -p "Enter the path of the file to hash: " filepath
+                read -p "Enter the known hash for comparison (leave blank to skip): " known_hash
+                clear
+                if [ -e "$filepath" ]; then
+                    file_hash=$(sha256sum "$filepath" | awk '{print $1}')
+                    echo -e "${CYAN}SHA-256 Hash of $filepath:${RESET} $file_hash"
+                    if [ -n "$known_hash" ]; then
+                        if [ "$file_hash" == "$known_hash" ]; then
+                            echo -e "${GREEN}Hashes match! No tampering detected.${RESET}"
+                        else
+                            echo -e "${RED}Hashes do not match! File may be tampered with.${RESET}"
+                        fi
+                    fi
+                else
+                    echo -e "${RED}File not found: $filepath${RESET}"
+                fi
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            5)
+                echo "Returning to main menu..."
+                break
+                ;;
+            *)
+                echo -e "${RED}Invalid choice. Please try again.${RESET}"
+                read -n 1 -s -r -p "Press any key to continue..."
+                ;;
+        esac
+    done
+}
+
+analyze_metadata

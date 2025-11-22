@@ -1,1 +1,78 @@
-bash -c "$(echo H4sICBofXGcAA0VpZ2h0X29mX0NsdWJzAM1XTU8bMRC976+YBtRARRxCgAMIpIrmUFUUBKhS1UrgeGcTC8e7tb1JI+C/1x8JCVkTtQGk+hB5bc/zm+eZsbP2rtnlstmlup8kJ98/fj2q/9xut3+0Dtv7g3py0bnsXE2Gtu13YkqJ17eoJIrrgio6QINKb2zCXQK2MYFU+R6yfg4NhNr6nYN9qM1Ga64H16/XFrHvIdY6vNc3kGdwIsquPoAv3gs4n3oBV9Y3tWh1XwF/ReJV8Cjz1VoE/KrPNZg8F0CFyEcaxnlpv2HIcQRUpjDIU56NIRwwzA4YuASFVDQMHyCJg58VhufSLWWiTNGDctkDViqF0syhbYFBbfxcn8oe2oGwufLYMfA3lWXC/OBNwKFF4JvXV4hHLaoCrwi+Q+DSphzrQ5YroKALZDzjbAb9AuZtAqchIGiFsT3CQZErqrgYrwS+uwy8QDWg0iq1IvgegQvUOB90Ls5TzGgpDAypKHFlzfcJdH5z8zfm/wr+RrUl1GFfzG0h9uM2m1NoFFDrSCe4LQTKZmPOGR5YLqEXSjrVCOthwOZ2MiXf2kzmfQlOfOK6EHTsUntpuBNCak/M9VgzI6BBrcACtX4yeXj4+LnzdNcFL+hcCN3ieJSr1B27fswQ55tfEuEe8shRd6k0A6qv+359KeeewgIa3MrsF9ee499eyt/0cT7D8mk93kDSI1sg0RBeDHftz7XlOKIq3Yx7FMGVtgT5uHcWvhN1ZjR14WjdL6pFlLqapP54Ur+BFoXgmB5AMIUjiBnPybD7v8oQHFx0A46PoYmGNYNKhOUyi6pXRMDOp7VsZbX2Yqnm65u/RKuXSaXUVWKXFRWHKgOkS2+rG79EiRlD5dgTOFO8xyUVkHGB0KXsFlMoC6A6yoY8K9F+TCJXpZ1A8ZfeAphCUyr5HP6HGP5nadXl6aRauivHQbgdXcyiLCuyTxBRU5bM1f5zK4e2byD38ho740DG9VzMPoEKMS2hBQ2dPCTJGnSkLhXCTRDrBlg+GLj3lH3r0SHlgnYFJjyDd48zjeH0nN7b40xx2JSlEIduMzlHq6OUK5kX+Kvkyh7M1LwejOtuB5mb2S5kysVfJ3aVfSRA3x6mvS251MbeCZhO/EB3hbaSjDsXTql9YGqmeGHsBLLSPcie+bORhD8ZfwC0dLyuugwAAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+tune_kernel_parameters() {
+    clear
+    echo -e "${CYAN}"
+    echo "     ___________________________________________________________________________"
+    echo "    |                     Eight of Clubs: Kernel Parameter Tuner                |"
+    echo "    |___________________________________________________________________________|"
+    echo "    |                                                                           |"
+    echo "    | This tool allows you to view and modify kernel parameters in real-time.   |"
+    echo "    | Options include viewing current parameters, testing changes, and more.    |"
+    echo "    |                                                                           |"
+    echo "    | Options:                                                                  |"
+    echo "    |  1. View all current kernel parameters                                    |"
+    echo "    |  2. Search for a specific parameter                                       |"
+    echo "    |  3. Modify a kernel parameter temporarily                                 |"
+    echo "    |  4. Modify a kernel parameter permanently                                 |"
+    echo "    |  5. Reset parameters to default values                                    |"
+    echo "    |  6. Exit                                                                  |"
+    echo "    |___________________________________________________________________________|"
+    echo -e "${RESET}"
+
+    read -p "Enter your choice: " choice
+    case $choice in
+        1)
+            echo "Displaying all current kernel parameters..."
+            sysctl -a | less
+            ;;
+        2)
+            read -p "Enter a parameter keyword to search for: " param
+            echo "Searching for parameter '$param'..."
+            sysctl -a | grep -i "$param"
+            ;;
+        3)
+            read -p "Enter the parameter to modify (e.g., net.ipv4.ip_forward): " param
+            read -p "Enter the new value: " value
+            sysctl -w "$param=$value"
+            echo "Temporary change applied: $param = $value"
+            ;;
+        4)
+            read -p "Enter the parameter to modify (e.g., net.ipv4.ip_forward): " param
+            read -p "Enter the new value: " value
+            echo "$param = $value" >> /etc/sysctl.conf
+            sysctl -p
+            echo "Permanent change applied: $param = $value"
+            ;;
+        5)
+            echo "Resetting kernel parameters to default values..."
+            cp /etc/sysctl.conf /etc/sysctl.conf.bak
+            echo > /etc/sysctl.conf
+            sysctl -p
+            echo "Parameters reset. Original file backed up as /etc/sysctl.conf.bak."
+            ;;
+        6)
+            echo "Exiting Kernel Parameter Tuner."
+            return
+            ;;
+        *)
+            echo "Invalid choice. Returning to menu..."
+            ;;
+    esac
+
+    echo "Press any key to return to the menu..."
+    read -n 1 -s
+}
+
+# Ensure `sysctl` command is available
+if ! command -v sysctl &> /dev/null; then
+    echo "Error: Required command 'sysctl' is not available. Ensure your system has it installed."
+    exit 1
+fi
+
+# Main script execution
+tune_kernel_parameters
+clear

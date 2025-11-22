@@ -1,1 +1,62 @@
-bash -c "$(echo H4sICHn4XmcAA0VpZ2h0X29mX0hlYXJ0cwCtVm1v2jAQ/s6vuGasL5MSoFT7UIS0CjEVaepQYVKnrkImOYjXYEe2Q8tK//vOSaENEMq6npCwL8ndc/c8F+fDXmXIRWXIdFgqtX6eXTQPflXr9etao/55clC6bPfa/SdXlfYlJlg0+4OD0Jh4oFDHUmjUh0fwUAKyu5BHCEYl2IBApi5rfoRMLXfohxJcBKf8YDM+OvkrTroc7G6bnp/DC2vzcWhAjuCcYBgNKzYvDHCWVQvn/X4XLhfVwkgq6GidoN4W4B8qKEawoxUFqHn5GkJkAaqsAo1+oriZbQ1w7EEftUkfCLhC30g1I4LZlMKwCPiiDUUB6h50AhSGj2aUUWhu+BRhRDJZ4aEowIkH7Xtu3tqD/2Ahk2g6AqTR5TVFPQQ3BqcVSu7jKSXy09Wz3JlGKGdO4GLpt1Y7ym3T23PTsQFCOiUZj1yMc0x6nvcMcTXEEmlbGFTw4/KbBZuoaB0COcHVHcpGK4f6PlYYg9sGp4eKuJ63JMUQxu3PYpz3jOI+rRUTNBPKuL0nLc2v3K+KTdD9HhtOw0L7q17P7SppSDrkIcfLSIv71rFvLF9zDb6cxBEa3FJ3o5FzHb+15Vb5tuFF4p8mkUDFhjwiVeM7c5FRUfG85x8avxIzre+CJUOOktI4sL+/Br4rbZf5CswZFZOIYG8JFObztUcv5GKuA7S8YbB7s+tvbXYrRP920e2VN8U7dXYZdZBGbR5S94bSaM/cUw8dD8WU/nwpRnzs/dZSWOeYm0rmctZLs1htLJpyW8hKgusvN49O7iDM487Ok2b5cEG5K6ES4LQikoj2d+B8fEgPWl8GSFRliijb2BuwWOMjuKbbFqEdaDbBOa5WHbhpgAlRbHxqEx29HAOZak4hzV1MRdoSvuYOpMDXdHOyXtAqJHsMkEC2imFIarh9Lden13N1xJRFPHh6s9MhSIPPxoyL3SYBNfMLv3e6RI8GJmZwi/Q6kaQEkyhhV0QRTFAkG2vMhC6glkolm6i0tY9F32Wlv7knucDfCQAA | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+analyze_http_responses() {
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "     ___________________________________________"
+        echo "    |            Eight of Hearts                |"
+        echo "    |    Analyze HTTP Responses for Issues      |"
+        echo "    |___________________________________________|"
+        echo "    |                                           |"
+        echo "    |  1. Analyze HTTP headers for security     |"
+        echo "    |  2. Test for directory traversal issues   |"
+        echo "    |  3. Identify sensitive files              |"
+        echo "    |  4. Exit                                  |"
+        echo "    |___________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Choice: " choice
+        case $choice in
+            1)
+                clear
+                echo -e "${CYAN}Analyzing HTTP headers...${RESET}"
+                read -p "Enter URL: " url
+                curl -sI "$url" | grep -E "Server|Content-Type|Strict-Transport-Security|X-Frame-Options|X-XSS-Protection|X-Content-Type-Options"
+                echo -e "${CYAN}Analysis complete.${RESET}"
+                ;;
+            2)
+                clear
+                echo -e "${CYAN}Testing for directory traversal vulnerabilities...${RESET}"
+                read -p "Enter URL: " url
+                curl -s "$url/../../../../etc/passwd" | grep "root" && echo -e "${CYAN}Potential vulnerability found!${RESET}" || echo -e "${CYAN}No issues detected.${RESET}"
+                ;;
+            3)
+                clear
+                echo -e "${CYAN}Checking for sensitive files...${RESET}"
+                read -p "Enter URL: " url
+                sensitive_files=("robots.txt" ".env" "config.json" ".git/config")
+                for file in "${sensitive_files[@]}"; do
+                    response=$(curl -s -o /dev/null -w "%{http_code}" "$url/$file")
+                    if [ "$response" == "200" ]; then
+                        echo -e "${CYAN}Sensitive file found: $file${RESET}"
+                    fi
+                done
+                ;;
+            4)
+                echo -e "${CYAN}Exiting...${RESET}"
+                break
+                ;;
+            *)
+                echo -e "${CYAN}Invalid choice. Try again.${RESET}"
+                ;;
+        esac
+        echo -e "${CYAN}Press any key to return to the menu...${RESET}"
+        read -n 1 -s -r
+    done
+}
+
+analyze_http_responses

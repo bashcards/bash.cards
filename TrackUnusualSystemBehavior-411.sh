@@ -1,1 +1,64 @@
-bash -c "$(echo H4sICHH6XmcAA1NldmVuX29mX0RpYW1vbmRzAKVWXW/aMBR951fcZkxtpyYtpdpDWSe1wAOaVlXQapq6CZnkAhaJndoObVb633eTUGhGCND5Kf7IPffj3GN/2DsecHE8YHpcqTR/Xl5f7P86qdfva43652C/0m332rfzpROaV4xi7qQfiUhHzO8PcMymXKqDQ3iuAI3HMfcRjIqwAZ5Ml5Lh+sjUYobuWIKNYFWfE8QXK79jpZ/97UfR/zPIjR5OUYAcQouzQApPv92clRm4TQKGuyxg6MXaYABX87hLDewQQakH24x1BmoOtNCga0CHfIIauIDmzR0w4UGAgVQxRJqNcK2BUwc6HgrDhzEIfIRQSRe1Rr2tB3UHvkvBDSVrzhrwuJ4Acw2fchNvNHDmQPuJm/fm4D+qkFE0bQHi6GJPIfPADsFqjiV38ZyA3PRrSXemEarZImV8sZ6M2mFumh7PdUeBC2mXXArmx3+4GBUW0HGcpaubTN0siuhKoaMgMWrGCIHUhsLTMlK0f77eYKiBRU9g21oqc2F/dMPoyP5I/lDBxml6BNRONvrR4jr0WYweGBkugO2lUwu2lQTXaOSWTt+b31eaJ7g5pu+U2makFNl50ydCUvMhqc8Ah1JhSVb5EO5hD+whWMcmCI9DhSQyke4vXfHlyILfjaRaYuX/eWVslBBy78iVQZDQ5CuUWCs0krXPFbHY5wIT2XRXwtJsip4D3UiQM1yDDA2XAtiIkcQYCV4mO+6YiRFBFWTO11iIPsda+nlRPQgmJLvhamnXhmxVV8ysupCi0S9g1+rw5SAhc1muDl/PFBkv9i2YFh7eqSJDvonz9fdyfq7MCeULxXkn6nfRTSjyqLhBm1RgGi/pUsZ6mTS/PZDm4eGB9GOkkKZtsH50O7ftWavT+2blZAVmsxXsa0nykcJnwPkrJuMi0XVrFTlbzei/kMmlRIkrTdGA7orJJqxPm7E6Ysp87s3vGYceJXHWadtFhJq5a19fN6S7JOcihgnGSecqNJFKezi9E1BEhTGq14KATQ2Ycc2TAisv616Jlb8cXOIzbQoAAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+track_unusual_behavior() {
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "     ___________________________________________"
+        echo "    |              Seven of Diamonds            |"
+        echo "    |       Track Unusual System Behavior       |"
+        echo "    |___________________________________________|"
+        echo "    |                                           |"
+        echo "    |  1. Detect spikes in CPU and memory usage |"
+        echo "    |  2. Identify new processes                |"
+        echo "    |  3. Monitor unusual disk activity         |"
+        echo "    |  4. Exit                                  |"
+        echo "    |___________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Choice: " choice
+        case $choice in
+            1)
+                clear
+                echo -e "${CYAN}Analyzing CPU and memory usage...${RESET}"
+                echo -e "${CYAN}Processes consuming the most resources:${RESET}"
+                ps aux --sort=-%cpu,-%mem | head -n 10
+                echo -e "${CYAN}Displayed top resource-consuming processes.${RESET}"
+                ;;
+            2)
+                clear
+                echo -e "${CYAN}Identifying new processes...${RESET}"
+                echo -e "${CYAN}Current processes not seen before:${RESET}"
+                if [ ! -f "/tmp/previous_processes.log" ]; then
+                    ps -eo pid,command > /tmp/previous_processes.log
+                    echo "Baseline of current processes saved. Run this option again to detect changes."
+                else
+                    current_processes=$(mktemp)
+                    ps -eo pid,command > "$current_processes"
+                    comm -13 <(sort /tmp/previous_processes.log) <(sort "$current_processes")
+                    mv "$current_processes" /tmp/previous_processes.log
+                fi
+                ;;
+            3)
+                clear
+                echo -e "${CYAN}Monitoring unusual disk activity...${RESET}"
+                echo -e "${CYAN}Recent write-heavy processes:${RESET}"
+                iotop -botqqq | grep -E "WRITE|DISK" | head -n 10 || echo -e "${CYAN}No recent heavy disk activity detected.${RESET}"
+                ;;
+            4)
+                echo -e "${CYAN}Exiting...${RESET}"
+                break
+                ;;
+            *)
+                echo -e "${CYAN}Invalid choice. Try again.${RESET}"
+                ;;
+        esac
+        echo -e "${CYAN}Press any key to return to the menu...${RESET}"
+        read -n 1 -s -r
+    done
+}
+
+track_unusual_behavior

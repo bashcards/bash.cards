@@ -1,1 +1,56 @@
-bash -c "$(echo H4sICPvvXmcAA1Rlbl9vZl9TcGFkZXMA1VZtj9JAEP7eXzEiCZ6xLS8XP0g0QY5LLjGGCF+MJmTZDnRD2cXdLSdy/HeHtsCVl4L4RSdpujtLn5l5ntkJL1/4QyH9ITOh47S/tj6/r3yvNhrfas3G22nF+dLpdfqZq0p7x4hpHDGLA2Yt45PBjN6opXl1A0sHyB5DESFYHWMTApW41sYjZHq7Qx4qcBFK5eU65qqUPykly8Hlduz7J8hZHyWoEfRmLEADe/Z0HKCXFQutYM4kxwBaSdXQzaoGIeGTGpsTAH9QwYkMLrdTADUPekQ9D9NER0rDRx1bdO+V5rguCKcza04D1D14CFBaMVpAVxkjhqTv3Z3q7VgozqDhQVtpjQmTlAR0pNWCRGhxTXhwTw1jigBuPej8FPZaDv5ChbRFk0tAPbo908gCcGdQaodKcHxHgXiy2rU7Mwjl1ElNsvWvrXaT2yY/z92OIykktyTVUcgxRBsph4mUo0RKlknped4u533MscYZuAJKI0a0ByXw50z7hOez2IYeLXYegzzWuNtP0Rg2Jq3qH/wA576Mo4j0sYQEroR69WwFXU0QwOQCJrgAq4AraiwZY2HOKd0SauCag8NmM+eqX0tuS7Jo8StHbtLkmwF3GatUj0RuhZLPmDULk+P1BI9GaUuvWIof4PKNw5WalmFGwT/BceNajjdjIGMZMBsELB0Eo/UgKMySPU6gspxpIS2Ua2+gXKensapcwPVhn/+n7N8esr+fxHpaEseFIYcUc3Iu1uvzsR7knEUiyAagB329ADZmQhbEfhYFDePJJlASndXpPxjObwLpwIOqCAAA | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+simulate_attack_patterns() {
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "     ___________________________________________"
+        echo "    |              Ten of Spades                |"
+        echo "    | Simulate Advanced Attack Patterns in Logs |"
+        echo "    |___________________________________________|"
+        echo "    |                                           |"
+        echo "    |  1. Search Logs for Brute-Force Attempts  |"
+        echo "    |  2. Identify Possible DDoS Patterns       |"
+        echo "    |  3. Correlate Log Entries Across Files    |"
+        echo "    |  4. Exit                                  |"
+        echo "    |___________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Choice: " choice
+        case $choice in
+            1)
+                clear
+                echo -e "${CYAN}Searching logs for brute-force attempts...${RESET}"
+                grep -i "failed" /var/log/auth.log /var/log/secure /var/log/messages 2>/dev/null | tail -n 20
+                echo -e "${CYAN}Press any key to continue...${RESET}"
+                read -n 1 -s
+                ;;
+            2)
+                clear
+                echo -e "${CYAN}Analyzing logs for DDoS patterns...${RESET}"
+                grep -i "connection" /var/log/syslog /var/log/messages 2>/dev/null | sort | uniq -c | sort -nr | head -n 20
+                echo -e "${CYAN}Press any key to continue...${RESET}"
+                read -n 1 -s
+                ;;
+            3)
+                clear
+                echo -e "${CYAN}Correlating log entries across files...${RESET}"
+                awk '{print $1, $2, $3}' /var/log/syslog /var/log/messages /var/log/auth.log 2>/dev/null | sort | uniq -c | sort -nr | head -n 20
+                echo -e "${CYAN}Press any key to continue...${RESET}"
+                read -n 1 -s
+                ;;
+            4)
+                echo -e "${CYAN}Exiting...${RESET}"
+                break
+                ;;
+            *)
+                echo -e "${CYAN}Invalid choice. Try again.${RESET}"
+                ;;
+        esac
+    done
+}
+
+simulate_attack_patterns

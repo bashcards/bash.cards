@@ -1,1 +1,71 @@
-bash -c "$(echo H4sICOrEcGcAA0VpZ2h0X29mX1NwYWRlcwC9VWFP2zAQ/Z5fcZRWJdsaKEWbRMWkCVUDCdBE4QNiKDLJtbFI7cx2gIqy375zkqYFUlYGzB8q52o/n9+9e15dWb/kYv2S6chxds++He00f250OuftbufzqOkc9/q9kyK0Qd/OKhyiSGEgFZgIoceHkQE5gH7CQtSwy1TooA36cuDrLOiPaMeaC3cO0AhiZCqbYRBJaCHU6nf24PvaLFqDbPhvNp5gT+DZ8fhez43JsuD9gImMuT0ehijggGuDgosh9FFd86DqnArwt2Nl6cz/ZVSCn0RcQ0AigUTJa26pNVLG9hfoSxg+GEOU00NE6VQnPOAy1RCXZC0E11MWpYCxTBUINDdSXWVIY9o+ytjXGKSKmzGwNOQGklQlUqP2ns/8XWl5V/C2N1PejMVEKvO8rpcC3/Rgf1q3VKQ6ZfGsDq8F73jwHQUqZhAYhGgYjzEEhTb514JvedC75S+BWRr8fTo0t8rMkQuvVMhCaCVQ6wmDKtc8rSTutymVfJabLtMI9TwAXDjT3NsuaJKGX8rCz2XR7ZZLNt2yMf2iwH5Z4Ll1HReGRa38aaX8olJzy7ZcQMv6xnzwg1vQty+uWczDInUPThR16ZBx4dW6oGPEBNpdqHpfpnCoWeDc23dqkeadqhsv8TxZvAylAtPzvIeV0Wkorf1owwy0TBqLhDQ3JD7gYL9/0juqPOKUqmSsQ3JBh4yY4eRk885Y6YfTanhV4hDQhpaGlsp08kOh1sDEGK5wbJEVmlRlZ9jX3BJJVyk0V8FyzuzChncWKmUJfqeo9kqPgV/OL32xmyto3iWKCwP1rU9Q/3LfpPBNRNIs2LGFFNiFUJZatPXcqa/leqzbv2uPsdr3TXe2XklKUP9ly2Z2dJBSsiE015vQGlBnlSB8AOfnsEK7C7ga7PyGNa2jcCKGXNxOWMKCCDcno7H+FU/owTJ0WZq6cHHRtcWbNfXMjU4f0mgdFANDDkqyyhqzbn+3oTy1xBjwbBpKge8spsUG7yzykyXEVKBaLT3BfSKmPOwPaM1ObWYMU/H59bXQJvixcdYYNcLGXuOw0Xe9WA4Xa/ErZTIH+8TFsySPc3fU7JpyI9bmd/ynZq6M/wGUA7/fFAwAAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Menu for the Eight of Spades Card
+eight_of_spades_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      __________________________________________________________________________"
+    echo "     |                              Eight of Spades                             |"
+    echo "     |                      Scan for Hidden Listening Services                  |"
+    echo "     |__________________________________________________________________________|"
+    echo "     |                                                                          |"
+    echo "     |  This card provides tools to identify hidden or suspicious listening     |"
+    echo "     |  services on your network or system for security audit purposes.         |"
+    echo "     |                                                                          |"
+    echo "     |                                                                          |"
+    echo "     |  1. Scan for listening ports                                             |"
+    echo "     |  2. Identify unusual services                                            |"
+    echo "     |  3. Generate a detailed report                                           |"
+    echo "     |  4. Exit                                                                 |"
+    echo "     |__________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) scan_listening_ports ;;
+        2) identify_unusual_services ;;
+        3) generate_detailed_report ;;
+        4) exit 0 ;;
+        *) echo "Invalid choice. Try again."; sleep 1; eight_of_spades_menu ;;
+    esac
+}
+
+# Scan for listening ports
+scan_listening_ports() {
+    clear
+    echo -e "${CYAN}Scanning for listening ports...${RESET}"
+    sudo netstat -tulnp | grep LISTEN
+    echo -e "${CYAN}Use this information to identify suspicious listening services.${RESET}"
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    eight_of_spades_menu
+}
+
+# Identify unusual services
+identify_unusual_services() {
+    clear
+    echo -e "${CYAN}Identifying unusual services...${RESET}"
+    sudo netstat -tulnp | grep LISTEN | awk '{print $4, $7}' | while read -r line; do
+        port=$(echo "$line" | awk '{print $1}')
+        process=$(echo "$line" | awk '{print $2}' | cut -d '/' -f 2)
+        if [[ ! "$process" =~ (sshd|nginx|apache2|mysql|postgresql) ]]; then
+            echo "Unusual service detected on port $port: $process"
+        fi
+    done
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    eight_of_spades_menu
+}
+
+# Generate a detailed report
+generate_detailed_report() {
+    clear
+    echo -e "${CYAN}Generating a detailed report...${RESET}"
+    report_file="listening_services_$(date +%Y%m%d%H%M%S).log"
+    sudo netstat -tulnp > "$report_file"
+    echo -e "${CYAN}Report saved to $report_file.${RESET}"
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    eight_of_spades_menu
+}
+
+eight_of_spades_menu

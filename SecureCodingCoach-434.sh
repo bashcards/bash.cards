@@ -1,1 +1,81 @@
-bash -c "$(echo H4sICJ0CX2cAA0ZvdXJfb2ZfQ2x1YnMAxVfbbttGEH3XV0zVALGDirGsJA82+uC6NmogLpw4LVAkgLFcDsmtl7vsXqSouXx7Z5fUXZQC2Gj4YJDj2dmzZw7PUO+Pj46+/vjD81So5ymzZa93/tfZ7z8//XA0Gr0fno5eVU97by9uL961oSN67lnk3uAd15lQxV1tGHeCoz04hE89oItLZCbeIS81DBD6Tz6Ful/6i2g/3MHdt17rKz/D8nWpvQGdw7n0qYXV6/PWpReZ58whaAW38ThwHo8DN+1xti/9ZrzLSxsCIo3EQIxPSiERnPF4CpnuzbAumNvG3i1K5A4YNA2ApgHgdC04/YWwWJ0sdlqp0x8mcKVq7+BPJkXGnNBqPeU4mZFx5l2JinjYmjdK4MIYbeA3pjJJGNYTXlAhliNcY6XNFK6ZYgVWVHA98SVV+iiWwgZZBoMa+uelpi6cEO883vUWJDGL8KSJglDzeLiGhyuPm5x2cfsukHiywdAmmav4m/zxPB9QWeLPgiuZA2/REEJKscBCw0rk95hBTtRxbQx1U6G1kCJFEGqj6TWyxGfStd8vaN1covakK20Y+FfCiX9xtj/pw1A3xgheTZhyBIOXLFRCYzv3I0X8QWwzKfVkIIWlQgE84xzrUCIWD6GKue4qpJezsRYZERIE61VL2LyAoLfwzWv4x6MRRN4Bga0NjkkwMS7U30QV0XvYtUXo5Ad1YwKbTE3hHqfNiZ03KtyRnIEE6LcUaCSnYAgDu/HP09OV0PED9bX19donstVsYmOs5ZhoGhNb+TQyGoWWhSQ3be1BTh9BRaH51hlNe9TM2ok2GdRaCk5t2iWaWxcF3S6xbeNb3ypp0JCkCm2EKytqNyZF8hOk3Exr19nioKKrqpbRR6Dy0olBTkcIclwl6OD68uyQLBYDBE0vVCrxewtn9EDhrPrtPsU02WWbvWpKrK7ljCkMeY03VdGjs8cUz68alHaAH6kJJCNCQY5EBhR3JRk3thFwEM9Bwjsl9VoXM7wzjNGLSJ2eGmxLrd0u6xw1aubeOl21GCpqO506umPh6QVqYMCEhKnJl4IHsUihIMc0iknI0DEhO5H+X3p68VAj2jqe9+mqXVDNFyzMaC62ZX1VTf68X5QDmOfBPpR7NIOqdEa9CeOzMKyqAgjJVOFjZ0MrIfVCuoFYAKLTk1G2xvOWJNFtO8ez4ZX6PCebpRFqchqHNLanzUSPpzaGTSHVXmU75+ClwWac8jj+WjxL866NUC/vv7vIXm6KbF1O4estnH/7R7RNkqRbUylhud+H4dl+DFfN90T7oZjADZFnw9c1Ca5gQu2AsLQZWsbjQ6YV9r50/szp/QdkneJnNA0AAA== | base64 -d | gunzip)"
+[200~#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+secure_coding_practices() {
+    clear
+    echo -e "${CYAN}"
+    echo "     _________________________________________"
+    echo "    |             Four of Clubs               |"
+    echo "    |    Educate on Secure Coding Practice    |"
+    echo "    |_________________________________________|"
+    echo -e "${RESET}"
+
+    while true; do
+        clear
+        echo -e "${CYAN}Select a secure coding topic to learn:${RESET}"
+        echo "1. Input Validation"
+        echo "2. Secure Authentication"
+        echo "3. Error Handling"
+        echo "4. Safe Memory Management"
+        echo "5. Exit"
+        read -p "Choice: " choice
+
+        case $choice in
+            1)
+                clear
+                echo -e "${CYAN}Topic: Input Validation${RESET}"
+                echo "Input validation ensures that user inputs are checked for correctness before processing."
+                echo "Best Practices:"
+                echo "1. Sanitize inputs to remove unwanted characters."
+                echo "2. Use allow-lists for accepted input formats."
+                echo "3. Avoid using unvalidated input in SQL queries (to prevent SQL injection)."
+                echo -e "\nPress any key to return to the menu."
+                read -n 1 -s
+                ;;
+            2)
+                clear
+                echo -e "${CYAN}Topic: Secure Authentication${RESET}"
+                echo "Authentication involves verifying user identity securely."
+                echo "Best Practices:"
+                echo "1. Use strong password policies."
+                echo "2. Store passwords using secure hash algorithms (e.g., bcrypt)."
+                echo "3. Implement multi-factor authentication (MFA) where possible."
+                echo -e "\nPress any key to return to the menu."
+                read -n 1 -s
+                ;;
+            3)
+                clear
+                echo -e "${CYAN}Topic: Error Handling${RESET}"
+                echo "Error handling ensures that application errors are managed securely."
+                echo "Best Practices:"
+                echo "1. Do not expose sensitive error information to users."
+                echo "2. Log errors securely for troubleshooting."
+                echo "3. Use custom error messages to guide users without revealing internal details."
+                echo -e "\nPress any key to return to the menu."
+                read -n 1 -s
+                ;;
+            4)
+                clear
+                echo -e "${CYAN}Topic: Safe Memory Management${RESET}"
+                echo "Memory management involves handling application memory securely and efficiently."
+                echo "Best Practices:"
+                echo "1. Use modern programming languages with built-in memory safety (e.g., Rust)."
+                echo "2. Avoid buffer overflows by checking array bounds."
+                echo "3. Free allocated memory to prevent memory leaks."
+                echo -e "\nPress any key to return to the menu."
+                read -n 1 -s
+                ;;
+            5)
+                echo -e "${CYAN}Exiting Secure Coding Practices...${RESET}"
+                break
+                ;;
+            *)
+                echo -e "${CYAN}Invalid choice. Please try again.${RESET}"
+                ;;
+        esac
+    done
+}
+
+secure_coding_practices

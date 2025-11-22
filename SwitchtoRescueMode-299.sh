@@ -1,1 +1,66 @@
-bash -c "$(echo H4sICNcTXGcAA1NpeF9vZl9EaWFtb25kcwC1Vm1P2zAQ/p5fcRS0wqSklLJ9oOomtnXSpjEmiiZNDFWuc6UeiV3ZTiAC/vvOdehrOgEDf3Iu58d35+c5e3OjMRCyMWBmFAQffx1+79R/77ZaZ812621aD066ve5padql72ATPmeSW6EkWAXmSlg+cjONhmcIqYox8Na+VX1v7Tvr9g7cBECDJ8j0ZIZ8pCBEqG3duJ3vajNrzc2g/3xjGfsWVkdPXIMawifBUiVjcwC9aXonPr0jSmR13e0K+DMGvgpeEflTRwX4yewgQRhgkAopUpaAKYzF1P8YKg0pE9KiZJIjMBkTA7jKURfRP8C70mQawY6YBZYkYJm5pD3IZFiOMQyQkBHGWnHEWMiLqCrqNeAvWpbjseM8ceIlwKEZPZRrTwDfi+CnwCs4JNnmCD1/jj3UueBo/hO8VYJ/VZmWxJJv6sLAB3+Mj0qkCnw/gu61sI+qwAPBX0ihvptNuia1s4ldI4shHEOtS3LRUFChgFyp9gcUi5/5xsgMwpY3gJDBffDNnWA+F5+EpwspZIkxURTVKtxPR6TlK0GSi4XhSkrktgwl0xqlBYPGEMOXVk+DP6TzJH9w+n0P20VD7kzCV3IodLqwRgzh7IwS8b+g04FaUYPz8zbpHuWCqxsmi1XZXLhNyotkMYXE4Moyn9fxGDWb3EbcNaIE44iqYYmLZWlSlNlSTkOx8NluTz/3qir9SZhxwgqHx7yCyk5oSgWtlHwpo0QYG2ZSWANhaIsxdsqV9Gkss9jRmXTxrgurVRWWU52LidquO74/pf4S0l91QKWHi4gOtAWhhDe767bcr9rSadFtOa9rq1SywhlX/3XIr6uQv8icJSIu1VB1hMsplYhoGA/mtP2D6EMXiizgEgv/LnFIbkbkW4Ty3JbQhNAEd+5pU15Ps6NzF2DORMIGCQbE6w0ifJq62y7M59xevYNGjHlDZkkyx/KyalorfQD1qXvdwUplZ9DgXlNOod7Hdz13+92Hiq4LNgNiLkV5RBcvGK7F2NIP5Jnjf/WjK/CPrb9dahM15QkAAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Function to switch to rescue mode
+switch_to_rescue_mode() {
+    clear
+    echo -e "${CYAN}"
+    echo "     ___________________________________________________________________________"
+    echo "    |                   Six of Diamonds: Switch to Rescue Mode                  |"
+    echo "    |___________________________________________________________________________|"
+    echo "    |                                                                           |"
+    echo "    | Rescue mode is a minimal system mode for maintenance and recovery.        |"
+    echo "    | Ensure that all tasks are saved before proceeding.                        |"
+    echo "    |                                                                           |"
+    echo "    | Options:                                                                  |"
+    echo "    |  1. Switch to Rescue Mode                                                 |"
+    echo "    |  2. View Active System Services                                           |"
+    echo "    |  3. View Journal Logs Before Rescue Mode                                  |"
+    echo "    |  4. Exit                                                                  |"
+    echo "    |___________________________________________________________________________|"
+    echo -e "${RESET}"
+
+    read -p "Enter your choice: " choice
+    case $choice in
+        1)
+            echo "Switching to Rescue Mode..."
+            echo "This will disconnect your current session."
+            read -p "Are you sure? (y/n): " confirm
+            if [[ $confirm == "y" ]]; then
+                sudo systemctl rescue
+            else
+                echo "Operation canceled. Returning to menu."
+            fi
+            ;;
+        2)
+            echo "Displaying active system services..."
+            sudo systemctl list-units --type=service --state=running
+            ;;
+        3)
+            echo "Viewing recent journal logs..."
+            sudo journalctl -p 3 -n 50
+            ;;
+        4)
+            echo "Exiting Rescue Mode tool."
+            return
+            ;;
+        *)
+            echo "Invalid choice. Returning to menu..."
+            ;;
+    esac
+
+    echo "Press any key to return to the menu..."
+    read -n 1 -s
+}
+
+# Ensure systemctl is available
+if ! command -v systemctl &> /dev/null; then
+    echo "Error: 'systemctl' is not available on this system. Exiting..."
+    exit 1
+fi
+
+# Main script execution
+switch_to_rescue_mode
+clear

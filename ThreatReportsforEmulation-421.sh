@@ -1,1 +1,66 @@
-bash -c "$(echo H4sICBHsXmcAA0ZvdXJfb2ZfU3BhZGVzAKVWUW/aMBB+51fcMiZKV0KBdg9FrVRVMO2lmiiaNG0SMslBLBIb2Q6Ulf73nZMUSCHA2ElIthN/d/d9dxc+fqgPuagPmQ5KpYef94+3ld+XrdavRrv1JaqUep2nTj87uqR9SaHvMcHUYmAChcwMFE6lMvqsCi8lIJsHPEQwKsY2+DI5suaFyNRqh14goYbglF+sz1cn/8RJloPjbdf9JeSsK2MFcgRPU+ajzj+DZRHAVxSomEHoJ9lCL80WRlJBJ4pDZrgUhQD/kEFhBMdaEUDDhS4aL4CQz0iXNI1MtKMAmu6aBR1HEWkPIyUjCOUYRiS2PgDQcjOqEBjoKXp8xL23SAzzDO32AlwRwLMNOIsbjCQk6/pIDq4tADenkvgfMqY1nnQRFfnqGaXuQ20KzkMguYc35MhLVut+YRqhnB4CF6tza41qbpu8nmuvHSEkbZYUAhfjnbWQaNpDHx6S/gZNDeOhdl13ncBOB84TTQRhYdmM8ZANSReqjbRJpswYVELb1psIOReZW4u7jTemYKDWIV5+dJb4PA0lN8uIhXOm0IH6jKk6IdfPoXlX93FWF3EYksBUgxqWyyycR7mZnw0jFv4OZ+127qh5KqtZd1gCdvfHERTeCxYu/iTSvDHHhKTMOeqb7UtsPoHKy1RxYaDcuIByk36P3dfKmiO90DaAZcYpBweVksrJ8aT5WNhuZISz8gc+GvQMHsFZ61TOstlpa6ZgJOwlbdU/HUHVRRjZGKHBgNmoOUN37F6AXSsWQiRnGKEwFzBFpbk2KDys2sZLrxbosqEtrsa9YXqSapTevYFyuihStxcLqCS30FSIaJ/CEdwQAKlkMIIhBmzGpTrM+NXJjCcT1CbyfogeYNq+PLDv3Tq5T/6gfOZboj9/6g4+9auueTZF+fc3Jw2Ms6+JD8RlClJ14I4i3XBWBFU7bIR1EOzoQbMFtTl6iuRO89RsRjkyDZv3Dyt8va3wtpbcKrlXuCFRPjnk6/ywr29iRlPBz75PLvRpvLEx42KP7w0vqNm6t95jf1d2cDOxgAkubEEqNLESdmUCBOrXeGeOafsLaEBNJ4e+FFh6Lf53WvoLvYo3o+cKAAA= | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+redcanary_threat_reports() {
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "     ___________________________________________"
+        echo "    |              Four of Spades               |"
+        echo "    |   Generate Threat Reports for Emulation   |"
+        echo "    |___________________________________________|"
+        echo "    |                                           |"
+        echo "    |  1. Fetch live threat reports             |"
+        echo "    |  2. Generate summary from log files       |"
+        echo "    |  3. Emulate a specific threat tactic      |"
+        echo "    |  4. Export report to a file               |"
+        echo "    |  5. Exit                                  |"
+        echo "    |___________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Choice: " choice
+        case $choice in
+            1)
+                clear
+                echo -e "${CYAN}Fetching live threat reports from Red Canary sources...${RESET}"
+                echo "Scanning available logs for patterns of known threats..."
+                grep -E "CVE|exploit|malware" /var/log/* 2>/dev/null | less || echo "No live threats found."
+                ;;
+            2)
+                clear
+                echo -e "${CYAN}Generating summary from log files...${RESET}"
+                echo "Analyzing logs for anomalies:"
+                awk '{print $1, $2, $NF}' /var/log/syslog | grep -i "error" || echo "No significant anomalies detected."
+                ;;
+            3)
+                clear
+                echo -e "${CYAN}Emulating a specific threat tactic...${RESET}"
+                read -p "Enter a tactic to emulate (e.g., lateral movement, persistence): " tactic
+                echo "Generating emulation tasks for tactic: $tactic"
+                echo "Run 'taskset' and monitor system behavior."
+                ;;
+            4)
+                clear
+                echo -e "${CYAN}Exporting report to a file...${RESET}"
+                report_file="threat_report_$(date +%F_%T).txt"
+                echo "Threat report generated on $(date)" > "$report_file"
+                echo "-----------------------------------" >> "$report_file"
+                grep -E "CVE|exploit|malware" /var/log/* >> "$report_file" 2>/dev/null
+                echo "Report saved as $report_file."
+                ;;
+            5)
+                echo -e "${CYAN}Exiting...${RESET}"
+                break
+                ;;
+            *)
+                echo -e "${CYAN}Invalid choice. Try again.${RESET}"
+                ;;
+        esac
+        echo -e "${CYAN}Press any key to return to the menu...${RESET}"
+        read -n 1 -s
+    done
+}
+
+redcanary_threat_reports

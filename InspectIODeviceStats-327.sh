@@ -1,1 +1,70 @@
-bash -c "$(echo H4sICPMdXGcAA0ZpdmVfb2ZfQ2x1YnMAtVZdT9swFH3Pr7gUtNKNpJTCHlptEus6iQc+BGzSxKbiJrfUWmp3tpPRMf77ruM0NCXVGB+WKjlufHzuuedeZ32tOeSiOWR67Hm9r/tH7+rfttvti1a3/XZS9077Z/3zfGmbnj0u9BRDM+ByEGHKQxxow4zebMCNBzTCGJnKZhiOJfgItY0bi3tbu1ut2RkMnm8sY/+B5fGJpwhyBL04GeoOHLgw4KB5DB+zOODMxnFvH2HdA39G4vfBKxg8dlSAn4+5BiNlDFMlUx6hBjk1XAoNI6lgIgU3UnFxBUxE9GPx7Ld9sjrZRHNteKiDavAXZX7saHZeBBxaAXzkehqzGVAp8LAIWMMml3bSeDz4TgCHTtgMNtHsCoELUMhi3/AJPoV5OyiZ2XG2ueQi4pThhMXgKrXK3P8A3w3gC8df0Dv5nNO2trDnsNAQupk9gfleAP1rbh4a/P+Av1CFum6W9URqZ9k65TACfwq1vjCoYCYTBfQqyd0hLm7mGiPTCBtugXLjzcm3Gt5iLC6ID4UHs67UqZXecYYsLXW7xeNOFeCptdq5tZoFPSzKfAnZvXyiUGvoGRW/6VGzIE/JaVBFAfxraK3i0a7i4VQyY8w9CYIRp00MroIt0BHbApFOcFu0GkvMCp1dt7biOoQyrRFcgC8oS+7PGnzv2tNE6a07OoXCWcXklPK9SwTKURcHlGOMNa446UjO4W2t8hHHKIBTNIkStr+SyhMUSRAs6Tziq+TdrZLX1um8QvfzCq00D/jhKuC9yrxRoS7eAxpS6guoguUs2YBWIb+uQj4QKYt5lJfKQzTJEVGz0FsofOdaJmbwA2d2syNjZ9ZvJSjnJgEt8LV363nr0Bc6UQiXTp5LoGuSpYzHbBijR7Zag1BOJlZbP51r+Oo9NCmpTZHE8YLNcsWUkqpD4fxMuMKo2F53m+v2BCHN3SlZHzcsjoF6YqKtAnWdRBLY1FDDcH/pmXa7ya4WmbRDYTL3Zq0nogtayTxKtN215ZGHKMBDRjeODhUnNLzGMLHX6arPOc99xv0FVJp9Cx0KAAA= | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+inspect_io_device_stats() {
+    clear
+    echo -e "${CYAN}"
+    echo "     ___________________________________________________________________________"
+    echo "    |                 Five of Clubs: Inspect I/O Device Stats                   |"
+    echo "    |___________________________________________________________________________|"
+    echo "    |                                                                           |"
+    echo "    | This tool provides options for monitoring and analyzing I/O statistics.   |"
+    echo "    |                                                                           |"
+    echo "    | Options:                                                                  |"
+    echo "    |  1. Display basic I/O stats (iostat)                                      |"
+    echo "    |  2. Monitor I/O usage in real-time                                        |"
+    echo "    |  3. Inspect I/O stats for individual devices                              |"
+    echo "    |  4. View CPU usage and I/O activity                                       |"
+    echo "    |  5. Exit                                                                  |"
+    echo "    |___________________________________________________________________________|"
+    echo -e "${RESET}"
+
+    read -p "Enter your choice: " choice
+    case $choice in
+        1)
+            echo "Basic I/O Stats:"
+            iostat
+            ;;
+        2)
+            echo "Real-Time I/O Monitoring:"
+            echo "Press Ctrl+C to stop."
+            iostat -x 1
+            ;;
+        3)
+            echo "Enter the device name (e.g., sda, nvme0n1):"
+            read -p "Device: " device
+            if [ -n "$device" ]; then
+                echo "I/O Stats for device $device:"
+                iostat -x "$device"
+            else
+                echo "No device specified. Returning to menu..."
+            fi
+            ;;
+        4)
+            echo "CPU and I/O Activity:"
+            iostat -c
+            ;;
+        5)
+            echo "Exiting I/O stats viewer."
+            return
+            ;;
+        *)
+            echo "Invalid choice. Returning to menu..."
+            ;;
+    esac
+
+    echo "Press any key to return to the menu..."
+    read -n 1 -s
+}
+
+# Ensure `iostat` is available
+if ! command -v iostat &> /dev/null; then
+    echo "Error: Required command 'iostat' is not available. Install it using 'sudo apt install sysstat' or equivalent for your distro."
+    exit 1
+fi
+
+# Main script execution
+inspect_io_device_stats
+clear

@@ -1,1 +1,70 @@
-bash -c "$(echo H4sICAASXGcAA1RocmVlX29mX0RpYW1vbmRzANVWXU/bMBR9z6+4lArGpKSUwh5abdIEnYQEaKK8TJuETHLbWEuuq9ihVMB/x46bNGlS2Fr2MD9E/ojPPT73w97d6dxx6twxGTrO6Y+vV5/3fx32ej+7g96neN+5Ho6GN4upQz12duFbSr7igkAJiBmxCYIkNpWhUBJmXIXZcIqJY1dvi9UPB/DogG5+hCzJeuiHAlyEVvvRGH9uLWdbpge379dWsZ+g3m7CBBHEGM44iwUFsg+jBX24zI4TI6n6vqca+DsSr4M3MN+0NYDfhFxq74oIWBSJmYS5SMvenkuFccnpqeQ0yb3uvQE+wgh9BYxATPMwmibCRwz62zL/jzWHrgenCTKFwIBwVsj7LuBHHlxwqQAf9Dd3lnXe9uA9D65RKpEY6hvTXgN+7MGZjhgjC9Xpbwl+4sHwgW/E9S3wfxSKtlRmVVnXymxeB00A7hRaQ1KYmFxNQP/KfexrLrZnqy6TCG07AZycnHz3wCmfZQWPQYDST7hN1rFIQIVYiVBjpvRPBUymgcgrA/g2vl23jNhql0atymYr51U5GSxEYO+Z0sY+lGG8Ks5gUAyPDhosXCyiSle7ZWJ43gpK5SiR3rLORu9VPY16xXEoje/MnNB/ZRlktMxXb+1qA2GbbpVEaK/sep1+SoHwQ0YTE061nYdNbhits5RTD9arfryJIkGW9n8mSFYittDD2qpr8XdCWJRXdDhpij5TgSrU4+U7w1zCK3AJqjShdRY+Nlk4p3sW8WBRC0y1NhDGprnUkdKaOAtElMx3SpXtu3a11IV4Dr9xbqPWIJmecWIFyjqZoAuudJ7Nw3FIMk2w0Fy/MThJpZMOA4ePYQd8Eeuz6133xU97X6AT4H2H0igaGCNUojNaIpHWrUDz4Nx2zRFJzApOmc/ZVLkTVJBOA1ON9vaq0wsUcOfFO3bMDf1LxglsidEXEfppVuxW37iOfdu+AGZGW45XCwAA | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Function to manage snapshots with snapper
+manage_snapshots() {
+    clear
+    echo -e "${CYAN}"
+    echo "     ___________________________________________________________________________"
+    echo "    |                   Three of Diamonds: Snapshot Management                  |"
+    echo "    |___________________________________________________________________________|"
+    echo "    |                                                                           |"
+    echo "    | This tool allows you to manage system snapshots using snapper.            |"
+    echo "    | Select an option to proceed:                                              |"
+    echo "    |___________________________________________________________________________|"
+    echo "    |                                                                           |"
+    echo "    |  1. Create a new snapshot                                                 |"
+    echo "    |  2. List existing snapshots                                               |"
+    echo "    |  3. Restore a snapshot                                                    |"
+    echo "    |  4. Delete an existing snapshot                                           |"
+    echo "    |  5. Exit                                                                  |"
+    echo "    |___________________________________________________________________________|"
+    echo -e "${RESET}"
+
+    read -p "Enter your choice: " choice
+    case $choice in
+        1)
+            read -p "Enter a description for the new snapshot: " description
+            sudo snapper create --description "$description"
+            echo "New snapshot created with description: $description."
+            ;;
+        2)
+            echo "Listing all snapshots..."
+            sudo snapper list
+            ;;
+        3)
+            read -p "Enter the snapshot number to restore: " snapshot_number
+            echo "Restoring snapshot $snapshot_number..."
+            sudo snapper undochange "$snapshot_number..0"
+            echo "Snapshot $snapshot_number restored."
+            ;;
+        4)
+            read -p "Enter the snapshot number to delete: " snapshot_number
+            echo "Deleting snapshot $snapshot_number..."
+            sudo snapper delete "$snapshot_number"
+            echo "Snapshot $snapshot_number deleted."
+            ;;
+        5)
+            echo "Exiting snapshot management tool."
+            return
+            ;;
+        *)
+            echo "Invalid choice. Returning to menu..."
+            ;;
+    esac
+
+    echo "Press any key to return to the menu..."
+    read -n 1 -s
+}
+
+# Ensure snapper is installed
+if ! command -v snapper &> /dev/null; then
+    echo "Snapper is not installed. Installing now..."
+    sudo apt-get update && sudo apt-get install -y snapper
+fi
+
+# Main script execution
+manage_snapshots
+clear

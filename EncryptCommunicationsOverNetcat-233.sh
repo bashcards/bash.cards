@@ -1,1 +1,71 @@
-bash -c "$(echo H4sICPfScGcAA1NpeF9vZl9EaWFtb25kcwDtVVFv0zAQfs+vOLKKLYim64p4oAIJlT7sgWmikxACqXKTa2MttSvbqVZt+++c7bTN1qyEUcQL95DYjv357rvvLsHRi86Ei86E6SwIBt8+Xrw//nHa633v9ntv58fBl+FoeFUundI8OILPKAqYSgUmQxjxG5BT+MTZXIpUw4CpNND8Ziyn47RcHM/pxEkEtwGQJTky5UaYZBLaCGHr1l58H25XQ3A2PpTtQN/BXnsc1h67a4Q9FIlaLQwM5HxeCJ4ww6XQIJeo4AINzRtiH4ySZn4/z2qxrzKuISF9AAo2yVGDxqRQCEmVEyg0FzPa4vjCdIedWuyTgd1N+6IYzg3oYrGQyugKTJJzFKatUVnKH15pxfw0dullygwDo5jQUwJggiAzZuI/4+RAVovdjWFkmCLNldzAyAd/AOyzmJQsBCYGjNy5gGlgMHCEPwO7F8Pwhv/i5LP8/iu14xuY65NlB1PIUmgvIBwKQ2ysZEGCyyRP8B154ke+FTKN0PILwEWwdr0bgbaZG5dq7fc3n84i0q4jfuwVXf3YiwAtc6fVxVdRycG5WLKcp6UDMVypFbAZ4yIO+6BzxAV0aVDTu9dwqFkS3Nt/QK2wgqrTDfq9A7HF/ggnjuO9hNr/ji1vEMV8YucScq4NCqBaPsF4Fr+GN2SRpdturIDoDQoDnTFFnYHqW6FxTaBsF9QT7FH/YeO6G/Cp6x22/NtLSNaOv/zQSXHZEUWe961/21w+Dvor4y5mex0XhGUnZUr9L0H44Fr2uUOFY3R9azt3rLidIbSvaeh9LuWZa3zSj6FSUr3bUk+9WUh6CUpinmNac6+X0SXlU+N649YZ37ed2BcsuWYzBKKJXir2EFNeyYOALiUD2spFcKlQU88QK7jGlc0nxVAoYUc22VaDxISHqROoF2WzjhQ8rJ8GOi1xbXi70E3EWpbx+SWwNLWhenXZxTFfNJR4solur6zdff9C2A9Zam3C+x1Bh9tj4X9de13Xrv8Ew6o9kbcLAAA= | base64 -d | gunzip)"
+
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Menu for the Six of Diamonds Card
+six_of_diamonds_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      _________________________________________________________________________"
+    echo "     |                              Six of Diamonds                            |"
+    echo "     |                   Encrypt Communications over Netcat                    |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  This card enables secure communication using encrypted Netcat          |"
+    echo "     |  (Cryptcat). It supports encrypted client-server communication for      |"
+    echo "     |  secure data transfer and chat.                                         |"
+    echo "     |                                                                         |"
+    echo "     |  1. Start Cryptcat Server                                               |"
+    echo "     |  2. Connect to Cryptcat Server as a Client                              |"
+    echo "     |  3. Exit                                                                |"
+    echo "     |_________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) start_server ;;
+        2) connect_client ;;
+        3) exit 0 ;;
+        *) echo "Invalid choice. Try again."; sleep 1; six_of_diamonds_menu ;;
+    esac
+}
+
+# Start Cryptcat Server
+start_server() {
+    clear
+    echo -e "${CYAN}Starting Cryptcat Server...${RESET}"
+    read -p "Enter the port number to listen on (e.g., 4444): " port
+    read -sp "Enter a shared secret for encryption: " secret
+    echo
+    if command -v cryptcat &>/dev/null; then
+        echo -e "${CYAN}Waiting for incoming connections on port $port...${RESET}"
+        cryptcat -l -p "$port" -k "$secret"
+    else
+        echo -e "${CYAN}Error: Cryptcat is not installed.${RESET}"
+        echo "Please install cryptcat using your package manager."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    six_of_diamonds_menu
+}
+
+# Connect to Cryptcat Server as a Client
+connect_client() {
+    clear
+    echo -e "${CYAN}Connecting to Cryptcat Server...${RESET}"
+    read -p "Enter the server IP address: " server_ip
+    read -p "Enter the port number to connect to: " port
+    read -sp "Enter the shared secret for encryption: " secret
+    echo
+    if command -v cryptcat &>/dev/null; then
+        echo -e "${CYAN}Connecting to $server_ip on port $port...${RESET}"
+        cryptcat "$server_ip" "$port" -k "$secret"
+    else
+        echo -e "${CYAN}Error: Cryptcat is not installed.${RESET}"
+        echo "Please install cryptcat using your package manager."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    six_of_diamonds_menu
+}
+
+six_of_diamonds_menu

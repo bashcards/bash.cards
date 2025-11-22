@@ -1,1 +1,64 @@
-bash -c "$(echo H4sICObXXmcAA0FjZV9vZl9IZWFydHMAxVZRb9owEH7Pr7ixSm0nJSnQ7mFok1iH1EpdhVY0adqkyjgHsQh2ZDsw2vS/75wALW0TOiatfsE+O/d9992dzds34VDIcMhM7HmnP7qXH/d/HbXbP5ud9vvpvvetd9UbLE1HtPamSgqr9LVEO1d6cs2kmrJEoDk4hFsPaMxjkSBYnWEHIlWY3OAJMr1eIY8V+AiNvVsHetfY3GkU0+uXj+e+z2FzdDmCGsEZ8bDm0V5e6eBrGTBclgGTFytmwi5gRMbuKvoKB38RQTWDF44qB80AvgucA3PEEbiSEmmqpIEDY0JKpLHMHlY7aAVwGiOfwDLnlFs2GgkO69xvYdAOSCiWLG4QEjU2hXKZzEzGEhhizGaCDHUOjgM4lyYl2pBqxdEYwpwLG68pMe6slQ5OAuj9FnZXEf8hjWWNF21ERb7e08gi8FNonMZKcPxAQLyY3fcLMwh7pRGEXNvdaB5uLIvjG+31DIWizVwhCDle1cJKvQc1EQTBPd3H7khh32aJhDyHZd2Uhq3Afe3Sw+QCJrgAq0gAm2npZjZGmKLMapFLvSQ0wScOTwPtdDZMrV0FKgrdKVRZ67U0LU+jbJqCz6F1BL5wEW/FHCwhOEtJE9eh0zRBi1EA/1m29q6yle3tdKts8FqeY40kmuhBA7VWOh8xkeSZZJmNlRY3GOUmM6ngQmWmAeGM6ZCAQrMw9HO/npJabEx3w9riPATuTOtTGOEslFmS0IWQ0MGtQV3QZ8wFZoR5xaQc75qU5ZXpslJ7a9aSTQw9mVTIft9RzleZgt7VoPv54vzqrPflpXr2SxJ0mZW8lHxFVU+eqvqYr3sxSLxa1CHBTrZhvduOdS5ndLtEy0cggIFeABszIWuwH6CgYbxYREqid1fzN837A0DPaZLxCQAA | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+monitor_network_anomalies() {
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "     ___________________________________________"
+        echo "    |               Ace of Hearts               |"
+        echo "    |    Monitor Network Activity for Anomalies |"
+        echo "    |___________________________________________|"
+        echo "    |                                           |"
+        echo "    |  1. View active connections (ss/netstat)  |"
+        echo "    |  2. Check network traffic anomalies       |"
+        echo "    |  3. Analyze logs for unusual behavior     |"
+        echo "    |  4. Inspect processes with network access |"
+        echo "    |  5. Exit                                  |"
+        echo "    |___________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Choice: " choice
+        case $choice in
+            1)
+                clear
+                echo -e "${CYAN}Viewing active network connections...${RESET}"
+                ss -tuln || netstat -tuln
+                echo -e "${CYAN}Press any key to return to the menu...${RESET}"
+                read -n 1 -s -r
+                ;;
+            2)
+                clear
+                echo -e "${CYAN}Checking network traffic anomalies...${RESET}"
+                tcpdump -c 20 -i any
+                echo -e "${CYAN}Traffic capture completed. Press any key to return to the menu...${RESET}"
+                read -n 1 -s -r
+                ;;
+            3)
+                clear
+                echo -e "${CYAN}Analyzing logs for unusual behavior...${RESET}"
+                grep -iE "error|fail|unauthorized|suspicious" /var/log/syslog /var/log/messages /var/log/auth.log 2>/dev/null | less
+                echo -e "${CYAN}Log analysis completed. Press any key to return to the menu...${RESET}"
+                read -n 1 -s -r
+                ;;
+            4)
+                clear
+                echo -e "${CYAN}Inspecting processes with network access...${RESET}"
+                lsof -i -P -n | grep -i ESTABLISHED | less
+                echo -e "${CYAN}Process inspection completed. Press any key to return to the menu...${RESET}"
+                read -n 1 -s -r
+                ;;
+            5)
+                echo -e "${CYAN}Exiting...${RESET}"
+                break
+                ;;
+            *)
+                echo -e "${CYAN}Invalid choice. Try again.${RESET}"
+                ;;
+        esac
+    done
+}
+
+monitor_network_anomalies

@@ -1,1 +1,69 @@
-bash -c "$(echo H4sICHENXGcAA1Rlbl9vZl9TcGFkZXMAvVZLb9pAEL77V0xppDSRbF5JD6AcqoRWubQRkEOVVmixx3gFrK1duwlK+O+dtcHgGGNAhDl5Z8ffzHzz0H7+VB1yUR0y5RnG7e9vP2/O/9Sazad6u/l1em50O3crRZ0UP7qdzppNI7bpdfoLVY3OBhcqQDscOFyNB5FiI/xyAa8GkDx7fIIQygjb4PixSos9QSbTE9qeDyZC5exVRzSvZG8q8efgaLIJ/g22Sh8F+C70Auag2m4Kb/vg3yfUwaOIVMQmcEcUwqOmcE/849GzV/wHSBH+ryDkvlCtj8KvW9Dz/GfQXQpxl+qS2pGUKELSSqqDL2cH4zcs+M6FA6EfQL0GEyZHqEJwaQAUMLpYuuDbW6gIv2ml3bKWwnC2FrqDQegdGv+VBbce2uMEXQXMxoUP15fAQLvmLrfLqCrCv7agi2EkBTEEU8YFTFFEZdHuiv9x/Z8spnjp0WZK7yQyB8wAKh0RooSZH0kgc25ji0JKvlb7jimEs0QJXKR6LfWLzDE2z6zHDdHEa/Iu08ihh/lmbq0Cf4/mRGAqD6zqZe4qSU1AnSzAlHGWDxKVbuMZjHGmKyjTWmrPupSWZeXdtNsZVePQZPs7TFVJtsyDKjWi8mVIWXn06S0TrZ2Sg+YRCp4f+5LkzSl7MWPDG0rJW+PhlKlf5VN/N0caLWC0xRYtvcqSXC0eGnrASK/NdmSSu/AEpkNMLv6rwN+2xhc50xLi9S5cgmyhfEk7TdjK54ZRw4nCshDoTTa/F//YhDtrk51GURyEy09Z2+t8bZP9nGx9LkaZxb8RckjxjcscXRY4yrOVLFwLHqgplH6GzoCNKACrmLOdCLJ9EXIRYRktqJgdHxxfoDHf9FI2/gNOFTzpkQsAAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RED='\033[1;31m'
+GREEN='\033[1;32m'
+RESET='\033[0m'
+
+inspect_disk_usage() {
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "     __________________________________________________________________________"
+        echo "    |                              Ten of Spades                               |"
+        echo "    |                       Inspect Unusual Disk Usage                         |"
+        echo "    |__________________________________________________________________________|"
+        echo "    |                                                                          |"
+        echo "    |  Options:                                                                |"
+        echo "    |  1. Show disk usage of current directory                                 |"
+        echo "    |  2. Find top 10 largest files and directories                            |"
+        echo "    |  3. Inspect disk usage by directory depth                                |"
+        echo "    |  4. Check disk space usage for a specific directory                      |"
+        echo "    |  5. Return to main menu                                                  |"
+        echo "    |__________________________________________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Enter your choice: " choice
+        case $choice in
+            1)
+                clear
+                echo -e "${CYAN}Disk usage of the current directory:${RESET}"
+                du -sh ./*
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            2)
+                clear
+                echo -e "${CYAN}Top 10 largest files and directories:${RESET}"
+                du -ah / | sort -rh | head -n 10
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            3)
+                clear
+                echo -e "${CYAN}Disk usage by directory depth:${RESET}"
+                du --max-depth=1 -h | sort -rh
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            4)
+                read -p "Enter the path of the directory to inspect: " dirpath
+                clear
+                if [ -d "$dirpath" ]; then
+                    echo -e "${CYAN}Disk usage for $dirpath:${RESET}"
+                    du -sh "$dirpath"/*
+                else
+                    echo -e "${RED}Invalid directory: $dirpath${RESET}"
+                fi
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            5)
+                echo "Returning to main menu..."
+                break
+                ;;
+            *)
+                echo -e "${RED}Invalid choice. Please try again.${RESET}"
+                read -n 1 -s -r -p "Press any key to continue..."
+                ;;
+        esac
+    done
+}
+
+inspect_disk_usage

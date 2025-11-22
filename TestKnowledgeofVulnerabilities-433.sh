@@ -1,1 +1,63 @@
-bash -c "$(echo H4sICJ0BX2cAA1RocmVlX29mX0NsdWJzAJVV227aQBB991cMFCmgCBKg6kOiqJckbapULQ20VZVG0WIPeJv1rrO7DnHT/HtnF3OxoTe/YNZzzsycueyT2t6Yy70xM3EQHH99+f5o59t+v3/ZPew/S3aCi9Ph6ag42qf/wV0mJGo25oLb/Po24z+aLXgIgJ5QINP+DcNYQRuh3nhwlI/11WndvcH1vz9V7E8oPaNYI4KawLHIxqb8DX5uAY/QWDiXaiYwmnrkMDcWE/i8lhlHswX8H1Gvg+dCeCVJCX9uQqXxaN+/W2WZICUpLq6kOerPTVYHzWCRT/1LzMMYQpUkTEYQxhjeGJgoDcNPb0+ACsm0C11JYPCOy+wejE/ueb3KkWplVagEcOP5lBQ54H0qFLcYQZQhBQaChTdOIpShzlMXDnAJSkSo4Q61cfGVuZkFm6deV2atg9MPJqk1jm9KSRlImTEzpSMDmeFySrFGPHTkTOcO6L8VtK25Gird0KLbAWGIXAP0OjDhJAj0OyTK/OxpB6Ya03oJcDYaDYbefjg88+avRwNve3EyKJu+0pnFNmkbogecrEJ0uAvG5VjNYMTGAj3DIOYmpnRKcTNpZqTTUbMHfegVh65g3AnZeKgty3z54urxECK1DKI6RB8LS2g0mxx2odtqHSzaiphWRPzqsf5blg9zIdeRhbZlnEYWQTuF+leVaXjp04Bmt/20dUDTkBnU1/PcgiWET+DyEhpr38jxLTkoRHAO4OrqEGyMconaFuSx0hpDW1tNzbp1s+nHZ3e31VqlKQz+kfKLVnJao3WB1O6evagNzJgpx9jZdDvhwW8VHWjX00zmcIO5a/JQSUuz5weIUgWJ93Y5zp3OFvq52BK60DbQ1svz1UaNlMRg6279SCsYjlWSCrRYUaxq62s5dOIdQMOLCHvQqCygMkVR1LmxL2fFfLOiVa+n9yEKgdLWgALYIR4GpWvE7R3UtiIMirJvWta9vzt7o1QE39W4BueIKRibRbnbMVSLhNEq1CXXtCw3vK41UpXcU6aa0SYIC1Ke0Ca9Q8idtDeLa6VCumifv7aORptpuWichHYMJCizjaapNszjtos5+AUSdKB03AcAAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+vulnerability_quiz() {
+    clear
+    echo -e "${CYAN}"
+    echo "     ___________________________________________"
+    echo "    |              Three of Clubs               |"
+    echo "    |  Test Knowledge of System Vulnerabilities |"
+    echo "    |___________________________________________|"
+    echo -e "${RESET}"
+
+    score=0
+    total_questions=3
+
+    questions=(
+        "Which command checks for SUID binaries on a Linux system?"
+        "Which protocol is commonly exploited due to lack of encryption in older versions?"
+        "What type of attack attempts to guess passwords using a dictionary of words?"
+    )
+
+    options=(
+        "1. lsattr  2. find  3. chattr  4. grep"
+        "1. HTTPS  2. SSH  3. FTP  4. RDP"
+        "1. Brute-force  2. Dictionary  3. Rainbow Table  4. Phishing"
+    )
+
+    answers=(2 3 2)
+
+    for i in ${!questions[@]}; do
+        echo -e "${CYAN}Question $((i + 1)):${RESET} ${questions[i]}"
+        echo -e "${CYAN}Options:${RESET} ${options[i]}"
+        read -p "Your Answer (1-4): " user_answer
+
+        if [[ $user_answer -eq ${answers[i]} ]]; then
+            echo -e "${CYAN}Correct!${RESET}"
+            ((score++))
+        else
+            echo -e "${CYAN}Wrong! The correct answer was ${answers[i]}.${RESET}"
+        fi
+
+        echo -e "${CYAN}Press any key to continue to the next question...${RESET}"
+        read -n 1 -s -r
+        clear
+    done
+
+    echo -e "${CYAN}Quiz Complete!${RESET}"
+    echo -e "${CYAN}Your Score: $score / $total_questions${RESET}"
+    if [[ $score -eq $total_questions ]]; then
+        echo -e "${CYAN}Excellent! You're a vulnerability expert.${RESET}"
+    elif [[ $score -ge 2 ]]; then
+        echo -e "${CYAN}Good job! Keep studying to master vulnerabilities.${RESET}"
+    else
+        echo -e "${CYAN}Keep practicing to improve your knowledge.${RESET}"
+    fi
+
+    echo -e "${CYAN}Press any key to return to the main menu...${RESET}"
+    read -n 1 -s -r
+}
+
+vulnerability_quiz

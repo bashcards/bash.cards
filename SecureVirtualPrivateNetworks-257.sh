@@ -1,1 +1,87 @@
-bash -c "$(echo H4sICAkdaGcAA1RocmVlX29mX0NsdWJzAO1W0W7aMBR9z1fc0WotEwmlVHsAbdKEeOjDOrSySlVXRSa5IVaDHdkOHWr777OdECBEHavoJk3zAzHO9bnH557c5OBNe0JZe0Jk7DiD608XH46+n3S7N51+9/3syPk6vByOi6UT/d85gM/IMoi4ABUjjGOBCDyCQZJNJAyICB1l1nwe+YFZ82c6/rgJDw7oESRIhJ1hEHNwERqHDybtU2O12gA7/H2NLehHeHZUDvXceNwJ+xIVfEv1JcgEwhUVKiMJjASdE4Vwgeqei7utRDXYe5NkN94vG7XY45hKCLQ9IBV8TkOUoDhPzC8EnEV0qqVpmSnDQLWAsBDmKGi0AFnINrqQ3h/n3fFgsKRnKGhPUGRqL9inFtuc16hgwPfHu+vBVS6fJZ2noZztA/vMg+EP+tsa7ID9Kv7Om4ztZEWXEUhCcFNoDJlCAQueCdCRNMCeZpLP8nZFJMJhvgCUOUvqnebKtP48ZdDvl/dOm0sX+4pXb3abhaurN86agEbTk/XFd81CnXM2JwkNC2oejMUCyJRQ5jX6IBPEFDp9qGm8SzSUJHCeTPuuc7OzcZgdmvUShLLpGozneZs600hLMZuZZ9mdA0+RmVO//dgOcd5mWZIYzriStVIX84JJiYrN02FrZFItqRLr5ogmCMfoTb0WeFyjN00F9dXP40poTeXmBtxIH2F1twG3txUKK0cOthNFPGOhB9c8085gwPg9ZNogyvQ2G5A3M1N7r1FCYiKxBn8oBBc9qEnDuFqmGukS6AxFzwQCuQ+MKmsZIupsJaqWrEi3LIJmbNJQJhVJEgwrlVvRLBgUgfBF7zdlyKSpva1KSoI7MkXQddYXUfAqOOUlZdABV4IrbHVHAqXUHX4Bd7gwmglUmWBmZkpufKutlMPUeLr08VrndDYfud0sbFuiPkUO8a+4V2YhL9m6bh67ufG/NV/VmrUvXmfV93dwZw5RttcS5Rcm1R9KyTMOTbNJQgOfph8Oj22oPnisVCp77TZNKYu4R7meNStCX1st7WY4HwEJQysTlT04LDGr1TmPrGRr8TOiglh/+JVPQ+Ed0bKRweojRVtAZkGgN0VZUsi9i4XsoV7qH7v5L5unbvkn/uqff6MNAAA= | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Menu for the Three of Clubs Card
+three_of_clubs_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      _________________________________________________________________________"
+    echo "     |                              Three of Clubs                             |"
+    echo "     |                   Set Up Secure Virtual Private Networks                |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  This card provides tools to configure, connect, and verify secure VPNs.|"
+    echo "     |                                                                         |"
+    echo "     |  1. Configure VPN Client                                                |"
+    echo "     |  2. Connect to VPN                                                      |"
+    echo "     |  3. Verify VPN Connection                                               |"
+    echo "     |  4. Exit                                                                |"
+    echo "     |_________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) configure_vpn ;;
+        2) connect_to_vpn ;;
+        3) verify_vpn ;;
+        4) exit 0 ;;
+        *) echo "Invalid choice. Try again."; sleep 1; three_of_clubs_menu ;;
+    esac
+}
+
+# Configure VPN Client
+configure_vpn() {
+    clear
+    echo -e "${CYAN}Configuring VPN Client...${RESET}"
+    if command -v openvpn &>/dev/null; then
+        read -p "Enter the path to your VPN configuration file (e.g., .ovpn): " vpn_config
+        if [[ -f "$vpn_config" ]]; then
+            echo "Configuration file found. You can now use this file to connect."
+        else
+            echo "Error: Configuration file not found. Please provide a valid path."
+        fi
+    else
+        echo -e "${CYAN}Error: openvpn is not installed.${RESET}"
+        echo "Please install OpenVPN using your package manager."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    three_of_clubs_menu
+}
+
+# Connect to VPN
+connect_to_vpn() {
+    clear
+    echo -e "${CYAN}Connecting to VPN...${RESET}"
+    if command -v openvpn &>/dev/null; then
+        read -p "Enter the path to your VPN configuration file (e.g., .ovpn): " vpn_config
+        if [[ -f "$vpn_config" ]]; then
+            sudo openvpn --config "$vpn_config"
+        else
+            echo "Error: Configuration file not found. Please provide a valid path."
+        fi
+    else
+        echo -e "${CYAN}Error: openvpn is not installed.${RESET}"
+        echo "Please install OpenVPN using your package manager."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    three_of_clubs_menu
+}
+
+# Verify VPN Connection
+verify_vpn() {
+    clear
+    echo -e "${CYAN}Verifying VPN Connection...${RESET}"
+    if command -v curl &>/dev/null; then
+        public_ip=$(curl -s https://ipinfo.io/ip)
+        echo "Your public IP address is: $public_ip"
+        echo "If the IP address matches your VPN provider, the connection is successful."
+    else
+        echo -e "${CYAN}Error: curl is not installed.${RESET}"
+        echo "Please install curl using your package manager."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    three_of_clubs_menu
+}
+
+three_of_clubs_menu

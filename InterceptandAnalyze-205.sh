@@ -1,1 +1,79 @@
-bash -c "$(echo H4sICFh8cGcAA0FjZV9vZl9IZWFydHMA3VZRT9swEH7Pr7gVNOhEU0rRHqg2CaFO8MCE1mrTxFBlkktqkcSVnQQ64L/v7DRpmpY2IPoyP1Tpxf58993nz9n50L7lUfuWqbFlnf0+/f5l789ht3vd6XU/h3vWj/6gP5yFDum/tQOXGCXgCQnxGOHUQRAenCOTsYIzJl2LOTgS3mhsQqOQZu834dECGk5AQfOEzlhAC6Gx+6g3fW7Mow0wY/RuYwn7CdaOxZrWjqf62BdRjNLBSQwscuE0YsH0L8JQMs/jTk3s9+PkFYm/fqwEH465AocEAhMpUu6iAgYB98fxPepf4Jogj9RjxMVzunjkG8bWgjNDp556PhxeHZjfwYFZ9wtvB8K5wxjiGdeJ0hNDHoeUycPU3pT5VmnZKnjHhkFMKp4XS7xm1DIn5ilCKFx8I/gRgTOCKDqFbkFxLKi5Hg/eit214SfHe5IKplwkKpiCor3mGwTC33A0X8Q+tqH/wOPNq1+NvZ3jmbmkMeKZTUpkLrQm0Ohr6mEqEgk0kzt4QqlkT5nfMoWwmwWoT1aee6cJSutiNNdFr1e8PWoaskc516VX3Sak1JeRob8UP24Cak4Py8FPzRk7F1HKAu7OMrPJ9KbAfMYju9EDFSBOoNOD5XsjB0PFHOtZ3z011GxVKqtx+RjUBU9YBWzb9mIbuAeOCENtMq20tPbj17aLaTtKgqCnL8k578WcLI1AYfGqmlNfSiFPyhkpiIR2SaovCNCtJDPX4hXVqTCfWELIfM+oZcKcO+ZTXWScPkmIDDfliho4juOJOmm35+4opN+2sz08XpJfBB1oKWhJo8QriYoMPZrCHU718ZcYJzLST/ozQXeT+Mtglhs9a+5GN7HKuqzTWJbqkldg1mimm4STNb2sHEJdpU4xYiHqhHWmJpgXsY+2bx8U+9MJaurTmq9Z0IjZunVPdeSvGy8KJf+CmPmjgGJNpcK6cjOb//9q23y/WIXV1ZCahtMFlwGWRLZOM/TFWZYLrdfl6BSWZEJavb6GllfWB9zcVAQaaI6qCqojgm/63i7WGR14IomqGthqf1ZE/wF1DWVfqgwAAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Menu for the Ace of Hearts Card
+ace_of_hearts_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      __________________________________________________________________________"
+    echo "     |                              Ace of Hearts                              |"
+    echo "     |                        Intercept and Analyze Traffic                    |"
+    echo "     |__________________________________________________________________________|"
+    echo "     |                                                                          |"
+    echo "     |  This card provides a lightweight interface for intercepting and         |"
+    echo "     |  analyzing HTTP, HTTPS, and WebSocket traffic using mitmproxy.           |"
+    echo "     |                                                                          |"
+    echo "     |                                                                          |"
+    echo "     |  1. Start mitmproxy in interactive mode                                  |"
+    echo "     |  2. Save intercepted traffic to a file                                  |"
+    echo "     |  3. View previously saved traffic logs                                  |"
+    echo "     |  4. Exit                                                                |"
+    echo "     |__________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) start_mitmproxy ;;
+        2) save_traffic ;;
+        3) view_logs ;;
+        4) exit 0 ;;
+        *) echo "Invalid choice. Try again."; sleep 1; ace_of_hearts_menu ;;
+    esac
+}
+
+# Start mitmproxy in interactive mode
+start_mitmproxy() {
+    clear
+    echo -e "${CYAN}Starting mitmproxy in interactive mode...${RESET}"
+    if command -v mitmproxy &>/dev/null; then
+        mitmproxy
+    else
+        echo -e "${CYAN}Error: mitmproxy is not installed.${RESET}"
+        echo "Please install mitmproxy using your package manager or visit https://mitmproxy.org/."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    ace_of_hearts_menu
+}
+
+# Save intercepted traffic to a file
+save_traffic() {
+    clear
+    echo -e "${CYAN}Saving intercepted traffic...${RESET}"
+    if command -v mitmdump &>/dev/null; then
+        read -p "Enter the filename to save the traffic (e.g., traffic.log): " filename
+        mitmdump -w "$filename"
+        echo -e "${CYAN}Traffic saved to $filename.${RESET}"
+    else
+        echo -e "${CYAN}Error: mitmdump is not installed.${RESET}"
+        echo "Please install mitmproxy using your package manager or visit https://mitmproxy.org/."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    ace_of_hearts_menu
+}
+
+# View previously saved traffic logs
+view_logs() {
+    clear
+    echo -e "${CYAN}Viewing traffic logs...${RESET}"
+    read -p "Enter the filename of the traffic log to view: " filename
+    if [[ -f "$filename" ]]; then
+        less "$filename"
+    else
+        echo -e "${CYAN}Error: File $filename not found.${RESET}"
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    ace_of_hearts_menu
+}
+
+ace_of_hearts_menu

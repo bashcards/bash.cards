@@ -1,1 +1,68 @@
-bash -c "$(echo H4sICJ4gXGcAA1Rlbl9vZl9DbHVicwC1Vltv2jAUfs+vOKNotFMTCLR7AG3S1PIwaTe13aRpk6hJDuDNOJntQFHb/77jXLgGaKs2yoPjHH/+zncu9sGrep/Lep/pkeOc/fzw5V3td6PV+uV3Wm/HNeeie9m9yqca9O1wqWMMTE/PtMFxT0RDfXgEtw7QEwhkKh1hMIrARahUby3mfWUxW7Ej6D3fs459B5vPFUqIBnAmkr5uwzkaxgWGcJk6AZ/ICfjBcYpqbd3dBvgzEt8EL2H+1KcE/GrENQRMhcCEiKYaZlECJoI8pBAWsmSxBRtbSDSXQ/gTJUoyERjhbQH/rhHMCGGMMoE+Er6FHnBhSFQmQ5iQvimk93jmLyrL19jwSFJavAQ4+F6aWVbyTNDnBG/m4CnwICKhwYaSD3gAGtWEB/h08NYy+JSbEZeEb/gYQTE5fCDyFvATDy6pWQSjUu5/cTaNKE+fCH7qQfeGmwcTfAT4C5V/1irTZku9Mp1XyEJwY6h0pS0hqlUFZEohbROXbJR1XUalV80mqJadgrx/5Cz7kjlxznUs2MzWdJGRnudVViwXxU5iCtR65W+nM/9sru6wxth2gyIJJaOsOURv6B2D1qPwGOSQy5sj60pus5vsPEty6zZU89FW7m5CmhZGezxp7fREG6ZMlvm5D7Vmo9ly/abb8MFvtBv2rWXeWNuetd2FiNQQt+I1l/HIchNtizwqGpMscwK2AVeL9bui7LrU5AObgovFFZpNpOGCZguMfSqe7M2HorCJmc7Kn2Jq3cx/lHiZtYmVHMiNKQfy0Y78HSqMweXkRWG7x4nTsrKx7cRS2LwwrKmq0NDm27DflGF/lBMmeJiXtAcXKYTdjVSyx+lG6HJE1CxwlhrUN0Vu0Vk7swLZxRkZOypO5jlUFhsJPrjauXecA+hKnSiE64V610D3BTahOwHrC3T4AF5BEI3H9jR3J8syv34P9RAndZkI0bGbySVaXaVsjC/wX8IV3S4KiNoCoGZ3kpFZ7OYVfNK+l19IdBLHkTI6/w5zX9D2et8ZcOvGZ0bHlA4Ujw39wCCxh3vZrdXJbqv/Aa0zbX0ACwAA | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+inspect_system_logs() {
+    clear
+    echo -e "${CYAN}"
+    echo "     ___________________________________________________________________________"
+    echo "    |                   Ten of Clubs: Detailed System Logs Viewer               |"
+    echo "    |___________________________________________________________________________|"
+    echo "    |                                                                           |"
+    echo "    | This card allows you to inspect detailed system logs using journalctl.    |"
+    echo "    | Use the menu below to filter and view logs.                               |"
+    echo "    |                                                                           |"
+    echo "    | Options:                                                                  |"
+    echo "    |  1. View all logs                                                         |"
+    echo "    |  2. View logs for a specific service                                      |"
+    echo "    |  3. View logs within a time range                                         |"
+    echo "    |  4. Search logs for a specific keyword                                    |"
+    echo "    |  5. Exit                                                                  |"
+    echo "    |___________________________________________________________________________|"
+    echo -e "${RESET}"
+
+    read -p "Enter your choice: " choice
+    case $choice in
+        1)
+            echo "Displaying all logs..."
+            journalctl | less
+            ;;
+        2)
+            read -p "Enter the service name (e.g., sshd, nginx): " service
+            echo "Displaying logs for service: $service"
+            journalctl -u "$service" | less
+            ;;
+        3)
+            read -p "Enter start time (e.g., '2023-12-01 10:00:00'): " start_time
+            read -p "Enter end time (e.g., '2023-12-01 12:00:00'): " end_time
+            echo "Displaying logs from $start_time to $end_time..."
+            journalctl --since "$start_time" --until "$end_time" | less
+            ;;
+        4)
+            read -p "Enter the keyword to search for: " keyword
+            echo "Searching logs for keyword: $keyword"
+            journalctl | grep -i "$keyword" | less
+            ;;
+        5)
+            echo "Exiting System Logs Viewer."
+            return
+            ;;
+        *)
+            echo "Invalid choice. Returning to menu..."
+            ;;
+    esac
+
+    echo "Press any key to return to the menu..."
+    read -n 1 -s
+}
+
+# Ensure `journalctl` is available
+if ! command -v journalctl &> /dev/null; then
+    echo "Error: Required command 'journalctl' is not available. Ensure your system supports systemd."
+    exit 1
+fi
+
+# Main script execution
+inspect_system_logs
+clear

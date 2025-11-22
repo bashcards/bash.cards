@@ -1,1 +1,63 @@
-bash -c "$(echo H4sICKXrXmcAA1RocmVlX29mX1NwYWRlcwClVlFv2kgQfudXzHHoaKrYLiHpQ6OrFEVUiqpUp4aXqpWiZT3GK+zd7e4aQkP++43X1EBiA5dbCWGPvd/MfN/MrP/8I5oIGU2YTTud629XX/7u/3g3HH4fXA7f5/3O19HdaLw2vaP7Ti6cwXvmHOOz+5xpLeT0zQk8doDWIhUZgjMFXkKsvKlcPENm6jvkqYIAodt7LP09dXefdP3l/fGraf8Kttc4NYigErjTLEYLu2vVAnDLNIzJIsXPgjY5Bbc3468juBqP/7r+DJ8My3GhzKwF4D9k0BbB0asNYBDCHVHPU5hJtZBAojnBLUyWMMMlBR8fADgL4UqybPkLwRRSktagjeJoLTGSKAOaKgGNtG0AwxBupNXIHUh0nq4yhrlwS7//d0StEZyHXgiDHKWDpKwvnjI5rRRxG33aAC5CGD0I91oS/4eMVY37DqIir58ZZDEEGrrXqRIcP5Aj7q82/cIsQq8ygpC1vVyDk51b//pOezWE4NusKoRSwbZaCMNwE+5zuDrqkSTBgdUFRCrYqsbeYDgNT0GjscI6lBxPIWP0NssgV3PMScGTMt311uaQu5/QVXEatEXmLP2XKN5Tv7fe24fEqBzYnImMTagoYsWL0gFzQknK5GUGU4MaAkGErDG6EBXWRDZlBiPaH/nZFlSzLSCDjd6G7sHB2ccoxnkkiyyD1Wod5hdVB5ioQsa+nDfxNQRwebljOnutklVHeob29uRePask7jirEJqRbGG14EIVtu7aDy+hND0tHqjXKoZH0JV8ZW26WkzRrXhhsu4ObVuo2+6Iw8OkDV9L2noKlTnuG0RHcLahX2mUNRpXUpYOlFyroKgFnChrX1DG2ECctRC4IpOauGOLGfQftRE05XqDU+hd0O/9U3+b1pLT1Dm9SpxupfRFdjHSlKT+OUzu+WvJva2+Aw5P6SPovU6Rz0qwEsUuaZDkNZagsZUiFbilpjyHVBXGNvCaCGrHiLhdaoQEgtyJHCEY7DbyhldulPQFSxomYvqMWjGVIhHUKK6O43hKL15S+py88nSifPdSM6HxOzvk6+1hXzdyzjIRrw+cEMZmCWzKhNzje8sLWsZbv+P+oXFIk0D686SU3aArjPQFQKLRcC4ac6xOFgkDCKw3xkpi56n5U7PzL6pR/zGwCgAA | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+mitre_attack_mapping() {
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "     ___________________________________________"
+        echo "    |             Three of Spades               |"
+        echo "    |  Map Techniques to MITRE ATT&CK Framework |"
+        echo "    |___________________________________________|"
+        echo "    |                                           |"
+        echo "    |  1. Search known tactics by keyword       |"
+        echo "    |  2. Analyze running processes for patterns|"
+        echo "    |  3. Inspect network activity for tactics  |"
+        echo "    |  4. Map recent file changes to techniques |"
+        echo "    |  5. Exit                                  |"
+        echo "    |___________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Choice: " choice
+        case $choice in
+            1)
+                clear
+                echo -e "${CYAN}Searching known tactics by keyword...${RESET}"
+                read -p "Enter a keyword to search (e.g., persistence, lateral movement): " keyword
+                echo "Fetching results related to '$keyword' from available documentation..."
+                grep -i "$keyword" /usr/share/doc/mitre-attack-docs/*.txt 2>/dev/null || echo "No results found for '$keyword'."
+                ;;
+            2)
+                clear
+                echo -e "${CYAN}Analyzing running processes for patterns...${RESET}"
+                echo "Scanning running processes for suspicious activity:"
+                ps aux | grep -E "nc|ssh|wget|curl" || echo "No suspicious processes found."
+                ;;
+            3)
+                clear
+                echo -e "${CYAN}Inspecting network activity for tactics...${RESET}"
+                echo "Analyzing open network connections for potential misuse:"
+                ss -tulnp | awk '{print $1, $5, $6}' | grep -E "ssh|http|ftp" || echo "No suspicious network activity detected."
+                ;;
+            4)
+                clear
+                echo -e "${CYAN}Mapping recent file changes to techniques...${RESET}"
+                echo "Checking filesystem changes in the past 24 hours:"
+                find / -type f -mtime -1 2>/dev/null | grep -E "cron|ssh|config" || echo "No significant changes detected."
+                ;;
+            5)
+                echo -e "${CYAN}Exiting...${RESET}"
+                break
+                ;;
+            *)
+                echo -e "${CYAN}Invalid choice. Try again.${RESET}"
+                ;;
+        esac
+        echo -e "${CYAN}Press any key to return to the menu...${RESET}"
+        read -n 1 -s
+    done
+}
+
+mitre_attack_mapping

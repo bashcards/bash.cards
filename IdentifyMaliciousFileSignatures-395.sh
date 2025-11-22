@@ -1,1 +1,60 @@
-bash -c "$(echo H4sICNvcXmcAA1NpeF9vZl9IZWFydHMApVZtb9owEP6eX3FjlQrdEgr0RRrapKpiaqWtmka/TKtUmeQgHomNYoeSlf73nZOUlpSEwPzBis/xne+557nk/bv2iIv2iCnfsi5/Xdx8Prw77vV+d/q9s/DQ+jkYDm5z0zGtLe6h0Hyc3Ics4C6Xsbof8wBVswWPFtB48GkJOoqxD55MTWa4AbJotULXl2AjNA4eTcynxvpOI328rz82nV/C+hjyBcgxXNE9tCrsLcscXOfpwvfndOGryW/IJ4LpOEJV5WCHDEpvUHeUOeg4MHSZgLGMQMVqlmdhiga40CgUl0JVOOg6cOmjO02PKGATxoXSMBXyQYBPvKnGAKDnwDcpp+kNcIFurNmIgmfuuIBYxCpmQUUVADweoatlxLFYujoYnDhwIViQ/EUgN1TRIIFQenzM0cvvUe3g1IHBgut9q/AfPMhEksqQVLLai5B5YM+gcelL7uInCuSmTy+CYwrhIDMSyiu7GZ3W2jJ9fU2fG66Q6tQwSXAx2camJjoT5yM4VG6avSCgecR0y3Gcl2SKwcZceNAGWyczYgfcNcHmgoUU/cg4aoAtX1nIacFCAQqWP6pgmI/IcteC7pe2h/O2iIOAykv1V7Bcvsn2RhZzpFnGwqtIot9fM3X3RTqVXIr0BtWtem+uv0pYV1QZCI1RegK0JLoYTTeHVxfd07OWIZDZ2VYU2wgYlM/okIpDeHyCDwU0JxFSsAPjrVENbsi06z9jmlJK+wizSM7pK+Ol96mPdG9fpE1veqZ0VXt63YJyfrd1OKN5ziLzVIfd9Nrq/XVQ87D7MPPl+M78PNkXtayfGtzKOmozYETYc/BYonYSvh1qTnK1z+uDUXaHHdE4fYtGMZj5DFDWlfmMSHLTbbGOtse6FnMSupd3dgduoyRrBPUyQsXc0j+uH5FBk4kEppiYfhAh/c4I82REGKKIN+aYdRMBHbAV2BlPPCnQeir/N7T+AX86pKFlCgAA | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+identify_malicious_files() {
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "     ___________________________________________"
+        echo "    |               Six of Hearts               |"
+        echo "    |   Identify Malicious File Signatures      |"
+        echo "    |___________________________________________|"
+        echo "    |                                           |"
+        echo "    |  1. Scan for suspicious file extensions   |"
+        echo "    |  2. Check files against known hashes      |"
+        echo "    |  3. Look for executable files in unusual  |"
+        echo "    |     directories                           |"
+        echo "    |  4. Analyze recently modified files       |"
+        echo "    |  5. Exit                                  |"
+        echo "    |___________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Choice: " choice
+        case $choice in
+            1)
+                clear
+                echo -e "${CYAN}Scanning for suspicious file extensions (e.g., .exe, .dll, .bat)...${RESET}"
+                find / -type f \( -iname "*.exe" -o -iname "*.dll" -o -iname "*.bat" -o -iname "*.js" -o -iname "*.vbs" \) 2>/dev/null | less || echo -e "${CYAN}No suspicious files found.${RESET}"
+                ;;
+            2)
+                clear
+                echo -e "${CYAN}Checking files against known malicious hashes...${RESET}"
+                read -p "Enter hash to check (SHA256): " hash
+                find / -type f -exec sha256sum {} + 2>/dev/null | grep "$hash" | less || echo -e "${CYAN}No matches found for the provided hash.${RESET}"
+                ;;
+            3)
+                clear
+                echo -e "${CYAN}Looking for executable files in unusual directories (e.g., /tmp, /var/tmp)...${RESET}"
+                find /tmp /var/tmp -type f -executable 2>/dev/null | less || echo -e "${CYAN}No suspicious executables found.${RESET}"
+                ;;
+            4)
+                clear
+                echo -e "${CYAN}Analyzing recently modified files (last 7 days)...${RESET}"
+                find / -type f -mtime -7 2>/dev/null | less || echo -e "${CYAN}No recently modified files found.${RESET}"
+                ;;
+            5)
+                echo -e "${CYAN}Exiting...${RESET}"
+                break
+                ;;
+            *)
+                echo -e "${CYAN}Invalid choice. Try again.${RESET}"
+                ;;
+        esac
+        echo -e "${CYAN}Press any key to return to the menu...${RESET}"
+        read -n 1 -s -r
+    done
+}
+
+identify_malicious_files

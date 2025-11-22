@@ -1,1 +1,85 @@
-bash -c "$(echo H4sICJP+XmcAA0phY2tfb2ZfRGlhbW9uZHMAtVdbb9owFH7nV5yxarTTEgq0fSjaJARU6jS1iNJN0yZVJj4Br8FGiUPLSv/77IRbyAVImZ/iy+dz+845zvt35T7j5T7xhoVC82fj5nPp92mt9qtSr12MSoVu+67dmy+dqnlBjCUbsb/4YDMXn4jjHJ/ASwHUeBoyB0G6PtaBimBJD8tB4i5naA0FGAjFoxct7LUY3SkGnw87jyT4DNbHV2I9grChxchIcOpFNmfp+Nu5nXA1txOagtts4LtEMsG9DPzu6mfI32mk4SsmfGf4BMSSbIKwCBW4voPeDviqCQ1KgQBXl2jQnvJrJnRxJJRowgGfmScZHyRclIY/M+GOrCturft+O/5cy/ekcBEo2sR3ZMz0TPyFCe1nJlOs3obPH/8wMYKcU5mx3HORUDDGUGwOBbPwUsmxgq9VkhEP4ShcBMaX63pUTiLT4HgkJxNUCHKzEbJnmQBd7cLLlX6beGarOI1GhCtlJ8DGkvS1z79AmeKkzH3HqYMcIo8BA/DiuPFNo434KXSiArgtd7xbn3QUCUMSoEy42sNE5KZLboTWYKxoqHRd0VMK4YAtfE7NdPfYLLZUr0eWqrkjRalOsDBfI9lumhkaLXnV5hJd7b8wR4/RHJifoLSKSQOubzr3PX1YWmMwDDoWroRqFYw/0Gg2251e6UTzUinwoO+IqzwhjtJ3sV+EDx9iZmiCAaEUKXi+ZaHn2Sqw05UFMJvFQFdEtR2qQqCRoc3pFm84vJbX4UF1C1y+Vt/e7nhlhBvWzXgIWruGILwhMwprR9IDER7KF4q5FftF4yxvNFSviPg/0i0yA5FcsgxPN5/96tYSg9IqLxbLQcExJ2dJTo68J0DDs6rH4arfQkm1HihpancdQsFD1VBNoMCb0Ti+pbKe5090/YzQ7Fo8JKKPqRzs2rshXungrKadeSEIc35z7+q2+6PRbaXs3t73VtCdotWKvJ/c8FX1/4hqO743XDI1gZQ59DkkL92kZ+WbqHkRp+amZvotqiiYybW+6imP22R93C7rmqsWwej8gWlCz50CGRCWlX9rUtAjVurPXkd5z1MtcwqPOA29KX2X6y/dAkfI/UQbw3bJoQKGYnGYtFRwLLwm/I8W/gEcghB00g4AAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+optimize_firewall() {
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "     __________________________________________"
+        echo "    |             Jack of Diamonds             |"
+        echo "    |     Optimize Firewall Configurations     |"
+        echo "    |__________________________________________|"
+        echo "    |                                          |"
+        echo "    |  1. View active firewall rules           |"
+        echo "    |  2. Add a new rule                       |"
+        echo "    |  3. Remove an existing rule              |"
+        echo "    |  4. Save firewall configuration          |"
+        echo "    |  5. Restore default rules                |"
+        echo "    |  6. Exit                                 |"
+        echo "    |__________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Choice: " choice
+        case $choice in
+            1)
+                clear
+                echo -e "${CYAN}Active Firewall Rules:${RESET}"
+                if command -v iptables > /dev/null; then
+                    iptables -L -v -n
+                elif command -v nft > /dev/null; then
+                    nft list ruleset
+                else
+                    echo -e "${CYAN}No compatible firewall tool found.${RESET}"
+                fi
+                ;;
+            2)
+                clear
+                echo -e "${CYAN}Adding a new firewall rule...${RESET}"
+                read -p "Enter the rule (e.g., 'iptables -A INPUT -p tcp --dport 22 -j ACCEPT'): " new_rule
+                eval "$new_rule" && echo -e "${CYAN}Rule added successfully.${RESET}" || echo -e "${CYAN}Failed to add rule.${RESET}"
+                ;;
+            3)
+                clear
+                echo -e "${CYAN}Removing an existing firewall rule...${RESET}"
+                read -p "Enter the rule to remove (e.g., 'iptables -D INPUT -p tcp --dport 22 -j ACCEPT'): " remove_rule
+                eval "$remove_rule" && echo -e "${CYAN}Rule removed successfully.${RESET}" || echo -e "${CYAN}Failed to remove rule.${RESET}"
+                ;;
+            4)
+                clear
+                echo -e "${CYAN}Saving firewall configuration...${RESET}"
+                if command -v iptables-save > /dev/null; then
+                    iptables-save > /etc/iptables/rules.v4 && echo -e "${CYAN}Configuration saved.${RESET}"
+                elif command -v nft > /dev/null; then
+                    nft list ruleset > /etc/nftables.conf && echo -e "${CYAN}Configuration saved.${RESET}"
+                else
+                    echo -e "${CYAN}No compatible firewall tool found to save configuration.${RESET}"
+                fi
+                ;;
+            5)
+                clear
+                echo -e "${CYAN}Restoring default firewall rules...${RESET}"
+                if command -v iptables > /dev/null; then
+                    iptables -F && iptables -P INPUT ACCEPT && iptables -P FORWARD ACCEPT && iptables -P OUTPUT ACCEPT
+                    echo -e "${CYAN}Default rules restored.${RESET}"
+                elif command -v nft > /dev/null; then
+                    nft flush ruleset && echo -e "${CYAN}Default rules restored.${RESET}"
+                else
+                    echo -e "${CYAN}No compatible firewall tool found to restore default rules.${RESET}"
+                fi
+                ;;
+            6)
+                echo -e "${CYAN}Exiting...${RESET}"
+                break
+                ;;
+            *)
+                echo -e "${CYAN}Invalid choice. Try again.${RESET}"
+                ;;
+        esac
+        echo -e "${CYAN}Press any key to return to the menu...${RESET}"
+        read -n 1 -s -r
+    done
+}
+
+optimize_firewall

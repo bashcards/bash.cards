@@ -1,1 +1,74 @@
-bash -c "$(echo H4sICCtjd2cAA1F1ZWVuX29mX0NsdWJzANVW32/aQAx+z1/hpZUgm0hLkfYAQtqEeJi0n6WaNLEKHYlTTk3u2F1Ch9r+7/NdIAuQplnVTZrFQ/DZjv35sy9HL07mXJzMmV44zujb24/D1vfTXm/aHfReJy3nfDwZX2xUp/TfOYIPKDKIpIJ0gfAlQxQgIxjF2VzDiKnQ+WF0MxnNAqObJWTf9uDWAZIgRqbsEwYLCR0E9/jWvPbe/a11wcrsueQg9B3Uyl5RdXLXKPY5JnKFwASMxYorKQiTFL4yxdk8RpiwCON1k9jPBkmzvJ8mlbEvFlxDQPQAFsfyRsNaZpBKUAU0WIJmtYUmUjIxpqoudpApZbw0as2lgExzcWXp2cqExrQFgUwSJkI/T4N+mcYoiy2N6/MmN3Zlw2GylIqpNZBPJihAWJmy9hti8v/2suvDe65TGG1wryJ1/dg8HPvMf2xanp53z4fxT57+IQRNYv+VXubL0W7gne04CQgalg8TcVFjjEFq4JLLlOjfz20VshA6CsiFB5gvX6YRjnMFcOFsC+p6EFM/ZwWFYTAoDs+8zYwWx+XTngdIkM50oPgyLZ+89DbpvhMrFvNwk4hpb5opYUdKgrkcfN93B6BjxCV0B1BxfWzjomaBc28uoU+2VOj2GzDR2S2uwV1UG66/1xOxIm6RXpdgp8ygow38nSW4nxWdUoPWcI3rfOkZCMyTWVJbDKx/RfU7FZ/1H5kPZ69bD5XrTgreVG5eSs4uzw2dSK+H7eN2Xm6QpdAJh9CJup5XnL8att0REwHGbq7cUJPOiG4GXWM1fXN5T/0OZUGVnJe5VaE0shutLFUw7duUyJgT8sCCRzCdmm7Zl19eDkw/xIGZEYsFlUCGbqXBPofGVaC2jH8LFkzD3Hxj5L0K/V1KlSXiB6o5cey6rlo7JuYhlAL/CSt7/XyzTuwacEoroYp+xvLU+FeF/QUYsl9MkQoAAA== | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Menu for the Queen of Clubs Card
+queen_of_clubs_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      _________________________________________________________________________"
+    echo "     |                              Queen of Clubs                             |"
+    echo "     |                   Remove an Environment Variable Safely                 |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  This card allows you to remove an environment variable from your       |"
+    echo "     |  current session using the 'unset' command. This is useful for          |"
+    echo "     |  managing temporary or unused environment variables.                    |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  1. List Current Environment Variables                                  |"
+    echo "     |  2. Remove an Environment Variable                                      |"
+    echo "     |  3. Exit                                                                |"
+    echo "     |_________________________________________________________________________|"
+    echo -e "${RESET}"
+    echo "Scan a card or select an option:"
+    read -r choice
+    case $choice in
+        1) list_variables ;;
+        2) remove_variable ;;
+        3) exit_script ;;
+        *) echo "Invalid choice. Returning to menu..."; sleep 1; queen_of_clubs_menu ;;
+    esac
+}
+
+# Option 1: List Current Environment Variables
+list_variables() {
+    clear
+    echo -e "${CYAN}Current Environment Variables:${RESET}"
+    env | less
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    queen_of_clubs_menu
+}
+
+# Option 2: Remove an Environment Variable
+remove_variable() {
+    clear
+    echo "Select an environment variable to unset:"
+    vars=($(env | cut -d= -f1))
+    vars+=("Cancel")
+    select var in "${vars[@]}"; do
+        case $var in
+            "Cancel")
+                queen_of_clubs_menu
+                ;;
+            *)
+                if [[ -n $var ]]; then
+                    unset "$var"
+                    echo -e "${CYAN}Environment variable '$var' has been removed.${RESET}"
+                fi
+                break
+                ;;
+        esac
+    done
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    queen_of_clubs_menu
+}
+
+# Option 3: Exit Script
+exit_script() {
+    clear
+    exit 0
+}
+
+queen_of_clubs_menu

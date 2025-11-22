@@ -1,1 +1,77 @@
-bash -c "$(echo H4sICPHyXmcAA1R3b19vZl9EaWFtb25kcwClVl1P2zAUfe+vuOvQGJOSUsqXqJiEuj4gTdM20KRpk5BxbhOvyXVmOy0V8N9np1FZ2iSE4qfYSc49536c5O2b3q2g3i3TUacz+nnx5Xz39/5g8Ks/HBwnu53v46vxdXG0b/cdqf9mqBY3CVL2fg/uO2DXPBIxglEZDiGQ+ZFbPEamVjvkkQQPobtz7+I8dst3uvnlzUtWFcIDrK3ruQQ5gU+CJZICXb75UAPxzWmEMQWpFGRgJGkiwkwxIyRpeAcX3IiZMAJ1DcSLdNSxeMGqg+j78FloA4K0YXGMAWg5MXOmsDXEgQ8/BM5BZUSCQkiV5Kg16g2EWoiBD6MI+RRiGYYYeIIg06gqEGohDgsWhGYu1RS4JEK+rEdLiCO/qCtz1UOwDGaCV+mohTj24ZJ0agPDxLU8jxiFlQi1ECc+XNmx4JFLhoaJVMBIJiwWGzh1EKc+jO+EqYrajsWrunM5wrkx2Ble3VPIAvBS6I4iabN6ZkPx/OrJDphG2Fke2oZcnbvV3ytt88dL7lFBIXcR192uKzcb/OyJ5DpIkE5DL/cx8GKb0dj288ZDw2Hp6GBbhq5tHcON+WkgmGpg2V1LZoNtmeUz6SitjWUDsblFaMfq8LX5qpj0BmJag2cyYmlLekfb0sstxPFbc5EmbgttMOEmhth2q5eRMJatZxYpnhev263tX4PnBWo7EcfbiihMLG9L5EhlO2uSkgXSPksB9CAXABPwEiMSq6APBx97Ac56lMVtp+pkWwVLDy2ad81GG/ivXGpMBhVMcWF7LAAjbR0doLOt4rBa+x+ZKWKxK+YDhApT8IQlVbzTbSn7dFP2ukDn8Fae7/v1am6tnOlzsT48H+uSZjZxQWHYPly7j2TIBDXE/i8KasZrf/O+KpsPW5uFy6tLtEJjU+iuTITg/iMrNS4rRdAHzw7LsiECSdh5LP+Edv4BB+hGasIKAAA= | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+osquery_menu() {
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "     _____________________________________________"
+        echo "    |                Two of Diamonds              |"
+        echo "    |  Query Endpoint Configurations & Activities |"
+        echo "    |_____________________________________________|"
+        echo "    |                                             |"
+        echo "    |  1. List installed software                 |"
+        echo "    |  2. View running processes                  |"
+        echo "    |  3. Check logged-in users                   |"
+        echo "    |  4. View network connections                |"
+        echo "    |  5. Query active services                   |"
+        echo "    |  6. Inspect file changes                    |"
+        echo "    |  7. Search logs for anomalies               |"
+        echo "    |  8. Exit                                    |"
+        echo "    |_____________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Choice: " choice
+        case $choice in
+            1)
+                clear
+                echo -e "${CYAN}Listing installed software:${RESET}"
+                dpkg-query -l | less
+                ;;
+            2)
+                clear
+                echo -e "${CYAN}Viewing running processes:${RESET}"
+                ps aux | less
+                ;;
+            3)
+                clear
+                echo -e "${CYAN}Checking logged-in users:${RESET}"
+                who | less
+                ;;
+            4)
+                clear
+                echo -e "${CYAN}Viewing network connections:${RESET}"
+                ss -tunap | less
+                ;;
+            5)
+                clear
+                echo -e "${CYAN}Querying active services:${RESET}"
+                systemctl list-units --type=service --state=active | less
+                ;;
+            6)
+                clear
+                echo -e "${CYAN}Inspecting recent file changes:${RESET}"
+                sudo find / -type f -mtime -1 2>/dev/null | less
+                ;;
+            7)
+                clear
+                echo -e "${CYAN}Searching logs for anomalies:${RESET}"
+                read -p "Enter keyword to search: " keyword
+                sudo journalctl | grep -i "$keyword" | less
+                ;;
+            8)
+                echo -e "${CYAN}Exiting...${RESET}"
+                break
+                ;;
+            *)
+                echo -e "${CYAN}Invalid choice. Try again.${RESET}"
+                ;;
+        esac
+        echo -e "${CYAN}Press any key to return to the menu...${RESET}"
+        read -n 1 -s -r
+    done
+}
+
+osquery_menu

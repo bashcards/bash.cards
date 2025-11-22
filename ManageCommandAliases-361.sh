@@ -1,1 +1,130 @@
-bash -c "$(echo H4sICF3zdWcAA0phY2tfb2ZfRGlhbW9uZHMAvVZtb9s2EP6uX3FTjToaZjmO27SN4Q6BmwIb2mxIgwFDVhiMdLK1SJRByk6NJP+9R4q2ZEvyYtceP0l8eXh87u65e/FT+zbk7Vsmx5Y1+Pv8st/857jbven0uqdx07q6+HJxbaaO6d96AZ+RTyFIBKRjhN+ZdwdJAB9CFifclzBgwrf+pdlhEgx9MzuM6cyRAw8W0PAiZEJ/oTdOoIVgNx7U1U92PmuDHsN9jRL0I2wcpYfVj8etsD8zzkYIgySOGffhPAqZxFr4Cuy9UbKd3duNSuyOC3+FeA8sisCbCoE8pe+N73829okLA4EsRWDA9R2Euye7uy5cYZzMCJvvClyH/cqFi2+TRORMpAk9IQgj/GHs1y58Spi/RA5EEu8L+9SFL5TG3lhLwc68VGK/ceEaZfpjbNdgv1W+lJjqINwh+DZhv1O+DNMdzd2EfZCcz4RXK7xRXkogH1oTsC94igLmyVQA7Qw9PCNLsq9Mwok2aGQTEHJrYXrHgRll+HBBbK+3XDpxwNMJmi0Wl7oO3azyq7z0ygHU6VEF+dqBiOK7aunUAanDswz5xoGUoqu88FaZQaFRhfdO2UGuPS5O/uwYJ/3GZ3TGNwxR9Io5sBELuWv3QEaIE+j0oLIqLvBQMs96UvW1TiKtIrPPKKYDc9xUmLNVV2ucgtM5dKAloSW0//8kIiTl3xzucK4USWA6FVx9qaqvDHddN0OqfFb2lLIiW8UYqHjEWgSqyzI/cRbrINR/Q/VXt98zlVXpqJSJFyoT7sN0nKPlQGZzTgnRl1/Rb6zsKualZhWahc1NE9++VkRz5AyqIA5I+VqhsoqJtZ+gIaVj93fQ+tiH5sNEhLT78gpshzhtdJ6adW5RFKmGKnepfqOyrsKvU172xn/Rn4H57sE5rivY1qpUPS+81UHNDcFINsMl7BG6I/eXxa8rx47iabG94I/3xNJiusQRAWVWoc6I5cbDs1TXelhFzd6eo2gdtsRKGMDNDbSCIi3w9WtPQeWlSlJx87BEXZk+daFKavWCdfowkrh27KPqrpb7gCcp6cGUL8IyCA/Ne0VbZhVr4baqqwNzianYNmi0NV6RhZGgQtdqeUmUiD6L7tlcJXBhtw2Pj4amy8Qc0+RAzFJvHPIRpXRhf/PwUbrSaFp5Y7ALS+p0hZYhNQfEw1GFosHJ+7aPszafRpFjw8uXG+QNv6E3VWksp55Hbw/ozNwtUFp1aBl+QOEQMIpKLQMG6/D0lnpta6XFqqtI9vU4lFS06ZwwBa3Qroc8K/SmVtGUDBPurvWw5wJVB0t0CfwVjuZtrgXUS3gQmsDNlKJhpqDfB3teIRWLYtRiJYnIjRor7b5F5FkTWS8Qf0xQsJQMpi6aexhF+H9pQ/XCd/iIs8ECEgAA | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+# Menu for the Jack of Diamonds Card
+jack_of_diamonds_menu() {
+    clear
+    echo -e "${CYAN}"
+    echo "      _________________________________________________________________________"
+    echo "     |                              Jack of Diamonds                           |"
+    echo "     |                           Manage Command Aliases                        |"
+    echo "     |_________________________________________________________________________|"
+    echo "     |                                                                         |"
+    echo "     |  1. View all current aliases                                            |"
+    echo "     |  2. Create a new alias                                                  |"
+    echo "     |  3. Remove an alias                                                     |"
+    echo "     |  4. Export aliases to a file                                            |"
+    echo "     |  5. Load aliases from a file                                            |"
+    echo "     |  6. Search for an alias                                                 |"
+    echo "     |  7. Test an alias                                                       |"
+    echo "     |  8. Reset all aliases                                                   |"
+    echo "     |  9. Exit                                                                |"
+    echo "     |_________________________________________________________________________|"
+    echo -e "${RESET}"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) view_aliases ;;
+        2) create_alias ;;
+        3) remove_alias ;;
+        4) export_aliases ;;
+        5) load_aliases ;;
+        6) search_alias ;;
+        7) test_alias ;;
+        8) reset_aliases ;;
+        9) exit 0 ;;
+        *) echo "Invalid choice. Try again."; sleep 1; jack_of_diamonds_menu ;;
+    esac
+}
+
+# View all current aliases
+view_aliases() {
+    clear
+    echo -e "${CYAN}Current Aliases:${RESET}"
+    alias
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    jack_of_diamonds_menu
+}
+
+# Create a new alias
+create_alias() {
+    clear
+    read -p "Enter the alias name: " alias_name
+    read -p "Enter the command to associate with the alias: " alias_command
+    alias "$alias_name=$alias_command"
+    echo "Alias '$alias_name' created for command: $alias_command"
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    jack_of_diamonds_menu
+}
+
+# Remove an alias
+remove_alias() {
+    clear
+    echo -e "${CYAN}Current Aliases:${RESET}"
+    alias | awk -F= '{print NR ") " $1}'
+    read -p "Enter the name of the alias to remove: " alias_name
+    unalias "$alias_name"
+    echo "Alias '$alias_name' removed."
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    jack_of_diamonds_menu
+}
+
+# Export aliases to a file
+export_aliases() {
+    clear
+    read -p "Enter the filename to save aliases (e.g., aliases.sh): " filename
+    alias > "$filename"
+    echo "Aliases exported to $filename."
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    jack_of_diamonds_menu
+}
+
+# Load aliases from a file
+load_aliases() {
+    clear
+    read -p "Enter the filename to load aliases from: " filename
+    if [[ -f "$filename" ]]; then
+        source "$filename"
+        echo "Aliases loaded from $filename."
+    else
+        echo "File $filename not found."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    jack_of_diamonds_menu
+}
+
+# Search for an alias
+search_alias() {
+    clear
+    read -p "Enter the alias name to search for: " search_term
+    alias | grep --color=always "$search_term" || echo "No alias found matching '$search_term'."
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    jack_of_diamonds_menu
+}
+
+# Test an alias
+test_alias() {
+    clear
+    read -p "Enter the alias name to test: " alias_name
+    eval "$(alias "$alias_name" 2>/dev/null)" && echo "Alias '$alias_name' executed successfully." || echo "Alias '$alias_name' not found or failed to execute."
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    jack_of_diamonds_menu
+}
+
+# Reset all aliases
+reset_aliases() {
+    clear
+    echo "This will remove all aliases in the current session."
+    read -p "Are you sure? (y/n): " confirm
+    if [[ $confirm == "y" ]]; then
+        unalias -a
+        echo "All aliases have been reset."
+    else
+        echo "Operation cancelled."
+    fi
+    read -n 1 -s -r -p "Press any key to return to the menu..."
+    jack_of_diamonds_menu
+}
+
+jack_of_diamonds_menu

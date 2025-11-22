@@ -1,1 +1,71 @@
-bash -c "$(echo H4sICAH5XmcAA0ZpdmVfb2ZfRGlhbW9uZHMApVbbbhoxEH3nK6Y0Ek2kXa6JqqJGooRIkdoUJfShaiVkvAO4LPbW9oaikH/v2FAIBFhCzcvurOd2fM6Yt2+KPSGLPWaGuVzze+P2Y+FnqVr9Ua5XL8aF3F3rvtVZmEr0nouwj9Jg13AtEmu6Y5Tpu1N4zAGtyVDECFanWIdIeZNbPEaml2/IhwoChPzJo8v3lF//kveP3YPXNvcZPF/X4gFB9eFKsLGSkVn7ONvtf4VJrKbQSK0aM4sRGXzvcD/vfY//4eXvyX/Q2uVfDqElWY+Og45WcOgLjRMWx6DTGE22fyWkdi1yCz2dWoS+0hwhVgMhgVmL4wUAu/yrIXyKFR+BSU0iuFCpgZv2Ovb7/GshfFFSWKWpdOrCTA0lBT5kcnBI/ech3KNNE0hQCxURAlQ7GM6kFHKQ7X9B+P0R9kj8jz//uTC87EgZy28aWQRBAvnmUAmOHygP908rkTFi5sncCEIu7W6VT9de/fY1TW4pwWvTU8jhtY1EYRiuKt2MZNJIAanEUdBA0Iab2/a3DlzdfW1n7W0s9lK7licQBFGitIVKBYJf0Gg2W+3OkSHel/47RK1W3RNjE7/rddWhV2S0B7Z6fc1UOfbg5tr1J7dTvtnnN9BIlLtmJMAIEmbMROkoD8UHposUq8hSOwydrmbAJiMoPCZaSAsn5fJTgWzGATaDVIrfEPB/hkC+LH+j7eqxbfuR47penzp7O11KqyUtatoOVkHPBXIqE8nBRDFUhkjyjh5bab5ZLGWi/fNUryFF7Vh0FgPV4bNtphI1imj5AbKWyor+dMJoPgZj75RV8/mxNdMQ9zTeNcn3VjufyGfFagnOFj9P6cIGpQtbKH15uTL2/fbuUjhkyzs6OzAsIgTMg1DkWkmiRWZTn59fRcZfU1yNk5hE+woeXLzE9MX8pissC6QeCWCUlessO9eNfGCxiBb3UggdPQU2YEIe1hEatmLRZuy2RmOAySmMcOr0qQk0Ld2THSK4P6Fbe5xrW0LZqTOYsy1SEnNP2//J5v4C39VYsA8LAAA= | base64 -d | gunzip)"
+#!/bin/bash
+
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+defense_scripts_menu() {
+    while true; do
+        clear
+        echo -e "${CYAN}"
+        echo "     __________________________________________"
+        echo "    |             Five of Diamonds             |"
+        echo "    |     Deploy Automated Defense Scripts     |"
+        echo "    |__________________________________________|"
+        echo "    |                                          |"
+        echo "    |  1. Enable basic firewall rules          |"
+        echo "    |  2. Detect brute force login attempts    |"
+        echo "    |  3. Block suspicious IPs                 |"
+        echo "    |  4. Monitor file system changes          |"
+        echo "    |  5. Setup periodic log scanning          |"
+        echo "    |  6. Exit                                 |"
+        echo "    |__________________________________________|"
+        echo -e "${RESET}"
+
+        read -p "Choice: " choice
+        case $choice in
+            1)
+                clear
+                echo -e "${CYAN}Enabling basic firewall rules...${RESET}"
+                sudo iptables -P INPUT DROP
+                sudo iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+                sudo iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+                sudo iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+                echo -e "${CYAN}Firewall rules enabled.${RESET}"
+                ;;
+            2)
+                clear
+                echo -e "${CYAN}Detecting brute force login attempts...${RESET}"
+                sudo grep "Failed password" /var/log/auth.log | awk '{print $11}' | sort | uniq -c | sort -nr
+                ;;
+            3)
+                clear
+                echo -e "${CYAN}Blocking suspicious IPs...${RESET}"
+                read -p "Enter IP to block: " ip
+                sudo iptables -A INPUT -s "$ip" -j DROP
+                echo -e "${CYAN}IP $ip blocked.${RESET}"
+                ;;
+            4)
+                clear
+                echo -e "${CYAN}Monitoring file system changes in /etc...${RESET}"
+                sudo inotifywait -m /etc
+                ;;
+            5)
+                clear
+                echo -e "${CYAN}Setting up periodic log scanning...${RESET}"
+                echo "*/30 * * * * grep 'Failed password' /var/log/auth.log >> /var/log/failed_attempts.log" | sudo tee -a /etc/crontab
+                echo -e "${CYAN}Log scanning setup completed.${RESET}"
+                ;;
+            6)
+                echo -e "${CYAN}Exiting...${RESET}"
+                break
+                ;;
+            *)
+                echo -e "${CYAN}Invalid choice. Try again.${RESET}"
+                ;;
+        esac
+        echo -e "${CYAN}Press any key to return to the menu...${RESET}"
+        read -n 1 -s -r
+    done
+}
+
+defense_scripts_menu
